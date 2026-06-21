@@ -297,10 +297,10 @@
       const sourceGames = [{"name": "minecraft", "texture": "images/game_full/minecraft.jpg", "w": 183, "h": 275}, {"name": "terraria", "texture": "images/game_full/terraria.jpg", "w": 250, "h": 375}, {"name": "stardew_valley", "texture": "images/game_full/stardew_valley.jpg", "w": 600, "h": 800}, {"name": "dont_starve", "texture": "images/game_full/dont_starve.jpg", "w": 466, "h": 214}, {"name": "gmod", "texture": "images/game_full/gmod.png", "w": 225, "h": 225}, {"name": "half_life", "texture": "images/game_full/half_life.jpg", "w": 329, "h": 153}, {"name": "half_life_2", "texture": "images/game_full/half_life_2.webp", "w": 516, "h": 290}, {"name": "vrchat", "texture": "images/game_full/vrchat.jpg", "w": 297, "h": 170}, {"name": "rust", "texture": "images/game_full/rust.jpg", "w": 616, "h": 353}, {"name": "left4dead2", "texture": "images/game_full/left4dead2.jpg", "w": 297, "h": 170}];
       const gameBlocks = sourceGames.concat(sourceGames);
       const totalBlocks = gameBlocks.length;
-      const maxLongSide = Math.max(72, Math.min(104, Math.floor(width / 9.5)));
-      const minShortSide = 42;
+      const maxLongSide = Math.max(54, Math.min(78, Math.floor(width / 12)));
+      const minShortSide = 30;
       const safePadding = 22;
-      const usableWidth = Math.max(maxLongSide * 10, width - safePadding * 2);
+      const usableWidth = Math.max(maxLongSide * 8.5, width - safePadding * 2);
       const slotGap = usableWidth / Math.max(1, totalBlocks - 1);
       const slots = Array.from({ length: totalBlocks }, (_, i) => safePadding + i * slotGap);
 
@@ -319,9 +319,9 @@
           blockHeight = maxLongSide;
           blockWidth = Math.max(minShortSide, Math.round(maxLongSide * aspect));
         }
-        const jitter = (Math.random() - 0.5) * 10;
+        const jitter = (Math.random() - 0.5) * 8;
         const x = Math.max(blockWidth / 2 + 10, Math.min(width - blockWidth / 2 - 10, slots[index] + jitter));
-        const y = -80 - index * (maxLongSide * 0.95);
+        const y = -60 - index * (maxLongSide * 0.82);
         return Bodies.rectangle(x, y, blockWidth, blockHeight, {
           restitution: 0.48,
           friction: 0.72,
