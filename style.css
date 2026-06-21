@@ -623,3 +623,102 @@ main#top {
     border-radius: 9px !important;
   }
 }
+
+
+/* 20260621 fix6: 删除圆点分界线、关于我左头像卡、顶部栏圆角减轻、打字机更稳 */
+.hero-divider {
+  display: none !important;
+}
+.site-nav {
+  border-radius: 22px !important;
+}
+.nav-links a,
+.icon-btn,
+.primary-link,
+.ghost-link,
+.message-btn,
+.palette-reset {
+  border-radius: 18px !important;
+}
+.brand img,
+.site-nav .brand img {
+  border-radius: 8px !important;
+}
+.about-layout {
+  display: grid;
+  grid-template-columns: minmax(260px, 380px) minmax(0, 1fr);
+  gap: 22px;
+  align-items: stretch;
+}
+.about-avatar-card,
+.about-text-card {
+  border: 1px solid var(--line);
+  border-radius: 28px;
+  background: var(--card);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(16px);
+}
+.about-avatar-card {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  text-align: center;
+  padding: clamp(22px, 3.2vw, 38px);
+  min-height: 420px;
+}
+.about-avatar-img {
+  width: min(78%, 280px);
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 42px;
+  border: 1px solid rgba(255,255,255,.28);
+  box-shadow: 0 18px 45px rgba(0,0,0,.22);
+  background: rgba(255,255,255,.9);
+}
+.about-avatar-card h2 {
+  margin: 28px 0 8px;
+  font-size: clamp(34px, 4.4vw, 52px);
+  line-height: 1;
+}
+.about-avatar-card p {
+  margin: 12px 0 0;
+  color: var(--muted);
+  font-size: 22px;
+  font-weight: 800;
+}
+.about-text-card {
+  padding: clamp(24px, 4vw, 46px);
+  display: grid;
+  align-content: center;
+}
+.about-text-card h2 {
+  margin: 0 0 22px;
+  font-size: clamp(32px, 4vw, 48px);
+}
+.about-text-card p {
+  font-size: clamp(17px, 2vw, 22px);
+  line-height: 2;
+}
+.about-text-card .avatar-large,
+.profile-card .avatar-large {
+  display: none !important;
+}
+@media (max-width: 900px) {
+  .site-nav {
+    border-radius: 18px !important;
+  }
+  .nav-links a,
+  .icon-btn {
+    border-radius: 15px !important;
+  }
+  .about-layout {
+    grid-template-columns: 1fr;
+  }
+  .about-avatar-card {
+    min-height: auto;
+  }
+  .about-avatar-img {
+    width: min(70%, 260px);
+    border-radius: 34px;
+  }
+}

@@ -147,15 +147,41 @@
     let textIndex = 0;
     let charIndex = 0;
     let deleting = false;
+    let holdTicks = 0;
+
     const tick = () => {
       const text = CONFIG.typingTexts[textIndex % CONFIG.typingTexts.length];
+
+      if (!deleting) {
+        el.textContent = text.slice(0, charIndex);
+        if (charIndex < text.length) {
+          charIndex += 1;
+          setTimeout(tick, 135);
+          return;
+        }
+        if (holdTicks < 1) {
+          holdTicks += 1;
+          setTimeout(tick, 1700);
+          return;
+        }
+        deleting = true;
+        holdTicks = 0;
+        setTimeout(tick, 650);
+        return;
+      }
+
       el.textContent = text.slice(0, charIndex);
-      if (!deleting && charIndex < text.length) charIndex += 1;
-      else if (!deleting) deleting = true;
-      else if (charIndex > 0) charIndex -= 1;
-      else { deleting = false; textIndex += 1; }
-      setTimeout(tick, deleting ? 48 : 86);
+      if (charIndex > 0) {
+        charIndex -= 1;
+        setTimeout(tick, 70);
+        return;
+      }
+
+      deleting = false;
+      textIndex += 1;
+      setTimeout(tick, 520);
     };
+
     tick();
   }
 
