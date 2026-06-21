@@ -294,49 +294,46 @@
 
     function makeBlocks(Matter, world, width) {
       const { Bodies, Composite } = Matter;
-      const totalBlocks = 20;
-      const blockSize = Math.max(40, Math.min(50, Math.floor(width / 17)));
-      const safePadding = Math.max(24, Math.floor(blockSize * 0.6));
-      const usableWidth = Math.max(blockSize * 8, width - safePadding * 2);
-      const columns = totalBlocks;
-      const slotGap = usableWidth / Math.max(1, columns - 1);
-      const slots = Array.from({ length: columns }, (_, i) => safePadding + i * slotGap);
+      const sourceGames = [{"name": "minecraft", "texture": "images/game_full/minecraft.jpg", "w": 183, "h": 275}, {"name": "terraria", "texture": "images/game_full/terraria.jpg", "w": 250, "h": 375}, {"name": "stardew_valley", "texture": "images/game_full/stardew_valley.jpg", "w": 600, "h": 800}, {"name": "dont_starve", "texture": "images/game_full/dont_starve.jpg", "w": 466, "h": 214}, {"name": "gmod", "texture": "images/game_full/gmod.png", "w": 225, "h": 225}, {"name": "half_life", "texture": "images/game_full/half_life.jpg", "w": 329, "h": 153}, {"name": "half_life_2", "texture": "images/game_full/half_life_2.webp", "w": 516, "h": 290}, {"name": "vrchat", "texture": "images/game_full/vrchat.jpg", "w": 297, "h": 170}, {"name": "rust", "texture": "images/game_full/rust.jpg", "w": 616, "h": 353}, {"name": "left4dead2", "texture": "images/game_full/left4dead2.jpg", "w": 297, "h": 170}];
+      const gameBlocks = sourceGames.concat(sourceGames);
+      const totalBlocks = gameBlocks.length;
+      const maxLongSide = Math.max(72, Math.min(104, Math.floor(width / 9.5)));
+      const minShortSide = 42;
+      const safePadding = 22;
+      const usableWidth = Math.max(maxLongSide * 10, width - safePadding * 2);
+      const slotGap = usableWidth / Math.max(1, totalBlocks - 1);
+      const slots = Array.from({ length: totalBlocks }, (_, i) => safePadding + i * slotGap);
 
       for (let i = slots.length - 1; i > 0; i -= 1) {
         const j = Math.floor(Math.random() * (i + 1));
         [slots[i], slots[j]] = [slots[j], slots[i]];
       }
 
-      const textures = [
-        'images/game_blocks/minecraft.png',
-        'images/game_blocks/terraria.png',
-        'images/game_blocks/stardew_valley.png',
-        'images/game_blocks/dont_starve.png',
-        'images/game_blocks/gmod.png',
-        'images/game_blocks/half_life.png',
-        'images/game_blocks/half_life_2.png',
-        'images/game_blocks/vrchat.png',
-        'images/game_blocks/rust.png',
-        'images/game_blocks/left4dead2.png'
-      ];
-      const blockTextures = textures.concat(textures);
-
-      const blocks = Array.from({ length: totalBlocks }, (_, index) => {
-        const jitter = (Math.random() - 0.5) * Math.min(18, blockSize * 0.35);
-        const x = Math.max(blockSize / 2 + 10, Math.min(width - blockSize / 2 - 10, slots[index] + jitter));
-        const y = -70 - index * (blockSize * 1.1);
-        return Bodies.rectangle(x, y, blockSize, blockSize, {
+      const blocks = gameBlocks.map((game, index) => {
+        const aspect = game.w / game.h;
+        let blockWidth, blockHeight;
+        if (aspect >= 1) {
+          blockWidth = maxLongSide;
+          blockHeight = Math.max(minShortSide, Math.round(maxLongSide / aspect));
+        } else {
+          blockHeight = maxLongSide;
+          blockWidth = Math.max(minShortSide, Math.round(maxLongSide * aspect));
+        }
+        const jitter = (Math.random() - 0.5) * 10;
+        const x = Math.max(blockWidth / 2 + 10, Math.min(width - blockWidth / 2 - 10, slots[index] + jitter));
+        const y = -80 - index * (maxLongSide * 0.95);
+        return Bodies.rectangle(x, y, blockWidth, blockHeight, {
           restitution: 0.48,
           friction: 0.72,
           frictionStatic: 0.78,
           frictionAir: 0.01,
           density: 0.0028,
-          angle: (Math.random() - 0.5) * 0.22,
+          angle: (Math.random() - 0.5) * 0.18,
           render: {
             sprite: {
-              texture: blockTextures[index],
-              xScale: blockSize / 256,
-              yScale: blockSize / 256
+              texture: game.texture,
+              xScale: blockWidth / game.w,
+              yScale: blockHeight / game.h
             }
           }
         });
