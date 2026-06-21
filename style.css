@@ -746,3 +746,75 @@ main#top {
 .site-footer {
   margin-top: 34px !important;
 }
+
+
+/* 20260621 fix8: 手机端首图、下箭头动画、留言箱提示、GitHub入口 */
+.hero-scroll {
+  bottom: 56px !important;
+  width: 74px !important;
+  height: 74px !important;
+  font-size: 48px !important;
+  line-height: 1 !important;
+  font-weight: 800 !important;
+  color: #fff !important;
+  text-shadow: 0 8px 20px rgba(0,0,0,.36);
+  animation: easonArrowDown 1.45s ease-in-out infinite;
+}
+@keyframes easonArrowDown {
+  0%, 100% { transform: translateX(-50%) translateY(0); opacity: .82; }
+  50% { transform: translateX(-50%) translateY(12px); opacity: 1; }
+}
+.message-accordion summary {
+  background: linear-gradient(135deg, rgba(159,185,201,.18), rgba(240,184,188,.10));
+  border-bottom: 1px solid var(--line);
+}
+.message-accordion summary strong {
+  font-size: clamp(26px, 3vw, 36px) !important;
+}
+.message-toggle-hint {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px !important;
+  padding: 7px 12px;
+  border: 1px solid color-mix(in srgb, var(--mist) 55%, transparent);
+  border-radius: 999px;
+  background: rgba(159,185,201,.16);
+  color: var(--text) !important;
+  font-weight: 800;
+}
+.message-toggle-hint::before {
+  content: "提示";
+  font-size: 12px;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--mist), var(--pink));
+  color: #fff;
+}
+.message-accordion[open] summary b {
+  background: linear-gradient(135deg, var(--mist), var(--pink));
+  color: #fff;
+  border-color: transparent;
+}
+.message-accordion summary b {
+  font-size: 24px;
+  font-weight: 900;
+}
+.contact-link[href*="github.com"] .contact-logo {
+  background: #fff;
+  border-radius: 50%;
+}
+@media (max-width: 680px) {
+  .hero-img {
+    object-position: center center !important;
+  }
+  .hero-text {
+    top: 50% !important;
+  }
+  .hero-scroll {
+    bottom: 74px !important;
+    width: 76px !important;
+    height: 76px !important;
+    font-size: 50px !important;
+  }
+}
