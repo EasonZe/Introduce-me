@@ -1167,3 +1167,50 @@ main#top {
     top: 42% !important;
   }
 }
+
+
+/* 20260622 fix16: 箭头只显示完整 V 字，去掉周围模糊背景 */
+.hero-scroll {
+  background: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  filter: none !important;
+  text-shadow: none !important;
+  outline: none !important;
+  width: 86px !important;
+  height: 86px !important;
+  display: grid !important;
+  place-items: center !important;
+  font-size: 0 !important;
+}
+.hero-scroll::before,
+.hero-scroll::after {
+  display: none !important;
+  content: none !important;
+}
+.hero-v-arrow {
+  width: 58px;
+  height: 58px;
+  display: block;
+  overflow: visible;
+  filter: none !important;
+}
+.hero-v-arrow path {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+@media (max-width: 680px) {
+  .hero-scroll {
+    width: 88px !important;
+    height: 88px !important;
+  }
+  .hero-v-arrow {
+    width: 60px;
+    height: 60px;
+  }
+}
