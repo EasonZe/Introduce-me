@@ -1109,3 +1109,44 @@ main#top {
 #contact .section-head h2 {
   margin-bottom: 0;
 }
+
+
+/* 20260622 fix14: 删除留言箱联系卡，缩小上下间距 */
+.section {
+  padding: 24px 0 !important;
+}
+.message-home-section {
+  padding-top: 18px !important;
+  padding-bottom: 18px !important;
+}
+.about-layout {
+  margin-top: 4px !important;
+}
+#aboutMe.section {
+  padding-top: 14px !important;
+  padding-bottom: 18px !important;
+}
+#contact.section {
+  padding-top: 18px !important;
+}
+.site-footer {
+  margin-top: 24px !important;
+}
+.contact-list {
+  gap: 10px !important;
+}
+@media (max-width: 680px) {
+  .section {
+    padding: 18px 0 !important;
+  }
+  #aboutMe.section {
+    padding-top: 8px !important;
+    padding-bottom: 14px !important;
+  }
+  .about-layout {
+    gap: 14px !important;
+  }
+  #contact.section {
+    padding-top: 14px !important;
+  }
+}
