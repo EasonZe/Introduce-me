@@ -1304,3 +1304,34 @@ html:not([data-theme="dark"]) .physics-card {
 .physics-stage {
   cursor: grab;
 }
+
+
+/* 20260622 fix19: DOM 图片块渲染，避免 Matter canvas 贴图空白 */
+.physics-stage {
+  position: relative;
+}
+.physics-stage canvas {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+.game-physics-block {
+  position: absolute;
+  left: 0;
+  top: 0;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,.45);
+  box-shadow: 0 8px 20px rgba(0,0,0,.24);
+  background: rgba(255,255,255,.08);
+  will-change: transform;
+  user-select: none;
+  pointer-events: none;
+}
+.game-physics-block img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  background: rgba(255,255,255,.04);
+  pointer-events: none;
+}

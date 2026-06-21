@@ -278,7 +278,11 @@
     let engine = null;
     let render = null;
     let runner = null;
-    let resizeTimer = null;
+    let bodies = [];
+    let blockEls = [];
+    let stageWidth = 0;
+    let stageHeight = 0;
+    let animationFrameId = 0;
 
     function loadMatter() {
       if (window.Matter) return Promise.resolve(window.Matter);
@@ -292,54 +296,87 @@
       });
     }
 
-    function makeBlocks(Matter, world, width) {
+    const games = [
+      { name: 'Minecraft', src: 'images/game_full/minecraft.jpeg', ratio: 0.72 },
+      { name: 'Terraria', src: 'images/game_full/terraria.jpeg', ratio: 0.72 },
+      { name: 'Stardew Valley', src: 'images/game_full/stardew_valley.jpeg', ratio: 0.75 },
+      { name: "Don't Starve", src: 'images/game_full/dont_starve.jpeg', ratio: 2.2 },
+      { name: 'Garrys Mod', src: 'images/game_full/gmod.png', ratio: 1 },
+      { name: 'Half-Life', src: 'images/game_full/half_life.jpeg', ratio: 2.3 },
+      { name: 'Half-Life 2', src: 'images/game_full/half_life_2.webp', ratio: 2.15 },
+      { name: 'VRChat', src: 'images/game_full/vrchat.jpeg', ratio: 1.78 },
+      { name: 'Rust', src: 'images/game_full/rust.jpeg', ratio: 1.78 },
+      { name: 'Left 4 Dead 2', src: 'images/game_full/left4dead2.jpeg', ratio: 1.78 }
+    ];
+
+    function createDomBlock(game, width, height) {
+      const el = document.createElement('div');
+      el.className = 'game-physics-block';
+      el.style.width = `${width}px`;
+      el.style.height = `${height}px`;
+      el.dataset.game = game.name;
+
+      const img = document.createElement('img');
+      img.src = game.src;
+      img.alt = game.name;
+      img.draggable = false;
+      el.appendChild(img);
+
+      stage.appendChild(el);
+      return el;
+    }
+
+    function buildBlocks(Matter, world, width) {
       const { Bodies, Composite } = Matter;
-      const sourceGames = [{"name": "minecraft", "texture": "images/game_full/minecraft.jpg", "w": 183, "h": 275}, {"name": "terraria", "texture": "images/game_full/terraria.jpg", "w": 250, "h": 375}, {"name": "stardew_valley", "texture": "images/game_full/stardew_valley.jpg", "w": 600, "h": 800}, {"name": "dont_starve", "texture": "images/game_full/dont_starve.jpg", "w": 466, "h": 214}, {"name": "gmod", "texture": "images/game_full/gmod.png", "w": 225, "h": 225}, {"name": "half_life", "texture": "images/game_full/half_life.jpg", "w": 329, "h": 153}, {"name": "half_life_2", "texture": "images/game_full/half_life_2.webp", "w": 516, "h": 290}, {"name": "vrchat", "texture": "images/game_full/vrchat.jpg", "w": 297, "h": 170}, {"name": "rust", "texture": "images/game_full/rust.jpg", "w": 616, "h": 353}, {"name": "left4dead2", "texture": "images/game_full/left4dead2.jpg", "w": 297, "h": 170}];
-      const gameBlocks = sourceGames.concat(sourceGames);
-      const totalBlocks = gameBlocks.length;
+      const allGames = games.concat(games);
+      const total = allGames.length;
       const maxLongSide = Math.max(54, Math.min(78, Math.floor(width / 12)));
       const minShortSide = 30;
       const safePadding = 22;
       const usableWidth = Math.max(maxLongSide * 8.5, width - safePadding * 2);
-      const slotGap = usableWidth / Math.max(1, totalBlocks - 1);
-      const slots = Array.from({ length: totalBlocks }, (_, i) => safePadding + i * slotGap);
+      const slotGap = usableWidth / Math.max(1, total - 1);
+      const slots = Array.from({ length: total }, (_, i) => safePadding + i * slotGap);
 
       for (let i = slots.length - 1; i > 0; i -= 1) {
         const j = Math.floor(Math.random() * (i + 1));
         [slots[i], slots[j]] = [slots[j], slots[i]];
       }
 
-      const blocks = gameBlocks.map((game, index) => {
-        const aspect = game.w / game.h;
-        let blockWidth, blockHeight;
-        if (aspect >= 1) {
-          blockWidth = maxLongSide;
-          blockHeight = Math.max(minShortSide, Math.round(maxLongSide / aspect));
+      bodies = [];
+      blockEls = [];
+
+      allGames.forEach((game, index) => {
+        let blockW, blockH;
+        if (game.ratio >= 1) {
+          blockW = maxLongSide;
+          blockH = Math.max(minShortSide, Math.round(maxLongSide / game.ratio));
         } else {
-          blockHeight = maxLongSide;
-          blockWidth = Math.max(minShortSide, Math.round(maxLongSide * aspect));
+          blockH = maxLongSide;
+          blockW = Math.max(minShortSide, Math.round(maxLongSide * game.ratio));
         }
+
         const jitter = (Math.random() - 0.5) * 8;
-        const x = Math.max(blockWidth / 2 + 10, Math.min(width - blockWidth / 2 - 10, slots[index] + jitter));
+        const x = Math.max(blockW / 2 + 10, Math.min(width - blockW / 2 - 10, slots[index] + jitter));
         const y = -60 - index * (maxLongSide * 0.82);
-        return Bodies.rectangle(x, y, blockWidth, blockHeight, {
+
+        const body = Bodies.rectangle(x, y, blockW, blockH, {
           restitution: 0.48,
           friction: 0.72,
           frictionStatic: 0.78,
           frictionAir: 0.01,
           density: 0.0028,
           angle: (Math.random() - 0.5) * 0.18,
-          render: {
-            sprite: {
-              texture: game.texture,
-              xScale: blockWidth / game.w,
-              yScale: blockHeight / game.h
-            }
-          }
+          render: { visible: false }
         });
+
+        const el = createDomBlock(game, blockW, blockH);
+        body.plugin = { domEl: el, width: blockW, height: blockH };
+
+        bodies.push(body);
+        blockEls.push(el);
       });
 
-      Composite.add(world, blocks);
+      Composite.add(world, bodies);
     }
 
     function startPhysics(Matter) {
@@ -349,8 +386,8 @@
 
       const { Engine, Render, Runner, Bodies, Body, Composite, Mouse, MouseConstraint, Events } = Matter;
       const rect = stage.getBoundingClientRect();
-      const width = Math.max(320, Math.floor(rect.width));
-      const height = Math.max(320, Math.floor(rect.height));
+      stageWidth = Math.max(320, Math.floor(rect.width));
+      stageHeight = Math.max(320, Math.floor(rect.height));
 
       engine = Engine.create();
       engine.gravity.y = 1;
@@ -359,8 +396,8 @@
         element: stage,
         engine,
         options: {
-          width,
-          height,
+          width: stageWidth,
+          height: stageHeight,
           wireframes: false,
           background: 'transparent',
           pixelRatio: Math.min(window.devicePixelRatio || 1, 2)
@@ -368,24 +405,24 @@
       });
 
       const wallThickness = 80;
-      const floor = Bodies.rectangle(width / 2, height + wallThickness / 2 - 8, width + wallThickness * 2, wallThickness, {
+      const floor = Bodies.rectangle(stageWidth / 2, stageHeight + wallThickness / 2 - 8, stageWidth + wallThickness * 2, wallThickness, {
         isStatic: true,
         label: 'floor',
-        render: { fillStyle: 'rgba(255,255,255,.12)' }
+        render: { visible: false }
       });
-      const leftWall = Bodies.rectangle(-wallThickness / 2 + 4, height / 2, wallThickness, height * 2, {
+      const leftWall = Bodies.rectangle(-wallThickness / 2 + 4, stageHeight / 2, wallThickness, stageHeight * 2, {
         isStatic: true,
         label: 'leftWall',
-        render: { fillStyle: 'transparent' }
+        render: { visible: false }
       });
-      const rightWall = Bodies.rectangle(width + wallThickness / 2 - 4, height / 2, wallThickness, height * 2, {
+      const rightWall = Bodies.rectangle(stageWidth + wallThickness / 2 - 4, stageHeight / 2, wallThickness, stageHeight * 2, {
         isStatic: true,
         label: 'rightWall',
-        render: { fillStyle: 'transparent' }
+        render: { visible: false }
       });
 
       Composite.add(engine.world, [floor, leftWall, rightWall]);
-      makeBlocks(Matter, engine.world, width);
+      buildBlocks(Matter, engine.world, stageWidth);
 
       const mouse = Mouse.create(render.canvas);
       const mouseConstraint = MouseConstraint.create(engine, {
@@ -403,72 +440,44 @@
         if (mouseConstraint.body) event.preventDefault();
       }, { passive: false });
 
-      Events.on(mouseConstraint, 'startdrag', () => {
-        render.canvas.style.cursor = 'grabbing';
-      });
-      Events.on(mouseConstraint, 'enddrag', () => {
-        render.canvas.style.cursor = 'grab';
-      });
-      render.canvas.style.cursor = 'grab';
-
       const clampBodyInsideStage = (body) => {
         if (!body || body.isStatic) return;
-        const minX = 12;
-        const maxX = width - 12;
-        const minY = 12;
-        const maxY = height - 12;
         const halfW = Math.max(10, (body.bounds.max.x - body.bounds.min.x) / 2);
         const halfH = Math.max(10, (body.bounds.max.y - body.bounds.min.y) / 2);
-        const clampedX = Math.min(maxX - halfW, Math.max(minX + halfW, body.position.x));
-        const clampedY = Math.min(maxY - halfH, Math.max(minY + halfH, body.position.y));
-        if (clampedX !== body.position.x || clampedY !== body.position.y) {
-          Body.setPosition(body, { x: clampedX, y: clampedY });
+        const x = Math.min(stageWidth - halfW - 8, Math.max(halfW + 8, body.position.x));
+        const y = Math.min(stageHeight - halfH - 8, Math.max(halfH + 8, body.position.y));
+        if (x !== body.position.x || y !== body.position.y) {
+          Body.setPosition(body, { x, y });
           Body.setVelocity(body, { x: body.velocity.x * 0.55, y: body.velocity.y * 0.55 });
         }
       };
 
       Events.on(engine, 'beforeUpdate', () => {
-        const dragged = mouseConstraint.body;
-        if (dragged) clampBodyInsideStage(dragged);
+        if (mouseConstraint.body) clampBodyInsideStage(mouseConstraint.body);
       });
 
       Events.on(engine, 'afterUpdate', () => {
-        const bodies = Composite.allBodies(engine.world);
-        for (const body of bodies) {
-          if (!body.isStatic) clampBodyInsideStage(body);
-        }
+        bodies.forEach(clampBodyInsideStage);
       });
+
+      function syncDomBlocks() {
+        bodies.forEach((body) => {
+          const el = body.plugin?.domEl;
+          if (!el) return;
+          const w = body.plugin.width;
+          const h = body.plugin.height;
+          el.style.transform = `translate(${body.position.x - w / 2}px, ${body.position.y - h / 2}px) rotate(${body.angle}rad)`;
+        });
+        animationFrameId = requestAnimationFrame(syncDomBlocks);
+      }
 
       Render.run(render);
       runner = Runner.create();
       Runner.run(runner, engine);
+      syncDomBlocks();
 
       window.addEventListener('resize', () => {
-        if (!render || !engine) return;
-        clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(() => {
-          const nextRect = stage.getBoundingClientRect();
-          const nextW = Math.max(320, Math.floor(nextRect.width));
-          const nextH = Math.max(320, Math.floor(nextRect.height));
-          const sx = nextW / render.options.width;
-          const sy = nextH / render.options.height;
-
-          render.bounds.max.x = nextW;
-          render.bounds.max.y = nextH;
-          render.options.width = nextW;
-          render.options.height = nextH;
-          render.canvas.width = nextW * Math.min(window.devicePixelRatio || 1, 2);
-          render.canvas.height = nextH * Math.min(window.devicePixelRatio || 1, 2);
-          render.canvas.style.width = nextW + 'px';
-          render.canvas.style.height = nextH + 'px';
-
-          Body.setPosition(floor, { x: nextW / 2, y: nextH + wallThickness / 2 - 8 });
-          Body.setPosition(leftWall, { x: -wallThickness / 2 + 4, y: nextH / 2 });
-          Body.setPosition(rightWall, { x: nextW + wallThickness / 2 - 4, y: nextH / 2 });
-          Body.setVertices(floor, Bodies.rectangle(nextW / 2, nextH + wallThickness / 2 - 8, nextW + wallThickness * 2, wallThickness).vertices);
-          Body.setVertices(leftWall, Bodies.rectangle(-wallThickness / 2 + 4, nextH / 2, wallThickness, nextH * 2).vertices);
-          Body.setVertices(rightWall, Bodies.rectangle(nextW + wallThickness / 2 - 4, nextH / 2, wallThickness, nextH * 2).vertices);
-        }, 180);
+        // 简单处理：刷新后重新计算最稳，避免旋转屏幕造成边界错位
       }, { passive: true });
     }
 
