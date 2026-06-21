@@ -449,3 +449,94 @@ html.custom-hide-divider-fx .hero-divider { height: 30px; margin-top: -8px; }
     text-align: center;
   }
 }
+
+
+/* 20260621 fix4: 首屏改成更接近原图效果，顶部时导航自动收起 */
+body {
+  background:
+    radial-gradient(circle at 18% 12%, color-mix(in srgb, var(--mist-2) 55%, transparent), transparent 34%),
+    radial-gradient(circle at 82% 18%, color-mix(in srgb, var(--pink) 35%, transparent), transparent 30%),
+    linear-gradient(135deg, var(--mist-3), var(--bg));
+}
+.site-nav {
+  transition: transform .28s ease, opacity .22s ease, box-shadow .22s ease, background .22s ease;
+}
+.site-nav.nav-collapsed-top {
+  transform: translateY(calc(-100% - 28px));
+  opacity: 0;
+  pointer-events: none;
+}
+.hero {
+  min-height: 100vh;
+  padding: 0;
+}
+.hero-card {
+  min-height: 100vh;
+  border-radius: 0;
+  border-left: 0;
+  border-right: 0;
+  border-top: 0;
+  box-shadow: none;
+}
+.hero-card::after {
+  background:
+    radial-gradient(circle at center, rgba(255,255,255,.03), transparent 48%),
+    linear-gradient(180deg, rgba(8,18,26,.20), rgba(8,18,26,.30) 40%, rgba(8,18,26,.40) 100%);
+}
+.hero-text {
+  left: 50%;
+  top: 52%;
+  bottom: auto;
+  transform: translate(-50%, -50%);
+  width: min(90%, 980px);
+  text-align: center;
+}
+.hero-text h1 {
+  font-size: clamp(72px, 12vw, 136px);
+  font-weight: 800;
+  letter-spacing: -.04em;
+  margin: 0 0 16px;
+}
+.hero-text .type-line {
+  min-height: 42px;
+  color: rgba(255,255,255,.95);
+  font-size: clamp(20px, 2.8vw, 32px);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+.hero-scroll {
+  bottom: 30px;
+  width: 56px;
+  height: 56px;
+  font-size: 34px;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+.hero-divider {
+  margin-top: 0;
+}
+@media (max-width: 900px) {
+  .site-nav {
+    top: 10px;
+  }
+  .site-nav.nav-collapsed-top {
+    transform: translateY(calc(-100% - 22px));
+  }
+  .hero-card {
+    min-height: 100vh;
+  }
+  .hero-text {
+    width: calc(100% - 34px);
+    top: 53%;
+  }
+  .hero-text h1 {
+    font-size: clamp(72px, 20vw, 120px);
+  }
+  .hero-text .type-line {
+    font-size: clamp(16px, 5.5vw, 28px);
+  }
+}
