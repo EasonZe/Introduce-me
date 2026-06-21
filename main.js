@@ -294,13 +294,6 @@
 
     function makeBlocks(Matter, world, width) {
       const { Bodies, Composite } = Matter;
-      const colors = [
-        '#9fb9c9', '#c9dbe6', '#f0b8bc', '#b7c9d8', '#d8e6ee',
-        '#adc4d2', '#e6c2c6', '#8fb0c5', '#d4e3ea', '#bdd3df',
-        '#a7bccb', '#e9d1d4', '#b6cad6', '#dceaf0', '#91aabd',
-        '#c5d7e3', '#e8c7cb', '#a4bfce', '#d6e5ed', '#b3c7d5'
-      ];
-
       const totalBlocks = 20;
       const blockSize = Math.max(40, Math.min(50, Math.floor(width / 17)));
       const safePadding = Math.max(24, Math.floor(blockSize * 0.6));
@@ -314,12 +307,25 @@
         [slots[i], slots[j]] = [slots[j], slots[i]];
       }
 
+      const textures = [
+        'images/game_blocks/minecraft.png',
+        'images/game_blocks/terraria.png',
+        'images/game_blocks/stardew_valley.png',
+        'images/game_blocks/dont_starve.png',
+        'images/game_blocks/gmod.png',
+        'images/game_blocks/half_life.png',
+        'images/game_blocks/half_life_2.png',
+        'images/game_blocks/vrchat.png',
+        'images/game_blocks/rust.png',
+        'images/game_blocks/left4dead2.png'
+      ];
+      const blockTextures = textures.concat(textures);
+
       const blocks = Array.from({ length: totalBlocks }, (_, index) => {
         const jitter = (Math.random() - 0.5) * Math.min(18, blockSize * 0.35);
         const x = Math.max(blockSize / 2 + 10, Math.min(width - blockSize / 2 - 10, slots[index] + jitter));
         const y = -70 - index * (blockSize * 1.1);
         return Bodies.rectangle(x, y, blockSize, blockSize, {
-          chamfer: { radius: 8 },
           restitution: 0.48,
           friction: 0.72,
           frictionStatic: 0.78,
@@ -327,9 +333,11 @@
           density: 0.0028,
           angle: (Math.random() - 0.5) * 0.22,
           render: {
-            fillStyle: colors[index % colors.length],
-            strokeStyle: 'rgba(255,255,255,.42)',
-            lineWidth: 2
+            sprite: {
+              texture: blockTextures[index],
+              xScale: blockSize / 256,
+              yScale: blockSize / 256
+            }
           }
         });
       });
