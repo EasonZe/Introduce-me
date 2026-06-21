@@ -1298,3 +1298,9 @@ html:not([data-theme="dark"]) .physics-card {
     border-radius: 20px;
   }
 }
+
+
+/* 20260622 fix18: 统一方块尺寸版本 */
+.physics-stage {
+  cursor: grab;
+}

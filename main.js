@@ -300,17 +300,31 @@
         '#a7bccb', '#e9d1d4', '#b6cad6', '#dceaf0', '#91aabd'
       ];
 
-      const sizeBase = Math.max(34, Math.min(58, width / 14));
+      const blockSize = Math.max(42, Math.min(54, Math.floor(width / 15)));
+      const safePadding = Math.max(26, Math.floor(blockSize * 0.6));
+      const usableWidth = Math.max(blockSize * 6, width - safePadding * 2);
+      const columns = 15;
+      const slotGap = usableWidth / Math.max(1, columns - 1);
+      const slots = Array.from({ length: columns }, (_, i) => safePadding + i * slotGap);
+
+      // 打乱掉落顺序，让每个方块从不同横向位置掉下
+      for (let i = slots.length - 1; i > 0; i -= 1) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [slots[i], slots[j]] = [slots[j], slots[i]];
+      }
+
       const blocks = Array.from({ length: 15 }, (_, index) => {
-        const size = sizeBase + (index % 3) * 6;
-        const x = 70 + (index % 5) * ((width - 140) / 4 || 70);
-        const y = -80 - Math.floor(index / 5) * 82;
-        return Bodies.rectangle(x, y, size, size, {
+        const jitter = (Math.random() - 0.5) * Math.min(18, blockSize * 0.35);
+        const x = Math.max(blockSize / 2 + 10, Math.min(width - blockSize / 2 - 10, slots[index] + jitter));
+        const y = -70 - index * (blockSize * 1.12);
+        return Bodies.rectangle(x, y, blockSize, blockSize, {
           chamfer: { radius: 8 },
-          restitution: 0.46,
+          restitution: 0.48,
           friction: 0.72,
-          frictionAir: 0.012,
+          frictionStatic: 0.78,
+          frictionAir: 0.01,
           density: 0.0028,
+          angle: (Math.random() - 0.5) * 0.22,
           render: {
             fillStyle: colors[index],
             strokeStyle: 'rgba(255,255,255,.42)',
