@@ -6,10 +6,21 @@
   const CONFIG = {
     siteStartDate: '2026-06-04',
     typingTexts: [
-      '一个用来介绍 Eason 网站和项目的小站。',
-      '记录入口、联系方式、站点信息。',
-      '简洁、干净、方便访问。'
+      '慢慢来，所有热爱都会发光。',
+      '把普通日子过成自己的星河。',
+      '今天也要向喜欢的未来靠近一点。',
+      '奔赴星辰大海，不负心中热爱。'
     ]
+  };
+
+  const customState = {
+    hue: Number(localStorage.getItem('custom-hue') || 210),
+    bgMode: localStorage.getItem('custom-bg-mode') || 'default',
+    showHeroText: localStorage.getItem('custom-show-hero-text') !== '0',
+    showStars: localStorage.getItem('custom-show-stars') !== '0',
+    showMeteor: localStorage.getItem('custom-show-meteor') !== '0',
+    showMist: localStorage.getItem('custom-show-mist') !== '0',
+    showDividerFx: localStorage.getItem('custom-show-divider-fx') !== '0'
   };
 
   function currentTheme() {
@@ -39,25 +50,70 @@
     localStorage.setItem('custom-hue', String(hue));
   }
 
+  function applyBackgroundMode(mode) {
+    const safeMode = ['default', 'night'].includes(mode) ? mode : 'default';
+    root.classList.remove('bg-gradient', 'bg-night', 'bg-solid');
+    if (safeMode !== 'default') root.classList.add(`bg-${safeMode}`);
+    customState.bgMode = safeMode;
+    localStorage.setItem('custom-bg-mode', safeMode);
+    $$('[data-bg-mode]').forEach((btn) => btn.classList.toggle('active', btn.dataset.bgMode === safeMode));
+  }
+
+  function applyWallpaperSwitches() {
+    root.classList.toggle('custom-hide-hero-text', !customState.showHeroText);
+    root.classList.toggle('custom-hide-stars', !customState.showStars);
+    root.classList.toggle('custom-hide-meteor', !customState.showMeteor);
+    root.classList.toggle('custom-hide-mist', !customState.showMist);
+    root.classList.toggle('custom-hide-divider-fx', !customState.showDividerFx);
+    const pairs = [
+      ['toggleHeroText', 'showHeroText'],
+      ['toggleStars', 'showStars'],
+      ['toggleMeteor', 'showMeteor'],
+      ['toggleMist', 'showMist'],
+      ['toggleDividerFx', 'showDividerFx']
+    ];
+    pairs.forEach(([id, key]) => {
+      const input = $(`#${id}`);
+      if (input) input.checked = customState[key];
+      localStorage.setItem(`custom-${key.replace(/[A-Z]/g, m => '-' + m.toLowerCase())}`, customState[key] ? '1' : '0');
+    });
+  }
+
   function initThemePalette() {
     if (localStorage.getItem('theme')) root.dataset.theme = localStorage.getItem('theme');
     updateThemeButton();
-    applyAccentHue(localStorage.getItem('custom-hue') || 210);
+    applyAccentHue(customState.hue);
+    applyBackgroundMode(customState.bgMode);
+    applyWallpaperSwitches();
     $('#themeBtn')?.addEventListener('click', () => {
       const next = currentTheme() === 'dark' ? 'light' : 'dark';
       root.dataset.theme = next;
       localStorage.setItem('theme', next);
       updateThemeButton();
-      applyAccentHue(localStorage.getItem('custom-hue') || 210);
+      applyAccentHue(customState.hue);
     });
     $('#paletteBtn')?.addEventListener('click', () => openModal('#paletteModal'));
     $('#hueSlider')?.addEventListener('input', (event) => applyAccentHue(event.target.value));
+    $$('[data-bg-mode]').forEach((btn) => btn.addEventListener('click', () => applyBackgroundMode(btn.dataset.bgMode)));
     $('#paletteResetBtn')?.addEventListener('click', () => {
       localStorage.removeItem('custom-hue');
+      localStorage.removeItem('custom-bg-mode');
+      ['custom-show-hero-text', 'custom-show-stars', 'custom-show-meteor', 'custom-show-mist', 'custom-show-divider-fx'].forEach((key) => localStorage.removeItem(key));
+      Object.assign(customState, { hue: 210, bgMode: 'default', showHeroText: true, showStars: true, showMeteor: true, showMist: true, showDividerFx: true });
       applyAccentHue(210);
+      applyBackgroundMode('default');
+      applyWallpaperSwitches();
     });
-    $('#toggleStars')?.addEventListener('change', (event) => root.classList.toggle('custom-hide-stars', !event.target.checked));
-    $('#toggleMist')?.addEventListener('change', (event) => root.classList.toggle('custom-hide-mist', !event.target.checked));
+    [
+      ['toggleHeroText', 'showHeroText'],
+      ['toggleStars', 'showStars'],
+      ['toggleMeteor', 'showMeteor'],
+      ['toggleMist', 'showMist'],
+      ['toggleDividerFx', 'showDividerFx']
+    ].forEach(([id, key]) => $(`#${id}`)?.addEventListener('change', (event) => {
+      customState[key] = event.target.checked;
+      applyWallpaperSwitches();
+    }));
   }
 
   function openModal(target) {
@@ -141,11 +197,41 @@
     addEventListener('resize', resize, { passive: true });
   }
 
+  function initMeteor() {
+    const layer = $('#meteorLayer');
+    if (!layer) return;
+    const spawn = () => {
+      if (!root.classList.contains('custom-hide-meteor')) {
+        const meteor = document.createElement('span');
+        meteor.className = 'meteor fly';
+        meteor.style.left = `${Math.random() * 90 + 8}vw`;
+        meteor.style.top = `${Math.random() * 45 + 4}vh`;
+        meteor.style.animationDuration = `${Math.random() * 1.2 + 1.2}s`;
+        layer.appendChild(meteor);
+        setTimeout(() => meteor.remove(), 2600);
+      }
+      setTimeout(spawn, Math.random() * 4200 + 2600);
+    };
+    setTimeout(spawn, 1200);
+  }
+
   function initNavigation() {
     const backTop = $('#backTopBtn');
     const onScroll = () => backTop?.classList.toggle('is-hidden', (window.scrollY || document.documentElement.scrollTop || 0) < 220);
     window.addEventListener('scroll', onScroll, { passive: true });
     backTop?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+    $$('[data-scroll-target]').forEach((btn) => btn.addEventListener('click', () => {
+      const target = $(btn.dataset.scrollTarget || '');
+      if (!target) return;
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }));
+
+    $$('a[href="#messageBox"]').forEach((link) => link.addEventListener('click', () => {
+      const details = $('.message-accordion');
+      if (details) details.open = true;
+    }));
+
     onScroll();
   }
 
@@ -169,6 +255,7 @@
   initThemePalette();
   initTyping();
   initStars();
+  initMeteor();
   initNavigation();
   initFooterRuntime();
 })();
