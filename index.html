@@ -9,7 +9,7 @@
   <link rel="apple-touch-icon" href="https://user14491.cn.imgto.link/public/20260619/50674c2c-6018-44b8-94d8-22f28f5fdd0a.avif" />
   <meta name="apple-mobile-web-app-title" content="Eason的小站" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@waline/client@v3/dist/waline.css" />
-  <link rel="stylesheet" href="style.css?v=20260621-restore-about-palette" />
+  <link rel="stylesheet" href="style.css?v=20260621-home-fix2" />
   <link rel="alternate" type="application/rss+xml" title="Eason的小站 RSS" href="rss.xml" />
 </head>
 <body>
@@ -24,10 +24,10 @@
     </a>
     <nav class="nav-links" aria-label="主导航">
       <a href="#home">主页</a>
-      <a href="#intro">网站介绍</a>
       <a href="#aboutMe">关于我</a>
       <a href="#contact">联系方式</a>
       <a href="#messageBox">留言箱</a>
+      <a href="#siteInfo">本站信息</a>
     </nav>
     <div class="nav-actions">
       <button class="icon-btn" id="paletteBtn" type="button" title="个性化调色板">
@@ -97,30 +97,6 @@
       </details>
     </section>
 
-    <section class="section" id="intro">
-      <div class="section-head">
-        <h2>网站介绍</h2>
-        <p>这个页面现在只保留网站介绍、联系入口、主页留言箱和站点信息，适合作为个人网站主页。</p>
-      </div>
-      <div class="card-grid">
-        <article class="intro-card">
-          <div class="num">01</div>
-          <h3>个人主页</h3>
-          <p>展示 Eason 的基础介绍、联系方式和常用入口，方便别人快速认识这个网站。</p>
-        </article>
-        <article class="intro-card">
-          <div class="num">02</div>
-          <h3>留言箱</h3>
-          <p>留言箱已经合并到主页大图下方，可以展开或收起，访客可以直接留下建议、想法或者反馈。</p>
-        </article>
-        <article class="intro-card">
-          <div class="num">03</div>
-          <h3>站点信息</h3>
-          <p>展示部署平台、图床、相关服务和网站运行信息，方便后续维护。</p>
-        </article>
-      </div>
-    </section>
-
     <section class="section two-col" id="aboutMe">
       <section class="profile-card">
         <img class="avatar-large" src="https://user14491.cn.imgto.link/public/20260619/50674c2c-6018-44b8-94d8-22f28f5fdd0a.avif" alt="Eason头像" />
@@ -132,7 +108,7 @@
         <h2>本站信息</h2>
         <p>主题为 <strong>kipfel、星空</strong></p>
         <p>部署平台为 <a class="site-info-inline-link" href="https://render.com" target="_blank" rel="noopener noreferrer"><strong>Render</strong></a></p>
-        <p>页面定位为 <strong>个人网站介绍页</strong></p>
+        <p>图床为 <strong>GitHub + jsDelivr</strong>（加载可能会比较慢）</p>
         <div class="site-info-plain-list">
           <p><span>主页大图作者 / 作者主页：</span><a href="https://x.com/neko_kakera?s=21" target="_blank" rel="noopener noreferrer">ねこかけ / X</a></p>
           <p><span>留言箱评论系统：</span><a href="https://waline.js.org" target="_blank" rel="noopener noreferrer">Waline 官网</a><span class="site-info-sep"> / </span><a href="https://github.com/walinejs/waline" target="_blank" rel="noopener noreferrer">GitHub</a></p>
@@ -170,35 +146,14 @@
   <div class="modal" id="paletteModal" aria-hidden="true">
     <div class="modal-card palette-modal-card" role="dialog" aria-modal="true">
       <button class="modal-close" type="button" data-close-modal aria-label="关闭">×</button>
-      <div class="palette-head">
-        <h2>个性化调色板</h2>
-        <button class="palette-reset" id="paletteResetBtn" type="button">重置</button>
-      </div>
-      <div class="palette-section">
-        <div class="palette-section-title"><span>主题色相</span><b id="hueValue">210</b></div>
-        <input class="hue-slider" id="hueSlider" type="range" min="0" max="360" value="210" />
-      </div>
-      <div class="palette-section">
-        <div class="palette-section-title"><span>背景模式</span></div>
-        <div class="preset-grid">
-          <button class="preset-btn active" type="button" data-bg-mode="default">雾蓝默认</button>
-          <button class="preset-btn" type="button" data-bg-mode="night">深夜星空</button>
-        </div>
-      </div>
-      <div class="palette-section">
-        <div class="palette-section-title"><span>壁纸设置</span></div>
-        <div class="toggle-grid">
-          <label class="toggle-item"><span><strong>首页壁纸标题</strong><small>控制首页标题和文案显示</small></span><input id="toggleHeroText" type="checkbox" checked /></label>
-          <label class="toggle-item"><span><strong>背景星星</strong><small>控制背景星点闪烁显示效果</small></span><input id="toggleStars" type="checkbox" checked /></label>
-          <label class="toggle-item"><span><strong>流星动画</strong><small>控制背景随机流星划过效果</small></span><input id="toggleMeteor" type="checkbox" checked /></label>
-          <label class="toggle-item"><span><strong>雾光渐变</strong><small>控制雾蓝柔光背景层显示</small></span><input id="toggleMist" type="checkbox" checked /></label>
-          <label class="toggle-item"><span><strong>分界特效</strong><small>控制首页与留言箱之间的动态分界线效果</small></span><input id="toggleDividerFx" type="checkbox" checked /></label>
-        </div>
-      </div>
+      <div class="palette-head"><h2>个性化调色板</h2><button class="palette-reset" id="paletteResetBtn" type="button">重置</button></div>
+      <div class="palette-section"><div class="palette-section-title"><span>主题色相</span><b id="hueValue">210</b></div><input class="hue-slider" id="hueSlider" type="range" min="0" max="360" value="210" /></div>
+      <div class="palette-section"><div class="palette-section-title"><span>背景模式</span></div><div class="preset-grid"><button class="preset-btn active" type="button" data-bg-mode="default">雾蓝默认</button><button class="preset-btn" type="button" data-bg-mode="night">深夜星空</button></div></div>
+      <div class="palette-section"><div class="palette-section-title"><span>壁纸设置</span></div><div class="toggle-grid"><label class="toggle-item"><span><strong>首页壁纸标题</strong><small>控制首页标题和文案显示</small></span><input id="toggleHeroText" type="checkbox" checked /></label><label class="toggle-item"><span><strong>背景星星</strong><small>控制背景星点闪烁显示效果</small></span><input id="toggleStars" type="checkbox" checked /></label><label class="toggle-item"><span><strong>流星动画</strong><small>控制背景随机流星划过效果</small></span><input id="toggleMeteor" type="checkbox" checked /></label><label class="toggle-item"><span><strong>雾光渐变</strong><small>控制雾蓝柔光背景层显示</small></span><input id="toggleMist" type="checkbox" checked /></label><label class="toggle-item"><span><strong>分界特效</strong><small>控制首页与正文之间的动态分界线效果</small></span><input id="toggleDividerFx" type="checkbox" checked /></label></div></div>
     </div>
   </div>
   <button class="backtop is-hidden" id="backTopBtn" type="button" aria-label="返回顶部">↑</button>
-  <script src="main.js?v=20260621-restore-about-palette"></script>
+  <script src="main.js?v=20260621-home-fix2"></script>
 
   <script type="module">
     const WALINE_SERVER_URL = 'https://example.easonzhan.xyz';
