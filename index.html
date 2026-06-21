@@ -9,7 +9,7 @@
   <link rel="apple-touch-icon" href="https://user14491.cn.imgto.link/public/20260619/50674c2c-6018-44b8-94d8-22f28f5fdd0a.avif" />
   <meta name="apple-mobile-web-app-title" content="Eason的小站" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@waline/client@v3/dist/waline.css" />
-  <link rel="stylesheet" href="style.css?v=20260621-avatar-about" />
+  <link rel="stylesheet" href="style.css?v=20260621-message-clean" />
   <link rel="alternate" type="application/rss+xml" title="Eason的小站 RSS" href="rss.xml" />
 </head>
 <body>
@@ -55,7 +55,7 @@
       </div>
     </section>
     <section class="section message-home-section" id="messageBox">
-      <details class="message-accordion">
+      <details class="message-accordion" open>
         <summary>
           <span>
             <strong>留言箱</strong>
@@ -64,22 +64,12 @@
           <b aria-hidden="true">⌄</b>
         </summary>
         <div class="message-accordion-body">
-          <section class="message-hero-panel">
-            <h2>留言箱</h2>
-            <p>欢迎在这里留下你的足迹，分享你的想法和建议。</p>
-            <ul class="message-rules">
-              <li>请保持友善和尊重，营造良好的交流氛围</li>
-              <li>欢迎分享你的想法，也可以提出对网站的建议</li>
-              <li>你的每一条留言都是对我最大的支持 ✨</li>
-            </ul>
-          </section>
-          <section class="message-comment-card">
+<section class="message-comment-card">
             <div class="message-comment-head">
               <h2>评论区</h2>
             </div>
             <div id="waline"></div>
-            <div class="waline-config-tip" id="walineConfigTip">Waline 服务端已配置为 <strong>example.easonzhan.xyz</strong>。</div>
-          </section>
+</section>
         </div>
       </details>
     </section>
@@ -114,15 +104,12 @@
   </main>
 
   <footer class="site-footer" id="data">
-    <div class="footer-grid">
-      <div class="footer-stat"><strong>介绍页</strong><span>网站类型</span></div>
-      <div class="footer-stat"><strong id="runFooter">0天 00:00:00</strong><span>运行时间</span></div>
+<div class="footer-stat"><strong id="runFooter">0天 00:00:00</strong><span>运行时间</span></div>
       <div class="footer-stat"><strong>2026-06-21</strong><span>最后整理</span></div>
     </div>
     <p class="footer-nav-links">© 2026 Eason. All Rights Reserved. / <a href="rss.xml" target="_blank" rel="noopener noreferrer">RSS</a> / <a href="sitemap.xml" target="_blank" rel="noopener noreferrer">Sitemap</a></p>
     <p class="icp-link-wrap"><a class="icp-link" href="https://icp.gov.moe/?keyword=20260809" target="_blank" rel="noopener noreferrer"><img class="icp-icon" src="images/moe-icp.png" alt="萌 ICP 图标" />萌ICP备20260809号</a></p>
-    <p class="upyun-link-wrap">本站由 <a class="upyun-link" href="https://www.upyun.com" target="_blank" rel="noopener noreferrer" aria-label="又拍云官网"><img class="upyun-logo" src="images/upyun-logo.png" alt="又拍云" /></a> 提供图片加速服务</p>
-  </footer>
+</footer>
 
   <div class="modal" id="paletteModal" aria-hidden="true">
     <div class="modal-card palette-modal-card" role="dialog" aria-modal="true">
@@ -134,15 +121,14 @@
     </div>
   </div>
   <button class="backtop is-hidden" id="backTopBtn" type="button" aria-label="返回顶部">↑</button>
-  <script src="main.js?v=20260621-avatar-about"></script>
+  <script src="main.js?v=20260621-message-clean"></script>
 
   <script type="module">
     const WALINE_SERVER_URL = 'https://example.easonzhan.xyz';
-    const tip = document.getElementById('walineConfigTip');
-    const walineBox = document.getElementById('waline');
+        const walineBox = document.getElementById('waline');
     const loadTimeout = (ms) => new Promise((_, reject) => setTimeout(() => reject(new Error('Waline load timeout')), ms));
     (async () => {
-      if (!WALINE_SERVER_URL) { tip?.classList.add('show'); return; }
+      if (!WALINE_SERVER_URL) return;
       try {
         const { init } = await Promise.race([import('https://cdn.jsdelivr.net/npm/@waline/client@v3/dist/waline.js'), loadTimeout(10000)]);
         init({ el: '#waline', serverURL: WALINE_SERVER_URL, path: '/', lang: 'zh-CN', dark: 'html[data-theme="dark"]', reaction: false, pageview: true, comment: true, search: false });

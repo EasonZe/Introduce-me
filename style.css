@@ -722,3 +722,27 @@ main#top {
     border-radius: 34px;
   }
 }
+
+
+/* 20260621 fix7: 删除底部统计、又拍云、留言说明卡、Waline提示后的间距 */
+.footer-grid,
+.upyun-link-wrap,
+.message-hero-panel,
+.waline-config-tip {
+  display: none !important;
+}
+.message-home-section {
+  padding-top: 34px;
+}
+.message-accordion-body {
+  padding: 0 18px 18px;
+}
+.message-comment-card {
+  margin-top: 0;
+}
+.message-comment-head h2 {
+  margin-bottom: 12px;
+}
+.site-footer {
+  margin-top: 34px !important;
+}

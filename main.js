@@ -156,12 +156,12 @@
         el.textContent = text.slice(0, charIndex);
         if (charIndex < text.length) {
           charIndex += 1;
-          setTimeout(tick, 135);
+          setTimeout(tick, 105);
           return;
         }
         if (holdTicks < 1) {
           holdTicks += 1;
-          setTimeout(tick, 1700);
+          setTimeout(tick, 1300);
           return;
         }
         deleting = true;
@@ -173,13 +173,13 @@
       el.textContent = text.slice(0, charIndex);
       if (charIndex > 0) {
         charIndex -= 1;
-        setTimeout(tick, 70);
+        setTimeout(tick, 55);
         return;
       }
 
       deleting = false;
       textIndex += 1;
-      setTimeout(tick, 520);
+      setTimeout(tick, 420);
     };
 
     tick();
