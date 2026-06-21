@@ -1150,3 +1150,20 @@ main#top {
     padding-top: 14px !important;
   }
 }
+
+
+/* 20260622 fix15: 删除顶部中间导航按钮，主页大图标题和打字机上移 */
+.nav-links {
+  display: none !important;
+}
+.site-nav {
+  justify-content: space-between !important;
+}
+.hero-text {
+  top: 44% !important;
+}
+@media (max-width: 680px) {
+  .hero-text {
+    top: 42% !important;
+  }
+}
