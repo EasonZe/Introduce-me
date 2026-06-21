@@ -9,7 +9,7 @@
   <link rel="apple-touch-icon" href="https://user14491.cn.imgto.link/public/20260619/50674c2c-6018-44b8-94d8-22f28f5fdd0a.avif" />
   <meta name="apple-mobile-web-app-title" content="Eason的小站" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@waline/client@v3/dist/waline.css" />
-  <link rel="stylesheet" href="style.css?v=20260621-mobile-github" />
+  <link rel="stylesheet" href="style.css?v=20260621-triangle-clean" />
   <link rel="alternate" type="application/rss+xml" title="Eason的小站 RSS" href="rss.xml" />
 </head>
 <body>
@@ -52,27 +52,18 @@
           <h1>Eason</h1>
           <div class="type-line"><span id="typeText"></span><span class="cursor">|</span></div>
         </div>
-        <button class="hero-scroll" type="button" data-scroll-target="#messageBox" aria-label="向下滚动">↓</button>
+        <button class="hero-scroll" type="button" data-scroll-target="#messageBox" aria-label="向下滚动">▾</button>
       </div>
     </section>
     <section class="section message-home-section" id="messageBox">
-      <details class="message-accordion" open>
-        <summary>
-          <span>
-            <strong>留言箱</strong>
-            <small class="message-toggle-hint">当前已展开，点击这里可以收起 / 再次打开</small>
-          </span>
-          <b aria-hidden="true">⌄</b>
-        </summary>
-        <div class="message-accordion-body">
+      <div class="message-direct-body">
 <section class="message-comment-card">
             <div class="message-comment-head">
               <h2>评论区</h2>
             </div>
             <div id="waline"></div>
 </section>
-        </div>
-      </details>
+      </div>
     </section>
 
     <section class="section about-layout" id="aboutMe">
@@ -107,8 +98,7 @@
 
   <footer class="site-footer" id="data">
 <div class="footer-stat"><strong id="runFooter">0天 00:00:00</strong><span>运行时间</span></div>
-      <div class="footer-stat"><strong>2026-06-21</strong><span>最后整理</span></div>
-    </div>
+</div>
     <p class="footer-nav-links">© 2026 Eason. All Rights Reserved. / <a href="rss.xml" target="_blank" rel="noopener noreferrer">RSS</a> / <a href="sitemap.xml" target="_blank" rel="noopener noreferrer">Sitemap</a></p>
     <p class="icp-link-wrap"><a class="icp-link" href="https://icp.gov.moe/?keyword=20260809" target="_blank" rel="noopener noreferrer"><img class="icp-icon" src="images/moe-icp.png" alt="萌 ICP 图标" />萌ICP备20260809号</a></p>
 </footer>
@@ -123,7 +113,7 @@
     </div>
   </div>
   <button class="backtop is-hidden" id="backTopBtn" type="button" aria-label="返回顶部">↑</button>
-  <script src="main.js?v=20260621-mobile-github"></script>
+  <script src="main.js?v=20260621-triangle-clean"></script>
 
   <script type="module">
     const WALINE_SERVER_URL = 'https://example.easonzhan.xyz';

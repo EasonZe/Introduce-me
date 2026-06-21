@@ -818,3 +818,33 @@ main#top {
     font-size: 50px !important;
   }
 }
+
+
+/* 20260621 fix9: 删除留言箱收拉提示、删除最后整理卡、首页箭头改纯三角 */
+.message-accordion,
+.message-accordion summary,
+.message-toggle-hint,
+.message-accordion-body {
+  all: unset;
+}
+.message-direct-body {
+  display: grid;
+  gap: 16px;
+}
+.footer-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+}
+.footer-stat:has(strong:first-child:nth-last-child(2)) {
+  display: block;
+}
+.hero-scroll {
+  font-family: Arial, Helvetica, sans-serif !important;
+  font-size: 58px !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+}
+@media (max-width: 680px) {
+  .hero-scroll {
+    font-size: 60px !important;
+  }
+}
