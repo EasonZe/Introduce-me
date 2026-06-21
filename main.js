@@ -267,6 +267,177 @@
     onScroll();
   }
 
+
+
+  function initPhysicsBlocks() {
+    const card = $('#physicsCard');
+    const stage = $('#physicsStage');
+    if (!card || !stage) return;
+
+    let started = false;
+    let engine = null;
+    let render = null;
+    let runner = null;
+    let resizeTimer = null;
+
+    function loadMatter() {
+      if (window.Matter) return Promise.resolve(window.Matter);
+      return new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/matter-js@0.20.0/build/matter.min.js';
+        script.async = true;
+        script.onload = () => window.Matter ? resolve(window.Matter) : reject(new Error('Matter.js 未加载成功'));
+        script.onerror = reject;
+        document.head.appendChild(script);
+      });
+    }
+
+    function makeBlocks(Matter, world, width) {
+      const { Bodies, Composite } = Matter;
+      const colors = [
+        '#9fb9c9', '#c9dbe6', '#f0b8bc', '#b7c9d8', '#d8e6ee',
+        '#adc4d2', '#e6c2c6', '#8fb0c5', '#d4e3ea', '#bdd3df',
+        '#a7bccb', '#e9d1d4', '#b6cad6', '#dceaf0', '#91aabd'
+      ];
+
+      const sizeBase = Math.max(34, Math.min(58, width / 14));
+      const blocks = Array.from({ length: 15 }, (_, index) => {
+        const size = sizeBase + (index % 3) * 6;
+        const x = 70 + (index % 5) * ((width - 140) / 4 || 70);
+        const y = -80 - Math.floor(index / 5) * 82;
+        return Bodies.rectangle(x, y, size, size, {
+          chamfer: { radius: 8 },
+          restitution: 0.46,
+          friction: 0.72,
+          frictionAir: 0.012,
+          density: 0.0028,
+          render: {
+            fillStyle: colors[index],
+            strokeStyle: 'rgba(255,255,255,.42)',
+            lineWidth: 2
+          }
+        });
+      });
+
+      Composite.add(world, blocks);
+    }
+
+    function startPhysics(Matter) {
+      if (started) return;
+      started = true;
+      stage.classList.add('is-ready');
+
+      const { Engine, Render, Runner, Bodies, Body, Composite, Mouse, MouseConstraint, Events } = Matter;
+      const rect = stage.getBoundingClientRect();
+      const width = Math.max(320, Math.floor(rect.width));
+      const height = Math.max(320, Math.floor(rect.height));
+
+      engine = Engine.create();
+      engine.gravity.y = 1;
+
+      render = Render.create({
+        element: stage,
+        engine,
+        options: {
+          width,
+          height,
+          wireframes: false,
+          background: 'transparent',
+          pixelRatio: Math.min(window.devicePixelRatio || 1, 2)
+        }
+      });
+
+      const wallThickness = 80;
+      const floor = Bodies.rectangle(width / 2, height + wallThickness / 2 - 8, width + wallThickness * 2, wallThickness, {
+        isStatic: true,
+        label: 'floor',
+        render: { fillStyle: 'rgba(255,255,255,.12)' }
+      });
+      const leftWall = Bodies.rectangle(-wallThickness / 2 + 4, height / 2, wallThickness, height * 2, {
+        isStatic: true,
+        label: 'leftWall',
+        render: { fillStyle: 'transparent' }
+      });
+      const rightWall = Bodies.rectangle(width + wallThickness / 2 - 4, height / 2, wallThickness, height * 2, {
+        isStatic: true,
+        label: 'rightWall',
+        render: { fillStyle: 'transparent' }
+      });
+
+      Composite.add(engine.world, [floor, leftWall, rightWall]);
+      makeBlocks(Matter, engine.world, width);
+
+      const mouse = Mouse.create(render.canvas);
+      const mouseConstraint = MouseConstraint.create(engine, {
+        mouse,
+        constraint: {
+          stiffness: 0.18,
+          damping: 0.08,
+          render: { visible: false }
+        }
+      });
+      Composite.add(engine.world, mouseConstraint);
+      render.mouse = mouse;
+
+      render.canvas.addEventListener('touchmove', (event) => {
+        if (mouseConstraint.body) event.preventDefault();
+      }, { passive: false });
+
+      Events.on(mouseConstraint, 'startdrag', () => {
+        render.canvas.style.cursor = 'grabbing';
+      });
+      Events.on(mouseConstraint, 'enddrag', () => {
+        render.canvas.style.cursor = 'grab';
+      });
+      render.canvas.style.cursor = 'grab';
+
+      Render.run(render);
+      runner = Runner.create();
+      Runner.run(runner, engine);
+
+      window.addEventListener('resize', () => {
+        if (!render || !engine) return;
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+          const nextRect = stage.getBoundingClientRect();
+          const nextW = Math.max(320, Math.floor(nextRect.width));
+          const nextH = Math.max(320, Math.floor(nextRect.height));
+          const sx = nextW / render.options.width;
+          const sy = nextH / render.options.height;
+
+          render.bounds.max.x = nextW;
+          render.bounds.max.y = nextH;
+          render.options.width = nextW;
+          render.options.height = nextH;
+          render.canvas.width = nextW * Math.min(window.devicePixelRatio || 1, 2);
+          render.canvas.height = nextH * Math.min(window.devicePixelRatio || 1, 2);
+          render.canvas.style.width = nextW + 'px';
+          render.canvas.style.height = nextH + 'px';
+
+          Body.setPosition(floor, { x: nextW / 2, y: nextH + wallThickness / 2 - 8 });
+          Body.setPosition(leftWall, { x: -wallThickness / 2 + 4, y: nextH / 2 });
+          Body.setPosition(rightWall, { x: nextW + wallThickness / 2 - 4, y: nextH / 2 });
+          Body.setVertices(floor, Bodies.rectangle(nextW / 2, nextH + wallThickness / 2 - 8, nextW + wallThickness * 2, wallThickness).vertices);
+          Body.setVertices(leftWall, Bodies.rectangle(-wallThickness / 2 + 4, nextH / 2, wallThickness, nextH * 2).vertices);
+          Body.setVertices(rightWall, Bodies.rectangle(nextW + wallThickness / 2 - 4, nextH / 2, wallThickness, nextH * 2).vertices);
+        }, 180);
+      }, { passive: true });
+    }
+
+    function showFallback() {
+      const loading = $('#physicsLoading');
+      if (loading) loading.textContent = '物理引擎加载失败，请刷新页面重试。';
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+      if (!entries.some((entry) => entry.isIntersecting)) return;
+      observer.disconnect();
+      loadMatter().then(startPhysics).catch(showFallback);
+    }, { threshold: 0.24 });
+
+    observer.observe(card);
+  }
+
   function initFooterRuntime() {
     const runFooter = $('#runFooter');
     if (!runFooter) return;
@@ -289,5 +460,6 @@
   initStars();
   initMeteor();
   initNavigation();
+  initPhysicsBlocks();
   initFooterRuntime();
 })();
