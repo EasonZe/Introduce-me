@@ -297,26 +297,27 @@
       const colors = [
         '#9fb9c9', '#c9dbe6', '#f0b8bc', '#b7c9d8', '#d8e6ee',
         '#adc4d2', '#e6c2c6', '#8fb0c5', '#d4e3ea', '#bdd3df',
-        '#a7bccb', '#e9d1d4', '#b6cad6', '#dceaf0', '#91aabd'
+        '#a7bccb', '#e9d1d4', '#b6cad6', '#dceaf0', '#91aabd',
+        '#c5d7e3', '#e8c7cb', '#a4bfce', '#d6e5ed', '#b3c7d5'
       ];
 
-      const blockSize = Math.max(42, Math.min(54, Math.floor(width / 15)));
-      const safePadding = Math.max(26, Math.floor(blockSize * 0.6));
-      const usableWidth = Math.max(blockSize * 6, width - safePadding * 2);
-      const columns = 15;
+      const totalBlocks = 20;
+      const blockSize = Math.max(40, Math.min(50, Math.floor(width / 17)));
+      const safePadding = Math.max(24, Math.floor(blockSize * 0.6));
+      const usableWidth = Math.max(blockSize * 8, width - safePadding * 2);
+      const columns = totalBlocks;
       const slotGap = usableWidth / Math.max(1, columns - 1);
       const slots = Array.from({ length: columns }, (_, i) => safePadding + i * slotGap);
 
-      // 打乱掉落顺序，让每个方块从不同横向位置掉下
       for (let i = slots.length - 1; i > 0; i -= 1) {
         const j = Math.floor(Math.random() * (i + 1));
         [slots[i], slots[j]] = [slots[j], slots[i]];
       }
 
-      const blocks = Array.from({ length: 15 }, (_, index) => {
+      const blocks = Array.from({ length: totalBlocks }, (_, index) => {
         const jitter = (Math.random() - 0.5) * Math.min(18, blockSize * 0.35);
         const x = Math.max(blockSize / 2 + 10, Math.min(width - blockSize / 2 - 10, slots[index] + jitter));
-        const y = -70 - index * (blockSize * 1.12);
+        const y = -70 - index * (blockSize * 1.1);
         return Bodies.rectangle(x, y, blockSize, blockSize, {
           chamfer: { radius: 8 },
           restitution: 0.48,
@@ -326,7 +327,7 @@
           density: 0.0028,
           angle: (Math.random() - 0.5) * 0.22,
           render: {
-            fillStyle: colors[index],
+            fillStyle: colors[index % colors.length],
             strokeStyle: 'rgba(255,255,255,.42)',
             lineWidth: 2
           }
@@ -404,6 +405,34 @@
         render.canvas.style.cursor = 'grab';
       });
       render.canvas.style.cursor = 'grab';
+
+      const clampBodyInsideStage = (body) => {
+        if (!body || body.isStatic) return;
+        const minX = 12;
+        const maxX = width - 12;
+        const minY = 12;
+        const maxY = height - 12;
+        const halfW = Math.max(10, (body.bounds.max.x - body.bounds.min.x) / 2);
+        const halfH = Math.max(10, (body.bounds.max.y - body.bounds.min.y) / 2);
+        const clampedX = Math.min(maxX - halfW, Math.max(minX + halfW, body.position.x));
+        const clampedY = Math.min(maxY - halfH, Math.max(minY + halfH, body.position.y));
+        if (clampedX !== body.position.x || clampedY !== body.position.y) {
+          Body.setPosition(body, { x: clampedX, y: clampedY });
+          Body.setVelocity(body, { x: body.velocity.x * 0.55, y: body.velocity.y * 0.55 });
+        }
+      };
+
+      Events.on(engine, 'beforeUpdate', () => {
+        const dragged = mouseConstraint.body;
+        if (dragged) clampBodyInsideStage(dragged);
+      });
+
+      Events.on(engine, 'afterUpdate', () => {
+        const bodies = Composite.allBodies(engine.world);
+        for (const body of bodies) {
+          if (!body.isStatic) clampBodyInsideStage(body);
+        }
+      });
 
       Render.run(render);
       runner = Runner.create();
