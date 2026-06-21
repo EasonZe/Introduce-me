@@ -540,3 +540,86 @@ body {
     font-size: clamp(16px, 5.5vw, 28px);
   }
 }
+
+
+/* 20260621 fix5: 真全屏首图、顶部栏到顶部自动收起、删除本站信息后排版修正 */
+.site-nav {
+  position: fixed !important;
+  top: 18px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  margin: 0 !important;
+  width: min(1120px, calc(100% - 28px)) !important;
+  z-index: 60 !important;
+}
+.site-nav.nav-collapsed-top {
+  transform: translate(-50%, calc(-100% - 34px)) !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+.brand img,
+.site-nav .brand img {
+  width: 36px !important;
+  height: 36px !important;
+  border-radius: 10px !important;
+}
+main#top {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+}
+.hero {
+  width: 100vw !important;
+  min-height: 100vh !important;
+  height: 100vh !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  display: block !important;
+}
+.hero-card {
+  width: 100vw !important;
+  height: 100vh !important;
+  min-height: 100vh !important;
+  border-radius: 0 !important;
+  border: 0 !important;
+  margin: 0 !important;
+}
+.hero-picture,
+.hero-img {
+  width: 100vw !important;
+  height: 100vh !important;
+}
+.hero-img {
+  object-fit: cover !important;
+}
+.hero-text {
+  top: 50% !important;
+}
+.section,
+.hero-divider {
+  width: min(1120px, calc(100% - 28px));
+  margin-left: auto;
+  margin-right: auto;
+}
+.hero-divider {
+  margin-top: 0 !important;
+}
+.two-col#aboutMe {
+  grid-template-columns: 1fr !important;
+}
+.profile-card {
+  max-width: 860px;
+  margin: 0 auto;
+}
+@media (max-width: 900px) {
+  .site-nav {
+    top: 10px !important;
+    width: min(100% - 18px, 1120px) !important;
+  }
+  .brand img,
+  .site-nav .brand img {
+    width: 34px !important;
+    height: 34px !important;
+    border-radius: 9px !important;
+  }
+}
