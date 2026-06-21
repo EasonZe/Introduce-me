@@ -9,7 +9,7 @@
   <link rel="apple-touch-icon" href="https://user14491.cn.imgto.link/public/20260619/50674c2c-6018-44b8-94d8-22f28f5fdd0a.avif" />
   <meta name="apple-mobile-web-app-title" content="Eason的小站" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@waline/client@v3/dist/waline.css" />
-  <link rel="stylesheet" href="style.css?v=20260621-wave-layers" />
+  <link rel="stylesheet" href="style.css?v=20260621-contact-waline" />
   <link rel="alternate" type="application/rss+xml" title="Eason的小站 RSS" href="rss.xml" />
 </head>
 <body>
@@ -55,14 +55,7 @@
         <button class="hero-scroll" type="button" data-scroll-target="#messageBox" aria-label="向下滚动">∨</button>
       </div>
     </section>
-    <div class="wave-separator" aria-hidden="true">
-      <span class="wave-layer wave-layer-1"></span>
-      <span class="wave-layer wave-layer-2"></span>
-      <span class="wave-layer wave-layer-3"></span>
-      <span class="wave-layer wave-layer-4"></span>
-    </div>
-
-    <section class="section message-home-section" id="messageBox">
+<section class="section message-home-section" id="messageBox">
       <div class="message-direct-body">
 <section class="message-comment-card">
             <div class="message-comment-head">
@@ -89,7 +82,6 @@
     <section class="section" id="contact">
       <div class="section-head">
         <h2>联系方式</h2>
-        <p>下面是我的常用联系入口。</p>
       </div>
       <div class="contact-list">
         <a class="contact-link messagebox-link" href="#messageBox"><span class="contact-main"><span class="contact-logo contact-message-logo" aria-hidden="true">✉</span><span><small>留言箱</small><strong>Eason的留言箱</strong></span></span><span>展开</span></a>
@@ -120,7 +112,7 @@
     </div>
   </div>
   <button class="backtop is-hidden" id="backTopBtn" type="button" aria-label="返回顶部">↑</button>
-  <script src="main.js?v=20260621-wave-layers"></script>
+  <script src="main.js?v=20260621-contact-waline"></script>
 
   <script type="module">
     const WALINE_SERVER_URL = 'https://example.easonzhan.xyz';
@@ -136,6 +128,35 @@
         console.warn('Waline init failed:', error);
       }
     })();
+
+    function markWalineWebsiteOptional() {
+      const root = document.getElementById('waline');
+      if (!root) return;
+      const selectors = [
+        'input[name="link"]',
+        'input[name="url"]',
+        'input[type="url"]',
+        '.wl-header input[placeholder*="网址"]',
+        '.wl-header input[placeholder*="http"]',
+        '.wl-header input[placeholder*="https"]'
+      ];
+      const input = selectors.map((selector) => root.querySelector(selector)).find(Boolean);
+      if (!input) return;
+      const old = input.getAttribute('placeholder') || '';
+      input.setAttribute('placeholder', old.includes('可选') ? old : '网址（可选）');
+      input.setAttribute('aria-label', '网址（可选）');
+    }
+    window.addEventListener('load', () => {
+      markWalineWebsiteOptional();
+      const walineRoot = document.getElementById('waline');
+      if (walineRoot) {
+        new MutationObserver(markWalineWebsiteOptional).observe(walineRoot, { childList: true, subtree: true, attributes: true });
+      }
+      setTimeout(markWalineWebsiteOptional, 800);
+      setTimeout(markWalineWebsiteOptional, 1800);
+      setTimeout(markWalineWebsiteOptional, 3500);
+    }, { once: true });
+
   </script>
 </body>
 </html>

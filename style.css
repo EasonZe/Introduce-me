@@ -1032,3 +1032,80 @@ main#top {
     padding-top: 72px !important;
   }
 }
+
+
+/* 20260621 fix12: 删除波浪分界线，恢复之前的 V 形箭头 */
+.wave-separator,
+.wave-layer,
+.wave-layer-1,
+.wave-layer-2,
+.wave-layer-3,
+.wave-layer-4 {
+  display: none !important;
+  animation: none !important;
+}
+.message-home-section::before {
+  display: none !important;
+  content: none !important;
+}
+.message-home-section {
+  margin-top: 0 !important;
+  padding-top: 34px !important;
+}
+
+/* 恢复 V 形箭头：两条白色圆角线组成 */
+.hero-scroll {
+  bottom: 72px !important;
+  width: 82px !important;
+  height: 82px !important;
+  font-size: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+  animation: easonArrowDown 1.45s ease-in-out infinite !important;
+}
+.hero-scroll::before,
+.hero-scroll::after {
+  content: "" !important;
+  position: absolute !important;
+  top: 50% !important;
+  width: 26px !important;
+  height: 7px !important;
+  background: #fff !important;
+  border-radius: 999px !important;
+  box-shadow: 0 2px 10px rgba(0,0,0,.18) !important;
+}
+.hero-scroll::before {
+  left: 50% !important;
+  transform: translate(-96%, -50%) rotate(45deg) !important;
+}
+.hero-scroll::after {
+  left: 50% !important;
+  transform: translate(-4%, -50%) rotate(-45deg) !important;
+}
+@media (max-width: 680px) {
+  .message-home-section {
+    margin-top: 0 !important;
+    padding-top: 28px !important;
+  }
+  .hero-scroll {
+    bottom: 82px !important;
+    width: 86px !important;
+    height: 86px !important;
+  }
+  .hero-scroll::before,
+  .hero-scroll::after {
+    width: 28px !important;
+    height: 7px !important;
+  }
+}
+
+
+/* 20260621 fix13: 联系方式说明删除后收紧间距 */
+#contact .section-head {
+  margin-bottom: 14px;
+}
+#contact .section-head h2 {
+  margin-bottom: 0;
+}
