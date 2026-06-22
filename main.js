@@ -297,23 +297,23 @@
     }
 
     const games = [
-      { name: "Terraria", src: 'images/game_full/terraria.jpg', ratio: 0.6667 },
-      { name: "Minecraft", src: 'images/game_full/minecraft.jpg', ratio: 0.6655 },
-      { name: "Stardew Valley", src: 'images/game_full/stardew_valley.jpg', ratio: 0.75 },
-      { name: "Outer Wilds", src: 'images/game_full/outer_wilds.jpg', ratio: 0.7767 },
-      { name: "VRChat", src: 'images/game_full/vrchat.jpg', ratio: 0.749 },
-      { name: "Rust", src: 'images/game_full/rust.jpg', ratio: 0.749 },
-      { name: "Don't Starve", src: 'images/game_full/dont_starve.jpg', ratio: 0.6667 },
-      { name: "Astroneer", src: 'images/game_full/astroneer.jpg', ratio: 0.6667 },
-      { name: "Slime Rancher", src: 'images/game_full/slime_rancher.jpg', ratio: 0.6655 },
-      { name: "Secret Laboratory", src: 'images/game_full/secret_laboratory.jpg', ratio: 0.7022 },
-      { name: "Half-Life", src: 'images/game_full/half_life.jpg', ratio: 0.6961 },
-      { name: "Half-Life 2", src: 'images/game_full/half_life_2.jpg', ratio: 0.727 },
-      { name: "Left 4 Dead 2", src: 'images/game_full/left4dead2.jpg', ratio: 0.6667 },
-      { name: "Undertale", src: 'images/game_full/undertale.jpg', ratio: 0.7636 },
-      { name: "Lethal Company", src: 'images/game_full/lethal_company.jpg', ratio: 0.6667 },
-      { name: "Garry's Mod", src: 'images/game_full/garrys_mod.jpg', ratio: 0.6655 },
-      { name: "Delta Force", src: 'images/game_full/delta_force.jpg', ratio: 0.7765 }
+      { name: 'Astroneer', src: 'images/game_full/astroneer.png', ratio: 0.6667 },
+      { name: 'Delta Force', src: 'images/game_full/delta_force.png', ratio: 0.7765 },
+      { name: "Don't Starve", src: 'images/game_full/dont_starve.png', ratio: 0.6667 },
+      { name: "Garry's Mod", src: 'images/game_full/garrys_mod.png', ratio: 0.6655 },
+      { name: 'Half-Life', src: 'images/game_full/half_life.png', ratio: 0.6961 },
+      { name: 'Half-Life 2', src: 'images/game_full/half_life_2.png', ratio: 0.727 },
+      { name: 'Left 4 Dead 2', src: 'images/game_full/left4dead2.png', ratio: 0.6667 },
+      { name: 'Lethal Company', src: 'images/game_full/lethal_company.png', ratio: 0.6667 },
+      { name: 'Minecraft', src: 'images/game_full/minecraft.png', ratio: 0.6655 },
+      { name: 'Outer Wilds', src: 'images/game_full/outer_wilds.png', ratio: 0.7767 },
+      { name: 'Rust', src: 'images/game_full/rust.png', ratio: 0.749 },
+      { name: 'Secret Laboratory', src: 'images/game_full/secret_laboratory.png', ratio: 0.7022 },
+      { name: 'Slime Rancher', src: 'images/game_full/slime_rancher.png', ratio: 0.6655 },
+      { name: 'Stardew Valley', src: 'images/game_full/stardew_valley.png', ratio: 0.75 },
+      { name: 'Terraria', src: 'images/game_full/terraria.png', ratio: 0.6667 },
+      { name: 'Undertale', src: 'images/game_full/undertale.png', ratio: 0.7636 },
+      { name: 'VRChat', src: 'images/game_full/vrchat.png', ratio: 0.749 }
     ];
 
     function createDomBlock(game, width, height) {
@@ -327,6 +327,16 @@
       img.src = game.src;
       img.alt = game.name;
       img.draggable = false;
+      img.loading = 'eager';
+      img.onerror = () => {
+        el.textContent = game.name;
+        el.style.display = 'grid';
+        el.style.placeItems = 'center';
+        el.style.textAlign = 'center';
+        el.style.fontSize = '11px';
+        el.style.fontWeight = '900';
+        el.style.color = '#fff';
+      };
       el.appendChild(img);
 
       stage.appendChild(el);
@@ -335,12 +345,12 @@
 
     function buildBlocks(Matter, world, width) {
       const { Bodies, Composite } = Matter;
-      const allGames = games.concat(games);
+      const allGames = games.slice();
       const total = allGames.length;
-      const maxLongSide = Math.max(42, Math.min(64, Math.floor(width / 14)));
-      const minShortSide = 24;
+      const maxLongSide = Math.max(48, Math.min(72, Math.floor(width / 12.5)));
+      const minShortSide = 28;
       const safePadding = 22;
-      const usableWidth = Math.max(maxLongSide * 10, width - safePadding * 2);
+      const usableWidth = Math.max(maxLongSide * 8.6, width - safePadding * 2);
       const slotGap = usableWidth / Math.max(1, total - 1);
       const slots = Array.from({ length: total }, (_, i) => safePadding + i * slotGap);
 
@@ -362,9 +372,9 @@
           blockW = Math.max(minShortSide, Math.round(maxLongSide * game.ratio));
         }
 
-        const jitter = (Math.random() - 0.5) * 6;
+        const jitter = (Math.random() - 0.5) * 8;
         const x = Math.max(blockW / 2 + 10, Math.min(width - blockW / 2 - 10, slots[index] + jitter));
-        const y = -50 - index * (maxLongSide * 0.68);
+        const y = -56 - index * (maxLongSide * 0.78);
 
         const body = Bodies.rectangle(x, y, blockW, blockH, {
           restitution: 0.48,

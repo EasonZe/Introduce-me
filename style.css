@@ -1335,3 +1335,24 @@ html:not([data-theme="dark"]) .physics-card {
   background: rgba(255,255,255,.04);
   pointer-events: none;
 }
+
+
+/* 20260622 fix20: 修复游戏图显示和拖动 */
+.physics-stage {
+  position: relative;
+}
+.physics-stage canvas {
+  opacity: 0 !important;
+  pointer-events: auto !important;
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 3 !important;
+}
+.game-physics-block {
+  z-index: 2 !important;
+  pointer-events: none !important;
+}
+.game-physics-block img {
+  object-fit: contain !important;
+  pointer-events: none !important;
+}
