@@ -377,9 +377,10 @@
           blockW = Math.max(minShortSide, Math.round(maxLongSide * game.ratio));
         }
 
-        const jitter = (Math.random() - 0.5) * 8;
-        const x = Math.max(blockW / 2 + 10, Math.min(width - blockW / 2 - 10, slots[index] + jitter));
-        const y = -52 - index * (maxLongSide * 0.66);
+        const spawnBand = Math.min(88, width * 0.14);
+        const xBase = safePadding + blockW / 2 + 6;
+        const x = Math.max(blockW / 2 + 10, Math.min(width - blockW / 2 - 10, xBase + Math.random() * spawnBand));
+        const y = -36 - index * Math.max(18, maxLongSide * 0.36);
 
         const body = Bodies.rectangle(x, y, blockW, blockH, {
           restitution: 0.48,
