@@ -22,7 +22,7 @@
       <img src="https://user14491.cn.imgto.link/public/20260619/4a758bc1381565c01ac36326783ccd7a.avif" alt="Eason头像" />
       <span>Eason</span>
     </a>
-    <a class="icon-btn quick-about-btn" id="quickAboutBtn" href="#aboutMe">关于我</a>
+    <a class="icon-btn quick-about-btn" id="quickAboutBtn" href="#contact">我的联系方式</a>
 <div class="nav-actions">
       <button class="icon-btn" id="paletteBtn" type="button" title="个性化调色板">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18h1.3a2.2 2.2 0 0 0 1.7-3.6l-.3-.4a1.8 1.8 0 0 1 1.4-3h1.5A4.4 4.4 0 0 0 22 9.6 6.6 6.6 0 0 0 15.4 3H12z"></path><circle cx="7.5" cy="10" r="1"></circle><circle cx="10.5" cy="7.5" r="1"></circle><circle cx="14.5" cy="7.5" r="1"></circle><circle cx="16.5" cy="11" r="1"></circle></svg>
@@ -50,14 +50,21 @@
         <button class="hero-scroll" type="button" data-scroll-target="#messageBox" aria-label="向下滚动"><svg class="hero-v-arrow" viewBox="0 0 64 64" aria-hidden="true"><path d="M18 24 L32 38 L46 24"></path></svg></button>
       </div>
     </section>
-<section class="section message-home-section" id="messageBox">
+<section class="section about-layout" id="aboutMe">
+      <section class="about-avatar-card">
+        <img class="about-avatar-img" src="https://user14491.cn.imgto.link/public/20260619/50674c2c-6018-44b8-94d8-22f28f5fdd0a.avif" alt="Eason头像" />
+        <h2>Eason</h2>
+        <p>嘿嘿</p>
+      </section>
+      <section class="profile-card about-text-card">
+        <h2>关于我</h2>
+        <p>你好，我是 Eason，08来自台湾桃园市，现居广东，在广东长大不是很会繁体字和台语。一个大陆高中都考不上的废物，在读职高。</p>
+        <button class="icon-btn about-contact-btn" type="button" data-scroll-target="#contact">我的联系方式</button>
+      </section>
+    </section>
+
+    <section class="section message-home-section" id="messageBox">
       <div class="message-direct-body">
-<section class="message-comment-card">
-            <div class="message-comment-head">
-              <h2>评论区</h2>
-            </div>
-            <div id="waline"></div>
-</section>
           <section class="physics-card" id="physicsCard">
             <div class="physics-head only-title">
               <h2>我喜欢的游戏</h2>
@@ -84,16 +91,12 @@
       </div>
     </section>
 
-    <section class="section about-layout" id="aboutMe">
-      <section class="about-avatar-card">
-        <img class="about-avatar-img" src="https://user14491.cn.imgto.link/public/20260619/50674c2c-6018-44b8-94d8-22f28f5fdd0a.avif" alt="Eason头像" />
-        <h2>Eason</h2>
-        <p>嘿嘿</p>
-      </section>
-      <section class="profile-card about-text-card">
-        <h2>关于我</h2>
-        <p>你好，我是 Eason，08来自台湾桃园市，现居广东，在广东长大不是很会繁体字和台语。一个大陆高中都考不上的废物，在读职高。</p>
-        <p>下面是我的联系方式</p>
+    <section class="section comment-section" id="commentArea">
+      <section class="message-comment-card">
+        <div class="message-comment-head">
+          <h2>评论区</h2>
+        </div>
+        <div id="waline"></div>
       </section>
     </section>
 

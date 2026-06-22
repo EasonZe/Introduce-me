@@ -1646,3 +1646,26 @@ html[data-theme="dark"] .backtop {
 ::selection {
   background: var(--accent-soft);
 }
+
+
+/* 20260622 layout update: about above games, contact quick button, comments above contact */
+.about-contact-btn {
+  margin-top: 18px;
+  padding: 12px 20px;
+  font-size: clamp(15px, 1.8vw, 18px);
+  font-weight: 700;
+  justify-self: start;
+  text-decoration: none;
+}
+.comment-section {
+  padding-top: 8px;
+}
+.comment-section .message-comment-card {
+  margin-top: 0;
+}
+@media (max-width: 900px) {
+  .about-contact-btn {
+    justify-self: stretch;
+    justify-content: center;
+  }
+}
