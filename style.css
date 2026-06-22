@@ -1530,3 +1530,119 @@ html[data-theme="dark"] .favorite-games-card {
   padding: 3px !important;
   object-fit: contain !important;
 }
+
+
+/* 20260622 palette-v2: 调色板影响更多组件 + 修复拉满回 0 后的视觉联动 */
+:root {
+  --accent: var(--mist);
+  --accent-2: var(--mist-2);
+  --accent-3: var(--pink);
+  --accent-soft: color-mix(in srgb, var(--mist) 16%, transparent);
+  --accent-faint: color-mix(in srgb, var(--mist) 9%, transparent);
+  --accent-border: var(--line);
+  --accent-glow: color-mix(in srgb, var(--mist) 24%, transparent);
+}
+.site-nav,
+.profile-card,
+.about-avatar-card,
+.message-comment-card,
+.physics-card,
+.favorite-games-card,
+.contact-link,
+.footer-stat,
+.modal-card,
+.physics-stage,
+.favorite-game-item {
+  border-color: var(--accent-border) !important;
+}
+.site-nav {
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--nav-bg) 82%, var(--accent-soft)), color-mix(in srgb, var(--nav-bg) 92%, transparent)) !important;
+  box-shadow: 0 18px 50px color-mix(in srgb, var(--accent-glow) 44%, rgba(0,0,0,.16)) !important;
+}
+.icon-btn,
+.quick-about-btn,
+.palette-reset,
+.preset-btn,
+.backtop {
+  border-color: var(--accent-border) !important;
+  background: color-mix(in srgb, var(--card-solid) 72%, var(--accent-soft)) !important;
+}
+html[data-theme="dark"] .icon-btn,
+html[data-theme="dark"] .quick-about-btn,
+html[data-theme="dark"] .palette-reset,
+html[data-theme="dark"] .preset-btn,
+html[data-theme="dark"] .backtop {
+  background: color-mix(in srgb, var(--card-solid) 70%, var(--accent-faint)) !important;
+}
+.icon-btn:hover,
+.quick-about-btn:hover,
+.contact-link:hover,
+.favorite-game-item:hover,
+.backtop:hover {
+  border-color: color-mix(in srgb, var(--accent) 70%, var(--line)) !important;
+  box-shadow: 0 14px 34px var(--accent-glow) !important;
+}
+.brand img,
+.about-avatar-img,
+.contact-logo {
+  border-color: var(--accent-border) !important;
+  box-shadow: 0 8px 22px color-mix(in srgb, var(--accent-glow) 55%, transparent) !important;
+}
+.section-head h2,
+.physics-head h2,
+.favorite-games-head h3,
+.profile-card h2,
+#contact h2 {
+  text-shadow: 0 10px 26px color-mix(in srgb, var(--accent-glow) 42%, transparent);
+}
+.profile-card,
+.about-avatar-card,
+.message-comment-card,
+.physics-card,
+.favorite-games-card,
+.footer-stat {
+  background:
+    radial-gradient(circle at 16% 14%, var(--accent-faint), transparent 36%),
+    var(--card) !important;
+}
+.contact-link {
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--card) 78%, var(--accent-faint)), color-mix(in srgb, var(--card) 94%, transparent)) !important;
+}
+.physics-stage {
+  background:
+    radial-gradient(circle at 22% 18%, var(--accent-soft), transparent 30%),
+    linear-gradient(180deg, color-mix(in srgb, var(--accent-faint) 55%, transparent), rgba(0,0,0,.06)) !important;
+}
+.game-physics-block {
+  border-color: color-mix(in srgb, var(--accent) 55%, rgba(255,255,255,.45)) !important;
+  box-shadow: 0 8px 22px color-mix(in srgb, var(--accent-glow) 45%, rgba(0,0,0,.22)) !important;
+}
+.favorite-game-item strong {
+  background: linear-gradient(180deg, rgba(0,0,0,0), color-mix(in srgb, #000 76%, var(--accent) 24%)) !important;
+}
+.palette-section,
+.toggle-item {
+  border-color: var(--accent-border) !important;
+  background: color-mix(in srgb, var(--card) 78%, var(--accent-faint)) !important;
+}
+.palette-section-title::before,
+.preset-btn.active {
+  background: linear-gradient(135deg, var(--accent), var(--accent-3)) !important;
+}
+.palette-section-title b {
+  background: var(--accent-soft) !important;
+  color: var(--text) !important;
+}
+.hue-slider::-webkit-slider-thumb {
+  border: 2px solid var(--accent) !important;
+  box-shadow: 0 4px 14px var(--accent-glow) !important;
+}
+.hue-slider::-moz-range-thumb {
+  border: 2px solid var(--accent) !important;
+  box-shadow: 0 4px 14px var(--accent-glow) !important;
+}
+::selection {
+  background: var(--accent-soft);
+}
