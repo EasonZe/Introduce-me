@@ -1437,3 +1437,18 @@ html:not([data-theme="dark"]) .favorite-games-card {
     padding: 24px 10px 10px;
   }
 }
+
+
+/* 20260622 fix: sequential hidden spawn + mobile scroll */
+.physics-stage {
+  touch-action: pan-y !important;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.physics-stage canvas {
+  touch-action: pan-y !important;
+}
+.game-physics-block {
+  opacity: 0;
+  transition: opacity .18s ease;
+}

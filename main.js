@@ -283,6 +283,8 @@
     let stageWidth = 0;
     let stageHeight = 0;
     let animationFrameId = 0;
+    let spawnQueue = [];
+    let spawnTimer = 0;
 
     function loadMatter() {
       if (window.Matter) return Promise.resolve(window.Matter);
@@ -327,6 +329,7 @@
       el.style.width = `${width}px`;
       el.style.height = `${height}px`;
       el.dataset.game = game.name;
+      el.style.opacity = '0';
 
       const img = document.createElement('img');
       img.src = game.src;
@@ -348,24 +351,18 @@
       return el;
     }
 
-    function buildBlocks(Matter, world, width) {
-      const { Bodies, Composite } = Matter;
+    function buildBlocks(Matter, width) {
+      const { Bodies } = Matter;
       const allGames = games.slice();
       const total = allGames.length;
       const maxLongSide = Math.max(40, Math.min(60, Math.floor(width / 13.8)));
       const minShortSide = 24;
       const safePadding = 22;
-      const usableWidth = Math.max(maxLongSide * 10.4, width - safePadding * 2);
-      const slotGap = usableWidth / Math.max(1, total - 1);
-      const slots = Array.from({ length: total }, (_, i) => safePadding + i * slotGap);
-
-      for (let i = slots.length - 1; i > 0; i -= 1) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [slots[i], slots[j]] = [slots[j], slots[i]];
-      }
+      const spawnBand = Math.min(88, width * 0.14);
 
       bodies = [];
       blockEls = [];
+      spawnQueue = [];
 
       allGames.forEach((game, index) => {
         let blockW, blockH;
@@ -377,10 +374,9 @@
           blockW = Math.max(minShortSide, Math.round(maxLongSide * game.ratio));
         }
 
-        const spawnBand = Math.min(88, width * 0.14);
         const xBase = safePadding + blockW / 2 + 6;
         const x = Math.max(blockW / 2 + 10, Math.min(width - blockW / 2 - 10, xBase + Math.random() * spawnBand));
-        const y = -36 - index * Math.max(18, maxLongSide * 0.36);
+        const y = -blockH - 30 - index * 6;
 
         const body = Bodies.rectangle(x, y, blockW, blockH, {
           restitution: 0.48,
@@ -395,11 +391,34 @@
         const el = createDomBlock(game, blockW, blockH);
         body.plugin = { domEl: el, width: blockW, height: blockH };
 
-        bodies.push(body);
+        spawnQueue.push(body);
         blockEls.push(el);
       });
+    }
 
-      Composite.add(world, bodies);
+    function startSpawnSequence(Matter, world) {
+      const { Composite } = Matter;
+      if (spawnTimer) {
+        window.clearTimeout(spawnTimer);
+        spawnTimer = 0;
+      }
+
+      const dropNext = () => {
+        const body = spawnQueue.shift();
+        if (!body) {
+          spawnTimer = 0;
+          return;
+        }
+        const el = body.plugin?.domEl;
+        if (el) el.style.opacity = '1';
+        bodies.push(body);
+        Composite.add(world, body);
+        spawnTimer = spawnQueue.length
+          ? window.setTimeout(dropNext, 150 + Math.random() * 130)
+          : 0;
+      };
+
+      spawnTimer = window.setTimeout(dropNext, 120);
     }
 
     function startPhysics(Matter) {
@@ -445,7 +464,7 @@
       });
 
       Composite.add(engine.world, [floor, leftWall, rightWall]);
-      buildBlocks(Matter, engine.world, stageWidth);
+      buildBlocks(Matter, stageWidth);
 
       const mouse = Mouse.create(render.canvas);
       const mouseConstraint = MouseConstraint.create(engine, {
@@ -462,6 +481,16 @@
       render.canvas.addEventListener('touchmove', (event) => {
         if (mouseConstraint.body) event.preventDefault();
       }, { passive: false });
+
+      Events.on(mouseConstraint, 'startdrag', () => {
+        render.canvas.style.touchAction = 'none';
+      });
+
+      Events.on(mouseConstraint, 'enddrag', () => {
+        render.canvas.style.touchAction = 'pan-y';
+      });
+
+      render.canvas.style.touchAction = 'pan-y';
 
       const clampBodyInsideStage = (body) => {
         if (!body || body.isStatic) return;
@@ -498,6 +527,7 @@
       runner = Runner.create();
       Runner.run(runner, engine);
       syncDomBlocks();
+      startSpawnSequence(Matter, engine.world);
 
       window.addEventListener('resize', () => {
         // 简单处理：刷新后重新计算最稳，避免旋转屏幕造成边界错位
