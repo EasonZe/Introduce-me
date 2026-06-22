@@ -285,6 +285,7 @@
     let animationFrameId = 0;
     let spawnQueue = [];
     let spawnTimer = 0;
+    let attachDomDrag = null;
 
     function loadMatter() {
       if (window.Matter) return Promise.resolve(window.Matter);
@@ -330,6 +331,7 @@
       el.style.height = `${height}px`;
       el.dataset.game = game.name;
       el.style.opacity = '0';
+      el.style.touchAction = 'none';
 
       const img = document.createElement('img');
       img.src = game.src;
@@ -411,6 +413,7 @@
         }
         const el = body.plugin?.domEl;
         if (el) el.style.opacity = '1';
+        if (typeof attachDomDrag === 'function') attachDomDrag(body);
         bodies.push(body);
         Composite.add(world, body);
         spawnTimer = spawnQueue.length
@@ -478,19 +481,79 @@
       Composite.add(engine.world, mouseConstraint);
       render.mouse = mouse;
 
-      render.canvas.addEventListener('touchmove', (event) => {
-        if (mouseConstraint.body) event.preventDefault();
-      }, { passive: false });
-
-      Events.on(mouseConstraint, 'startdrag', () => {
-        render.canvas.style.touchAction = 'none';
-      });
-
-      Events.on(mouseConstraint, 'enddrag', () => {
-        render.canvas.style.touchAction = 'pan-y';
-      });
-
+      render.canvas.style.pointerEvents = 'none';
       render.canvas.style.touchAction = 'pan-y';
+
+      let activeDragBody = null;
+      let activePointerId = null;
+      let lastDragPoint = null;
+
+      const getStagePoint = (event) => {
+        const box = stage.getBoundingClientRect();
+        return {
+          x: event.clientX - box.left,
+          y: event.clientY - box.top
+        };
+      };
+
+      const clampPointInsideStage = (body, point) => {
+        const halfW = Math.max(10, (body.bounds.max.x - body.bounds.min.x) / 2);
+        const halfH = Math.max(10, (body.bounds.max.y - body.bounds.min.y) / 2);
+        return {
+          x: Math.min(stageWidth - halfW - 8, Math.max(halfW + 8, point.x)),
+          y: Math.min(stageHeight - halfH - 8, Math.max(halfH + 8, point.y))
+        };
+      };
+
+      attachDomDrag = (body) => {
+        const el = body.plugin?.domEl;
+        if (!el || el.dataset.dragBound === '1') return;
+        el.dataset.dragBound = '1';
+
+        const endDrag = (event) => {
+          if (activeDragBody !== body) return;
+          activeDragBody = null;
+          activePointerId = null;
+          lastDragPoint = null;
+          try { el.releasePointerCapture?.(event.pointerId); } catch (_) {}
+        };
+
+        el.addEventListener('pointerdown', (event) => {
+          activeDragBody = body;
+          activePointerId = event.pointerId;
+          const point = clampPointInsideStage(body, getStagePoint(event));
+          lastDragPoint = point;
+          Body.setPosition(body, point);
+          Body.setVelocity(body, { x: 0, y: 0 });
+          el.setPointerCapture?.(event.pointerId);
+          event.preventDefault();
+          event.stopPropagation();
+        }, { passive: false });
+
+        el.addEventListener('pointermove', (event) => {
+          if (activeDragBody !== body || activePointerId !== event.pointerId) return;
+          const point = clampPointInsideStage(body, getStagePoint(event));
+          Body.setPosition(body, point);
+          if (lastDragPoint) {
+            Body.setVelocity(body, {
+              x: (point.x - lastDragPoint.x) * 0.35,
+              y: (point.y - lastDragPoint.y) * 0.35
+            });
+          }
+          lastDragPoint = point;
+          event.preventDefault();
+        }, { passive: false });
+
+        el.addEventListener('pointerup', endDrag);
+        el.addEventListener('pointercancel', endDrag);
+        el.addEventListener('lostpointercapture', () => {
+          if (activeDragBody === body) {
+            activeDragBody = null;
+            activePointerId = null;
+            lastDragPoint = null;
+          }
+        });
+      };
 
       const clampBodyInsideStage = (body) => {
         if (!body || body.isStatic) return;
@@ -505,6 +568,7 @@
       };
 
       Events.on(engine, 'beforeUpdate', () => {
+        if (activeDragBody) clampBodyInsideStage(activeDragBody);
         if (mouseConstraint.body) clampBodyInsideStage(mouseConstraint.body);
       });
 
