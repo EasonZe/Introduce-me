@@ -301,8 +301,10 @@
       { name: 'Delta Force', src: 'images/game_full/delta_force.png', ratio: 0.7765 },
       { name: "Don't Starve", src: 'images/game_full/dont_starve.png', ratio: 0.6667 },
       { name: "Garry's Mod", src: 'images/game_full/garrys_mod.png', ratio: 0.6655 },
+      { name: 'Goat Simulator', src: 'images/game_full/goat_simulator.png', ratio: 0.6708 },
       { name: 'Half-Life', src: 'images/game_full/half_life.png', ratio: 0.6961 },
       { name: 'Half-Life 2', src: 'images/game_full/half_life_2.png', ratio: 0.727 },
+      { name: 'Jalopy', src: 'images/game_full/jalopy.png', ratio: 0.6667 },
       { name: 'Left 4 Dead 2', src: 'images/game_full/left4dead2.png', ratio: 0.6667 },
       { name: 'Lethal Company', src: 'images/game_full/lethal_company.png', ratio: 0.6667 },
       { name: 'Minecraft', src: 'images/game_full/minecraft.png', ratio: 0.6655 },
@@ -312,8 +314,11 @@
       { name: 'Slime Rancher', src: 'images/game_full/slime_rancher.png', ratio: 0.6655 },
       { name: 'Stardew Valley', src: 'images/game_full/stardew_valley.png', ratio: 0.75 },
       { name: 'Terraria', src: 'images/game_full/terraria.png', ratio: 0.6667 },
+      { name: 'The Forest', src: 'images/game_full/the_forest.png', ratio: 0.6667 },
       { name: 'Undertale', src: 'images/game_full/undertale.png', ratio: 0.7636 },
-      { name: 'VRChat', src: 'images/game_full/vrchat.png', ratio: 0.749 }
+      { name: 'Unturned', src: 'images/game_full/unturned.png', ratio: 0.6699 },
+      { name: 'VRChat', src: 'images/game_full/vrchat.png', ratio: 0.749 },
+      { name: 'We Happy Few', src: 'images/game_full/we_happy_few.png', ratio: 0.7765 }
     ];
 
     function createDomBlock(game, width, height) {
@@ -347,10 +352,10 @@
       const { Bodies, Composite } = Matter;
       const allGames = games.slice();
       const total = allGames.length;
-      const maxLongSide = Math.max(48, Math.min(72, Math.floor(width / 12.5)));
-      const minShortSide = 28;
+      const maxLongSide = Math.max(40, Math.min(60, Math.floor(width / 13.8)));
+      const minShortSide = 24;
       const safePadding = 22;
-      const usableWidth = Math.max(maxLongSide * 8.6, width - safePadding * 2);
+      const usableWidth = Math.max(maxLongSide * 10.4, width - safePadding * 2);
       const slotGap = usableWidth / Math.max(1, total - 1);
       const slots = Array.from({ length: total }, (_, i) => safePadding + i * slotGap);
 
@@ -374,7 +379,7 @@
 
         const jitter = (Math.random() - 0.5) * 8;
         const x = Math.max(blockW / 2 + 10, Math.min(width - blockW / 2 - 10, slots[index] + jitter));
-        const y = -56 - index * (maxLongSide * 0.78);
+        const y = -52 - index * (maxLongSide * 0.66);
 
         const body = Bodies.rectangle(x, y, blockW, blockH, {
           restitution: 0.48,
