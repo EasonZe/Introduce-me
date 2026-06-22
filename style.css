@@ -1499,3 +1499,34 @@ html:not([data-theme="dark"]) .favorite-games-card {
     padding: 8px 12px;
   }
 }
+
+
+/* 20260622 fix: VRChat logo + 深色模式白雾修复 */
+html[data-theme="dark"] body {
+  background:
+    radial-gradient(circle at 12% 10%, rgba(65, 88, 105, .18), transparent 32%),
+    radial-gradient(circle at 86% 16%, rgba(60, 76, 92, .12), transparent 30%),
+    linear-gradient(135deg, #111b24 0%, #08121a 48%, #0b1720 100%) !important;
+}
+
+html[data-theme="dark"] .mist-bg {
+  background:
+    radial-gradient(circle at 18% 18%, rgba(120, 153, 174, .06), transparent 34%),
+    linear-gradient(135deg, rgba(255,255,255,.012), rgba(159,185,201,.018)) !important;
+  opacity: .45 !important;
+}
+
+html[data-theme="dark"] .contact-link,
+html[data-theme="dark"] .profile-card,
+html[data-theme="dark"] .about-avatar-card,
+html[data-theme="dark"] .physics-card,
+html[data-theme="dark"] .favorite-games-card {
+  background-color: rgba(18, 28, 36, .68) !important;
+}
+
+.contact-logo[alt="VRChat"] {
+  background: #fff !important;
+  border-radius: 8px !important;
+  padding: 3px !important;
+  object-fit: contain !important;
+}
