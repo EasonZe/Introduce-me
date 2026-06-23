@@ -380,8 +380,8 @@
       const { Bodies } = Matter;
       const allGames = games.slice();
       const total = allGames.length;
-      const maxLongSide = Math.max(40, Math.min(60, Math.floor(width / 13.8)));
-      const minShortSide = 24;
+      const maxLongSide = Math.max(46, Math.min(68, Math.floor(width / 12.4)));
+      const minShortSide = 28;
       const safePadding = 22;
       const spawnBand = Math.min(88, width * 0.14);
 
