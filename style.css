@@ -1669,3 +1669,18 @@ html[data-theme="dark"] .backtop {
     justify-content: center;
   }
 }
+
+
+/* 20260623 about visitor count */
+.visitor-thanks {
+  margin-top: 18px !important;
+  margin-bottom: 18px !important;
+  color: var(--muted);
+  font-weight: 800;
+  line-height: 1.9 !important;
+}
+.visitor-thanks span {
+  color: var(--text);
+  padding: 0 .18em;
+  font-weight: 900;
+}
