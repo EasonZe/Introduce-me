@@ -1684,3 +1684,22 @@ html[data-theme="dark"] .backtop {
   padding: 0 .18em;
   font-weight: 900;
 }
+
+
+/* 20260623 fix: contact button move, about card shrink, mobile one-line nav, external mobile hero */
+.about-avatar-card { min-height: 360px; padding: clamp(18px, 2.6vw, 28px); }
+.about-text-card { min-height: 360px; padding: clamp(20px, 3vw, 34px); display: flex; flex-direction: column; justify-content: center; }
+.about-bottom-row { margin-top: 12px; display: flex; align-items: flex-end; justify-content: space-between; gap: 18px; }
+.visitor-thanks { margin: 0 !important; flex: 1 1 auto; }
+.about-contact-btn { margin-top: 0; align-self: flex-end; justify-self: auto; flex: 0 0 auto; white-space: nowrap; }
+@media (max-width: 900px) { .about-avatar-card, .about-text-card { min-height: auto; } .about-bottom-row { flex-direction: column; align-items: stretch; } .about-contact-btn { width: 100%; justify-content: center; } }
+@media (max-width: 760px) {
+  .site-nav { display: grid !important; grid-template-columns: auto 1fr auto; align-items: center; gap: 10px; flex-wrap: nowrap !important; padding: 12px 14px !important; }
+  .site-nav .brand { min-width: 0; gap: 10px; }
+  .site-nav .brand span { font-size: 16px; white-space: nowrap; }
+  .quick-about-btn { margin-left: 0 !important; justify-self: center; padding: 10px 14px !important; min-height: 44px; font-size: 14px; white-space: nowrap; }
+  .nav-actions { margin-left: 0 !important; justify-self: end; gap: 8px; }
+  .nav-actions .icon-btn { width: 52px; min-width: 52px; height: 52px; padding: 0; justify-content: center; }
+  .nav-actions .icon-btn span { display: none; }
+}
+@media (max-width: 560px) { .site-nav { grid-template-columns: minmax(0,auto) 1fr auto; gap: 8px; } .site-nav .brand img { width: 46px; height: 46px; } .quick-about-btn { padding: 8px 12px !important; font-size: 13px; border-radius: 16px !important; } .nav-actions .icon-btn { width: 46px; min-width: 46px; height: 46px; border-radius: 16px !important; } }
