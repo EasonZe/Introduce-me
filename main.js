@@ -13,8 +13,14 @@
     ]
   };
 
+  function normalizeHue(value, fallback = 210) {
+    const num = Number(value);
+    if (!Number.isFinite(num)) return fallback;
+    return Math.min(360, Math.max(0, Math.round(num)));
+  }
+
   const customState = {
-    hue: Number(localStorage.getItem('custom-hue') || 210),
+    hue: normalizeHue(localStorage.getItem('custom-hue') ?? 210),
     bgMode: localStorage.getItem('custom-bg-mode') || 'default',
     showHeroText: localStorage.getItem('custom-show-hero-text') !== '0',
     showStars: localStorage.getItem('custom-show-stars') !== '0',
@@ -38,16 +44,28 @@
   }
 
   function applyAccentHue(hueValue) {
-    const hue = ((Number(hueValue) % 360) + 360) % 360;
+    const displayHue = normalizeHue(hueValue, customState.hue || 210);
+    const cssHue = displayHue === 360 ? 0 : displayHue;
     const dark = currentTheme() === 'dark';
-    root.style.setProperty('--mist', dark ? `hsl(${hue} 42% 66%)` : `hsl(${hue} 42% 74%)`);
-    root.style.setProperty('--mist-2', dark ? `hsl(${(hue + 14) % 360} 25% 38%)` : `hsl(${(hue + 12) % 360} 42% 84%)`);
-    root.style.setProperty('--mist-3', dark ? `hsl(${(hue + 8) % 360} 32% 12%)` : `hsl(${(hue + 8) % 360} 48% 96%)`);
-    root.style.setProperty('--pink', dark ? `hsl(${(hue + 34) % 360} 46% 72%)` : `hsl(${(hue + 34) % 360} 52% 78%)`);
-    root.style.setProperty('--line', dark ? `hsla(${hue} 28% 82% / .14)` : `hsla(${hue} 24% 46% / .22)`);
-    $('#hueValue') && ($('#hueValue').textContent = hue);
-    $('#hueSlider') && ($('#hueSlider').value = hue);
-    localStorage.setItem('custom-hue', String(hue));
+    customState.hue = displayHue;
+
+    root.style.setProperty('--mist', dark ? `hsl(${cssHue} 46% 66%)` : `hsl(${cssHue} 44% 74%)`);
+    root.style.setProperty('--mist-2', dark ? `hsl(${(cssHue + 14) % 360} 28% 38%)` : `hsl(${(cssHue + 12) % 360} 44% 84%)`);
+    root.style.setProperty('--mist-3', dark ? `hsl(${(cssHue + 8) % 360} 34% 12%)` : `hsl(${(cssHue + 8) % 360} 50% 96%)`);
+    root.style.setProperty('--pink', dark ? `hsl(${(cssHue + 34) % 360} 48% 72%)` : `hsl(${(cssHue + 34) % 360} 54% 78%)`);
+    root.style.setProperty('--accent', dark ? `hsl(${cssHue} 72% 70%)` : `hsl(${cssHue} 62% 56%)`);
+    root.style.setProperty('--accent-2', dark ? `hsl(${(cssHue + 24) % 360} 68% 66%)` : `hsl(${(cssHue + 24) % 360} 68% 62%)`);
+    root.style.setProperty('--accent-3', dark ? `hsl(${(cssHue + 44) % 360} 58% 72%)` : `hsl(${(cssHue + 44) % 360} 64% 70%)`);
+    root.style.setProperty('--accent-soft', dark ? `hsla(${cssHue} 64% 68% / .18)` : `hsla(${cssHue} 66% 58% / .16)`);
+    root.style.setProperty('--accent-faint', dark ? `hsla(${cssHue} 70% 72% / .08)` : `hsla(${cssHue} 72% 60% / .10)`);
+    root.style.setProperty('--accent-border', dark ? `hsla(${cssHue} 48% 78% / .26)` : `hsla(${cssHue} 48% 44% / .28)`);
+    root.style.setProperty('--accent-glow', dark ? `hsla(${cssHue} 76% 68% / .28)` : `hsla(${cssHue} 72% 58% / .22)`);
+    root.style.setProperty('--line', dark ? `hsla(${cssHue} 32% 82% / .16)` : `hsla(${cssHue} 28% 46% / .24)`);
+    root.style.setProperty('--shadow', dark ? `0 18px 55px hsla(${cssHue} 60% 5% / .38)` : `0 18px 50px hsla(${cssHue} 35% 45% / .18)`);
+
+    $('#hueValue') && ($('#hueValue').textContent = displayHue);
+    $('#hueSlider') && ($('#hueSlider').value = displayHue);
+    localStorage.setItem('custom-hue', String(displayHue));
   }
 
   function applyBackgroundMode(mode) {
@@ -147,42 +165,46 @@
     let textIndex = 0;
     let charIndex = 0;
     let deleting = false;
-    let holdTicks = 0;
+
+    const TYPE_BASE = 82;
+    const DELETE_BASE = 42;
+    const HOLD_AFTER_TYPE = 1550;
+    const HOLD_AFTER_DELETE = 460;
+
+    const nextDelay = (text, typedChar = '') => {
+      if (deleting) return DELETE_BASE + Math.random() * 18;
+      if ('，。！？、'.includes(typedChar)) return TYPE_BASE + 140;
+      return TYPE_BASE + Math.random() * 26;
+    };
 
     const tick = () => {
       const text = CONFIG.typingTexts[textIndex % CONFIG.typingTexts.length];
 
       if (!deleting) {
+        charIndex = Math.min(text.length, charIndex + 1);
         el.textContent = text.slice(0, charIndex);
         if (charIndex < text.length) {
-          charIndex += 1;
-          setTimeout(tick, 105);
-          return;
-        }
-        if (holdTicks < 1) {
-          holdTicks += 1;
-          setTimeout(tick, 1300);
+          setTimeout(tick, nextDelay(text, text[charIndex - 1]));
           return;
         }
         deleting = true;
-        holdTicks = 0;
-        setTimeout(tick, 650);
+        setTimeout(tick, HOLD_AFTER_TYPE);
         return;
       }
 
+      charIndex = Math.max(0, charIndex - 1);
       el.textContent = text.slice(0, charIndex);
       if (charIndex > 0) {
-        charIndex -= 1;
-        setTimeout(tick, 55);
+        setTimeout(tick, nextDelay(text));
         return;
       }
 
       deleting = false;
       textIndex += 1;
-      setTimeout(tick, 420);
+      setTimeout(tick, HOLD_AFTER_DELETE);
     };
 
-    tick();
+    setTimeout(tick, 260);
   }
 
   function initStars() {
@@ -316,8 +338,9 @@
       { name: 'Secret Laboratory', src: 'images/game_full/secret_laboratory.png', ratio: 0.7022 },
       { name: 'Slime Rancher', src: 'images/game_full/slime_rancher.png', ratio: 0.6655 },
       { name: 'Stardew Valley', src: 'images/game_full/stardew_valley.png', ratio: 0.75 },
-      { name: 'Terraria', src: 'images/game_full/terraria.png', ratio: 0.6667 },
+      { name: 'Team Fortress 2', src: 'images/game_full/team_fortress_2.jpg', ratio: 0.6655 },
       { name: 'The Forest', src: 'images/game_full/the_forest.png', ratio: 0.6667 },
+      { name: 'R.E.P.O.', src: 'images/game_full/repo.jpg', ratio: 0.6786 },
       { name: 'Undertale', src: 'images/game_full/undertale.png', ratio: 0.7636 },
       { name: 'Unturned', src: 'images/game_full/unturned.png', ratio: 0.6699 },
       { name: 'VRChat', src: 'images/game_full/vrchat.png', ratio: 0.749 },
