@@ -754,8 +754,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const renderList = () => {
     list.innerHTML = songs.map((song, index) => `
       <button type="button" class="${index === current ? 'is-active' : ''}" data-index="${index}">
-        <strong>${index + 1}. ${song.title}</strong>
-        <span>${song.artist}</span>
+        <img src="${song.cover}" alt="${song.title} 专辑封面" loading="lazy" />
+        <span class="music-list-text">
+          <strong>${index + 1}. ${song.title}</strong>
+          <span>${song.artist}</span>
+        </span>
       </button>
     `).join('');
   };
