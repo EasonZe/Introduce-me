@@ -274,6 +274,7 @@
     window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('resize', onScroll, { passive: true });
     backTop?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+    onScroll();
 
     $$('[data-scroll-target]').forEach((btn) => btn.addEventListener('click', () => {
       const target = $(btn.dataset.scrollTarget || '');
