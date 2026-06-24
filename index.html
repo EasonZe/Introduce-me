@@ -9,7 +9,7 @@
   <link rel="apple-touch-icon" href="https://user14491.cn.imgto.link/public/20260619/50674c2c-6018-44b8-94d8-22f28f5fdd0a.avif" />
   <meta name="apple-mobile-web-app-title" content="Eason的小站" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@waline/client@v3/dist/waline.css" />
-  <link rel="stylesheet" href="style.css?v=20260623-music-safe" />
+  <link rel="stylesheet" href="style.css?v=20260624-music-compact" />
   <link rel="alternate" type="application/rss+xml" title="Eason的小站 RSS" href="rss.xml" />
 </head>
 <body>
@@ -55,6 +55,7 @@
       <button type="button" id="musicPlay">播放</button>
       <button type="button" id="musicNext">下一首</button>
       <button type="button" id="musicMode">歌单循环</button>
+      <button type="button" id="musicListToggle">歌单列表</button>
     </div>
     <div class="music-list" id="musicList"></div>
     <audio id="musicAudio" preload="metadata"></audio>
@@ -65,7 +66,7 @@
     <section class="hero" id="home">
       <div class="hero-card">
         <picture class="hero-picture">
-          <source media="(max-width: 680px)" srcset="images/mobile-hero.jpeg" />
+          <source media="(max-width: 680px)" srcset="https://user14491.cn.imgto.link/public/20260623/img-4634.avif" />
           <source media="(min-width: 681px)" srcset="https://user14491.cn.imgto.link/public/20260619/img-4913-1.avif" />
           <img class="hero-img" src="https://user14491.cn.imgto.link/public/20260619/img-4913-1.avif" alt="Eason博客首页图" />
         </picture>
@@ -161,7 +162,7 @@
     </div>
   </div>
   <button class="backtop is-hidden" id="backTopBtn" type="button" aria-label="返回顶部">↑</button>
-  <script src="main.js?v=20260623-music-safe"></script>
+  <script src="main.js?v=20260624-music-compact"></script>
 
   <script type="module">
     const WALINE_SERVER_URL = 'https://example.easonzhan.xyz';

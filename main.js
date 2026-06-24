@@ -676,8 +676,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const playBtn = document.getElementById('musicPlay');
   const modeBtn = document.getElementById('musicMode');
   const list = document.getElementById('musicList');
+  const listToggle = document.getElementById('musicListToggle');
 
-  if (!panel || !toggleBtn || !audio || !cover || !title || !artist || !prevBtn || !nextBtn || !playBtn || !modeBtn || !list) return;
+  if (!panel || !toggleBtn || !audio || !cover || !title || !artist || !prevBtn || !nextBtn || !playBtn || !modeBtn || !list || !listToggle) return;
 
   const songs = [
     {
@@ -738,12 +739,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  toggleBtn.addEventListener('click', () => {
+  toggleBtn.addEventListener('click', (event) => {
+    event.preventDefault();
+    const keepY = window.scrollY || document.documentElement.scrollTop || 0;
     const open = panel.classList.toggle('is-open');
     panel.setAttribute('aria-hidden', open ? 'false' : 'true');
+    requestAnimationFrame(() => window.scrollTo(0, keepY));
   });
 
   playBtn.addEventListener('click', togglePlay);
+  listToggle.addEventListener('click', () => list.classList.toggle('is-open'));
   prevBtn.addEventListener('click', () => loadSong(current - 1, !audio.paused));
   nextBtn.addEventListener('click', () => loadSong(current + 1, !audio.paused));
 
