@@ -2252,204 +2252,50 @@ body {
 }
 
 
-/* 20260624 hotfix v4: 恢复深空星空背景、修复移动端物理卡片可视范围、进一步压缩音乐播放器 */
-html, body {
-  min-height: 100%;
+/* 20260624 safe palette fix from v3: 只修调色板，不改顶部栏布局 */
+.palette-modal,
+#paletteModal {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 100000 !important;
 }
-body {
-  position: relative;
+
+.palette-modal[aria-hidden="true"],
+#paletteModal[aria-hidden="true"] {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
 }
-html[data-theme="dark"] body {
-  background:
-    radial-gradient(circle at 18% 12%, rgba(95, 130, 160, .22), transparent 24%),
-    radial-gradient(circle at 82% 18%, rgba(115, 146, 189, .18), transparent 22%),
-    radial-gradient(circle at 50% 120%, rgba(25, 42, 60, .28), transparent 34%),
-    linear-gradient(180deg, #071018 0%, #08131d 42%, #091522 100%) !important;
-}
-#starsCanvas {
-  z-index: 0 !important;
+
+.palette-modal[aria-hidden="false"],
+#paletteModal[aria-hidden="false"] {
   opacity: 1 !important;
-}
-.mist-bg {
-  z-index: 1 !important;
-  background:
-    radial-gradient(circle at 20% 18%, rgba(159,185,201,.10), transparent 24%),
-    radial-gradient(circle at 78% 22%, rgba(147,174,206,.08), transparent 22%),
-    linear-gradient(135deg, rgba(255,255,255,.03), rgba(159,185,201,.04)) !important;
-}
-.meteor-layer {
-  z-index: 2 !important;
-}
-.site-nav,
-main,
-.site-footer,
-.backtop,
-.music-panel,
-.modal {
-  position: relative;
-  z-index: 5;
-}
-.music-panel,
-.backtop,
-.modal {
-  z-index: 9999;
+  visibility: visible !important;
+  pointer-events: auto !important;
 }
 
-.physics-stage {
-  height: clamp(400px, 54vh, 560px) !important;
-}
-@media (max-width: 760px) {
-  .physics-card {
-    padding: 14px !important;
-  }
-  .physics-stage {
-    height: 500px !important;
-    border-radius: 20px !important;
-  }
-}
-@media (max-width: 560px) {
-  .physics-stage {
-    height: 520px !important;
-  }
-}
-
-.music-panel {
-  top: 94px !important;
-  width: min(calc(100vw - 34px), 540px) !important;
-  padding: 10px 14px !important;
-  grid-template-columns: 58px minmax(0, 1fr) !important;
-  gap: 8px 12px !important;
-  border-radius: 20px !important;
-}
-.music-disc {
-  width: 54px !important;
-  height: 54px !important;
-  padding: 4px !important;
-}
-.music-info small {
-  font-size: 11px !important;
-}
-.music-info strong {
-  font-size: clamp(15px, 1.6vw, 20px) !important;
-  margin-top: 2px !important;
-}
-.music-info span {
-  font-size: 11px !important;
-  margin-top: 2px !important;
-}
-.music-controls {
-  gap: 6px !important;
-}
-.music-controls button {
-  min-height: 38px !important;
-  padding: 6px 10px !important;
-  font-size: 12px !important;
-  border-radius: 14px !important;
-}
-#musicPlay {
-  min-width: 86px !important;
-}
-.music-list {
-  width: min(calc(100% - 10px), 360px) !important;
-  max-height: 136px !important;
-}
-@media (max-width: 1024px) {
-  .music-panel {
-    width: min(calc(100vw - 28px), 500px) !important;
-  }
-}
-@media (max-width: 760px) {
-  .music-panel {
-    top: 82px !important;
-    width: min(calc(100vw - 16px), 390px) !important;
-    padding: 9px 10px !important;
-    grid-template-columns: 50px minmax(0, 1fr) !important;
-    gap: 8px !important;
-    border-radius: 18px !important;
-  }
-  .music-disc {
-    width: 46px !important;
-    height: 46px !important;
-    padding: 4px !important;
-  }
-  .music-info strong {
-    font-size: 17px !important;
-  }
-  .music-info span {
-    font-size: 10px !important;
-  }
-  .music-controls button {
-    min-height: 34px !important;
-    padding: 6px 8px !important;
-    font-size: 11px !important;
-  }
-  #musicPlay {
-    min-width: 76px !important;
-  }
-  .music-list {
-    width: calc(100% - 8px) !important;
-    max-height: 120px !important;
-  }
-}
-
-
-/* 20260624 palette hotfix: 修复调色板打不开 / 弹窗层级被 v4 覆盖 */
-.site-nav {
-  position: sticky !important;
-  top: 14px !important;
-  z-index: 3000 !important;
-}
-
-main,
-.site-footer {
+.palette-panel,
+.palette-modal-card,
+#palettePanel {
   position: relative !important;
-  z-index: 3 !important;
+  z-index: 100001 !important;
+  pointer-events: auto !important;
 }
 
+#paletteBtn,
+.palette-open-btn {
+  pointer-events: auto !important;
+}
+
+/* 星星/雾层只做背景，不挡按钮 */
 #starsCanvas,
 .mist-bg,
 .meteor-layer {
   pointer-events: none !important;
 }
 
-.modal {
-  position: fixed !important;
-  inset: 0 !important;
-  z-index: 100000 !important;
-  display: grid !important;
-  place-items: center !important;
-  padding: 18px !important;
-}
-
-.modal[aria-hidden="true"] {
-  opacity: 0 !important;
-  pointer-events: none !important;
-  visibility: hidden !important;
-}
-
-.modal[aria-hidden="false"] {
-  opacity: 1 !important;
-  pointer-events: auto !important;
-  visibility: visible !important;
-}
-
-.modal-card,
-.palette-modal-card {
-  position: relative !important;
-  z-index: 100001 !important;
-  max-height: min(86vh, 760px) !important;
-  overflow-y: auto !important;
-}
-
-#paletteBtn {
-  position: relative !important;
-  z-index: 3500 !important;
-  pointer-events: auto !important;
-}
-
-@media (max-width: 760px) {
-  .site-nav {
-    top: 8px !important;
-    z-index: 3000 !important;
-  }
+/* 返回顶部不要被卡片挡住 */
+.backtop,
+#backTopBtn {
+  z-index: 99999 !important;
 }
