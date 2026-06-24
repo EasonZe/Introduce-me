@@ -661,33 +661,6 @@
   initTopMusicPlayer();
   initFooterRuntime();
 })();
-
-
-
-  function initTopMusicPlayer() {
-    const audio = document.getElementById('topAudio');
-    const playBtn = document.getElementById('musicPlayBtn');
-    const playIcon = document.getElementById('musicPlayIcon');
-    const nextBtn = document.getElementById('musicNextBtn');
-    const cover = document.getElementById('musicCover');
-    const title = document.getElementById('musicTitle');
-    const artist = document.getElementById('musicArtist');
-
-    if (!audio || !playBtn || !playIcon || !nextBtn || !cover || !title || !artist) return;
-
-    const playlist = [
-      {
-        title: '天平',
-        artist: '银河系长 / Kumark / 漱一',
-        src: 'audio/tianping.mp3',
-        cover: 'images/music/tianping.jpg'
-      },
-      {
-        title: '一点',
-        artist: 'Muyoi / Pezzi',
-        src: 'audio/yidian.mp3',
-        cover: 'images/music/yidian.jpg'
-      }
     ];
 
     let index = 0;
@@ -727,6 +700,131 @@
     audio.addEventListener('ended', () => loadSong(index + 1, true));
     audio.addEventListener('pause', () => { playIcon.textContent = '▶'; });
     audio.addEventListener('play', () => { playIcon.textContent = 'Ⅱ'; });
+
+    loadSong(0, false);
+  }
+
+
+
+
+  function initTopMusicPlayer() {
+    const panel = document.getElementById('topMusicPanel');
+    const toggleBtn = document.getElementById('musicToggleBtn');
+    const audio = document.getElementById('topAudio');
+    const cover = document.getElementById('musicPanelCover');
+    const title = document.getElementById('musicPanelTitle');
+    const artist = document.getElementById('musicPanelArtist');
+    const prevBtn = document.getElementById('musicPrevBtn');
+    const nextBtn = document.getElementById('musicNextBtn');
+    const playBtn = document.getElementById('musicPlayPauseBtn');
+    const modeBtn = document.getElementById('musicModeBtn');
+    const playlistBox = document.getElementById('musicPlaylist');
+
+    if (!panel || !toggleBtn || !audio || !cover || !title || !artist || !prevBtn || !nextBtn || !playBtn || !modeBtn || !playlistBox) return;
+
+    const playlist = [
+      {
+        title: '天平',
+        artist: '银河系长 / Kumark / 漱一',
+        src: 'audio/tianping.mp3',
+        cover: 'images/music/tianping.jpg'
+      },
+      {
+        title: '一点',
+        artist: 'Muyoi / Pezzi',
+        src: 'audio/yidian.mp3',
+        cover: 'images/music/yidian.jpg'
+      }
+    ];
+
+    let index = 0;
+    let mode = 'list';
+
+    const renderPlaylist = () => {
+      playlistBox.innerHTML = playlist.map((song, i) => `
+        <button class="music-list-item ${i === index ? 'is-active' : ''}" type="button" data-music-index="${i}">
+          <strong>${i + 1}. ${song.title}</strong>
+          <span>${song.artist}</span>
+        </button>
+      `).join('');
+    };
+
+    const loadSong = (i, shouldPlay = false) => {
+      index = (i + playlist.length) % playlist.length;
+      const song = playlist[index];
+      audio.src = song.src;
+      cover.src = song.cover;
+      title.textContent = song.title;
+      artist.textContent = song.artist;
+      renderPlaylist();
+      playBtn.textContent = '播放';
+      panel.classList.remove('is-playing');
+
+      if (shouldPlay) {
+        audio.play().then(() => {
+          playBtn.textContent = '暂停';
+          panel.classList.add('is-playing');
+        }).catch(() => {
+          playBtn.textContent = '播放';
+          panel.classList.remove('is-playing');
+        });
+      }
+    };
+
+    const togglePlay = () => {
+      if (audio.paused) {
+        audio.play().then(() => {
+          playBtn.textContent = '暂停';
+          panel.classList.add('is-playing');
+        }).catch(() => {
+          playBtn.textContent = '播放';
+          panel.classList.remove('is-playing');
+        });
+      } else {
+        audio.pause();
+        playBtn.textContent = '播放';
+        panel.classList.remove('is-playing');
+      }
+    };
+
+    toggleBtn.addEventListener('click', () => {
+      const isOpen = panel.classList.toggle('is-open');
+      panel.setAttribute('aria-hidden', isOpen ? 'false' : 'true');
+    });
+
+    playBtn.addEventListener('click', togglePlay);
+    prevBtn.addEventListener('click', () => loadSong(index - 1, !audio.paused));
+    nextBtn.addEventListener('click', () => loadSong(index + 1, !audio.paused));
+
+    modeBtn.addEventListener('click', () => {
+      mode = mode === 'list' ? 'single' : 'list';
+      modeBtn.textContent = mode === 'list' ? '歌单循环' : '单曲循环';
+    });
+
+    playlistBox.addEventListener('click', (event) => {
+      const btn = event.target.closest('[data-music-index]');
+      if (!btn) return;
+      loadSong(Number(btn.dataset.musicIndex), true);
+    });
+
+    audio.addEventListener('ended', () => {
+      if (mode === 'single') {
+        audio.currentTime = 0;
+        audio.play();
+      } else {
+        loadSong(index + 1, true);
+      }
+    });
+
+    audio.addEventListener('play', () => {
+      playBtn.textContent = '暂停';
+      panel.classList.add('is-playing');
+    });
+
+    audio.addEventListener('pause', () => {
+      playBtn.textContent = '播放';
+      panel.classList.remove('is-playing');
+    });
 
     loadSong(0, false);
   }
