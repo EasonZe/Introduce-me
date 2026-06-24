@@ -383,9 +383,9 @@
       const total = allGames.length;
       const compactMobile = width < 460;
       const maxLongSide = compactMobile
-        ? Math.max(36, Math.min(48, Math.floor(width / 16.5)))
-        : Math.max(42, Math.min(62, Math.floor(width / 13.8)));
-      const minShortSide = compactMobile ? 24 : 28;
+        ? Math.max(30, Math.min(40, Math.floor(width / 19.5)))
+        : Math.max(40, Math.min(58, Math.floor(width / 14.6)));
+      const minShortSide = compactMobile ? 22 : 26;
       const safePadding = width < 700 ? (compactMobile ? 10 : 16) : 22;
       const spawnBand = Math.min(width < 700 ? (compactMobile ? 40 : 52) : 88, width * (width < 700 ? (compactMobile ? 0.06 : 0.08) : 0.14));
 
@@ -715,7 +715,7 @@ document.addEventListener('DOMContentLoaded', () => {
     next: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m13 6 8 6-8 6V6Zm-2 0H9v12h2V6Z"></path></svg>',
     list: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 6h14v2H5V6Zm0 5h14v2H5v-2Zm0 5h14v2H5v-2Z"></path></svg>',
     listMode: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 17H7l2.5 2.5-1.4 1.4L3.2 16l4.9-4.9 1.4 1.4L7 15h10V17Zm0-8H7V7h10l-2.5-2.5 1.4-1.4 4.9 4.9-4.9 4.9-1.4-1.4L17 9Z"></path></svg>',
-    singleMode: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 17H7l2.5 2.5-1.4 1.4L3.2 16l4.9-4.9 1.4 1.4L7 15h10V17Zm0-8H7V7h10l-2.5-2.5 1.4-1.4 4.9 4.9-4.9 4.9-1.4-1.4L17 9Z"></path><text x="12" y="14.6" text-anchor="middle" font-size="8.5" font-weight="900" fill="currentColor">1</text></svg>'
+    singleMode: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 17H7l2.5 2.5-1.4 1.4L3.2 16l4.9-4.9 1.4 1.4L7 15h10V17Zm0-8H7V7h10l-2.5-2.5 1.4-1.4 4.9 4.9-4.9 4.9-1.4-1.4L17 9Z"></path><text x="16.2" y="11.5" text-anchor="middle" font-size="7.5" font-family="Arial, sans-serif" fill="currentColor" stroke="none">1</text></svg>'
   };
 
   let current = 0;
