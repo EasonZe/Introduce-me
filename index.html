@@ -9,7 +9,7 @@
   <link rel="apple-touch-icon" href="https://user14491.cn.imgto.link/public/20260619/50674c2c-6018-44b8-94d8-22f28f5fdd0a.avif" />
   <meta name="apple-mobile-web-app-title" content="Eason的小站" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@waline/client@v3/dist/waline.css" />
-  <link rel="stylesheet" href="style.css?v=20260624-v3-palette-safe" />
+  <link rel="stylesheet" href="style.css?v=20260624-music-physics-stars-fix" />
   <link rel="alternate" type="application/rss+xml" title="Eason的小站 RSS" href="rss.xml" />
 </head>
 <body>
@@ -41,23 +41,36 @@
     </div>
   </header>
 
-  <section class="music-panel" id="musicPanel" aria-hidden="true">
-    <div class="music-disc" id="musicDisc">
-      <img id="musicCover" src="images/music/tianping.jpg" alt="专辑封面" />
+    <section class="music-panel" id="musicPanel" aria-hidden="true">
+    <button class="music-close" id="musicClose" type="button" aria-label="关闭音乐播放器">×</button>
+    <div class="music-shell">
+      <div class="music-cover-wrap">
+        <div class="music-disc" id="musicDisc">
+          <img id="musicCover" src="images/music/tianping.jpg" alt="专辑封面" />
+        </div>
+      </div>
+      <div class="music-main">
+        <div class="music-info">
+          <small>歌曲</small>
+          <strong id="musicTitle">天平</strong>
+          <span id="musicArtist">银河系长 / Kumark / 漱一</span>
+          <div class="music-time"><span id="musicCurrent">0:00</span> / <span id="musicDuration">0:00</span></div>
+        </div>
+        <input class="music-seek" id="musicSeek" type="range" min="0" max="100" value="0" step="0.1" aria-label="播放进度" />
+        <div class="music-controls">
+          <button type="button" id="musicMode"></button>
+          <button type="button" id="musicPrev"></button>
+          <button type="button" id="musicPlay"></button>
+          <button type="button" id="musicNext"></button>
+          <div class="music-list-wrap">
+            <button type="button" id="musicListToggle"></button>
+            <div class="music-list-popover" id="musicListPopover">
+              <div class="music-list" id="musicList"></div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="music-info">
-      <small>歌曲</small>
-      <strong id="musicTitle">天平</strong>
-      <span id="musicArtist">银河系长 / Kumark / 漱一</span>
-    </div>
-    <div class="music-controls">
-      <button type="button" id="musicPrev">上一首</button>
-      <button type="button" id="musicPlay">播放</button>
-      <button type="button" id="musicNext">下一首</button>
-      <button type="button" id="musicMode">歌单循环</button>
-      <button type="button" id="musicListToggle">歌单列表</button>
-    </div>
-    <div class="music-list" id="musicList"></div>
     <audio id="musicAudio" preload="metadata"></audio>
   </section>
 
@@ -162,7 +175,7 @@
     </div>
   </div>
   <button class="backtop is-hidden" id="backTopBtn" type="button" aria-label="返回顶部">↑</button>
-  <script src="main.js?v=20260624-v3-palette-safe"></script>
+  <script src="main.js?v=20260624-music-physics-stars-fix"></script>
 
   <script type="module">
     const WALINE_SERVER_URL = 'https://example.easonzhan.xyz';

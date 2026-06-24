@@ -380,10 +380,10 @@
       const { Bodies } = Matter;
       const allGames = games.slice();
       const total = allGames.length;
-      const maxLongSide = Math.max(46, Math.min(68, Math.floor(width / 12.4)));
+      const maxLongSide = Math.max(42, Math.min(62, Math.floor(width / 13.8)));
       const minShortSide = 28;
-      const safePadding = 22;
-      const spawnBand = Math.min(88, width * 0.14);
+      const safePadding = width < 700 ? 16 : 22;
+      const spawnBand = Math.min(width < 700 ? 52 : 88, width * (width < 700 ? 0.08 : 0.14));
 
       bodies = [];
       blockEls = [];
@@ -473,7 +473,8 @@
       });
 
       const wallThickness = 80;
-      const floor = Bodies.rectangle(stageWidth / 2, stageHeight + wallThickness / 2 - 8, stageWidth + wallThickness * 2, wallThickness, {
+      const floorInset = stageWidth < 700 ? 20 : 12;
+      const floor = Bodies.rectangle(stageWidth / 2, stageHeight + wallThickness / 2 - floorInset, stageWidth + wallThickness * 2, wallThickness, {
         isStatic: true,
         label: 'floor',
         render: { visible: false }
@@ -522,9 +523,10 @@
       const clampPointInsideStage = (body, point) => {
         const halfW = Math.max(10, (body.bounds.max.x - body.bounds.min.x) / 2);
         const halfH = Math.max(10, (body.bounds.max.y - body.bounds.min.y) / 2);
+        const inset = stageWidth < 700 ? 16 : 8;
         return {
-          x: Math.min(stageWidth - halfW - 8, Math.max(halfW + 8, point.x)),
-          y: Math.min(stageHeight - halfH - 8, Math.max(halfH + 8, point.y))
+          x: Math.min(stageWidth - halfW - inset, Math.max(halfW + inset, point.x)),
+          y: Math.min(stageHeight - halfH - inset, Math.max(halfH + inset, point.y))
         };
       };
 
@@ -582,8 +584,9 @@
         if (!body || body.isStatic) return;
         const halfW = Math.max(10, (body.bounds.max.x - body.bounds.min.x) / 2);
         const halfH = Math.max(10, (body.bounds.max.y - body.bounds.min.y) / 2);
-        const x = Math.min(stageWidth - halfW - 8, Math.max(halfW + 8, body.position.x));
-        const y = Math.min(stageHeight - halfH - 8, Math.max(halfH + 8, body.position.y));
+        const inset = stageWidth < 700 ? 16 : 8;
+        const x = Math.min(stageWidth - halfW - inset, Math.max(halfW + inset, body.position.x));
+        const y = Math.min(stageHeight - halfH - inset, Math.max(halfH + inset, body.position.y));
         if (x !== body.position.x || y !== body.position.y) {
           Body.setPosition(body, { x, y });
           Body.setVelocity(body, { x: body.velocity.x * 0.55, y: body.velocity.y * 0.55 });
@@ -663,22 +666,28 @@
 
 
 
-/* 20260624 final music player v3 */
+
+/* 20260624 music player v4 */
 document.addEventListener('DOMContentLoaded', () => {
   const panel = document.getElementById('musicPanel');
   const toggleBtn = document.getElementById('musicToggleBtn');
+  const closeBtn = document.getElementById('musicClose');
   const audio = document.getElementById('musicAudio');
   const cover = document.getElementById('musicCover');
   const title = document.getElementById('musicTitle');
   const artist = document.getElementById('musicArtist');
+  const currentEl = document.getElementById('musicCurrent');
+  const durationEl = document.getElementById('musicDuration');
+  const seek = document.getElementById('musicSeek');
   const prevBtn = document.getElementById('musicPrev');
   const nextBtn = document.getElementById('musicNext');
   const playBtn = document.getElementById('musicPlay');
   const modeBtn = document.getElementById('musicMode');
   const list = document.getElementById('musicList');
   const listToggle = document.getElementById('musicListToggle');
+  const listPopover = document.getElementById('musicListPopover');
 
-  if (!panel || !toggleBtn || !audio || !cover || !title || !artist || !prevBtn || !nextBtn || !playBtn || !modeBtn || !list || !listToggle) return;
+  if (!panel || !toggleBtn || !closeBtn || !audio || !cover || !title || !artist || !currentEl || !durationEl || !seek || !prevBtn || !nextBtn || !playBtn || !modeBtn || !list || !listToggle || !listPopover) return;
 
   const songs = [
     {
@@ -695,18 +704,37 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   ];
 
-  let current = 0;
-  let mode = 'list';
-
-  const setStaticButtonLabels = () => {
-    prevBtn.textContent = '◀ 上一首';
-    nextBtn.textContent = '▶ 下一首';
-    listToggle.textContent = '≡ 歌单列表';
-    modeBtn.textContent = mode === 'list' ? '↻ 歌单循环' : '↺ 单曲循环';
+  const icons = {
+    prev: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 6L3 12l8 6V6Zm2 0h2v12h-2V6Z"></path></svg>',
+    play: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6v12l10-6-10-6Z"></path></svg>',
+    pause: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h4v14H7V5Zm6 0h4v14h-4V5Z"></path></svg>',
+    next: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m13 6 8 6-8 6V6Zm-2 0H9v12h2V6Z"></path></svg>',
+    list: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 6h14v2H5V6Zm0 5h14v2H5v-2Zm0 5h14v2H5v-2Z"></path></svg>',
+    listMode: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 17H7l2.5 2.5-1.4 1.4L3.2 16l4.9-4.9 1.4 1.4L7 15h10V17Zm0-8H7V7h10l-2.5-2.5 1.4-1.4 4.9 4.9-4.9 4.9-1.4-1.4L17 9Z"></path></svg>',
+    singleMode: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 17H7l2.5 2.5-1.4 1.4L3.2 16l4.9-4.9 1.4 1.4L7 15h10V17Zm-1-7.7V5h2v7h-5v-2h3Zm1-2.3-2 1.2V6h2v1Z"></path></svg>'
   };
 
-  const setPlayButtonLabel = (playing) => {
-    playBtn.textContent = playing ? '❚❚ 暂停' : '▶ 播放';
+  let current = 0;
+  let mode = 'list';
+  let seeking = false;
+
+  const formatTime = (value) => {
+    const sec = Number.isFinite(value) ? Math.max(0, Math.floor(value)) : 0;
+    const m = Math.floor(sec / 60);
+    const s = sec % 60;
+    return `${m}:${String(s).padStart(2, '0')}`;
+  };
+
+  const setButtonLabels = () => {
+    prevBtn.innerHTML = `${icons.prev}<span>上一首</span>`;
+    nextBtn.innerHTML = `${icons.next}<span>下一首</span>`;
+    listToggle.innerHTML = `${icons.list}<span>歌单</span>`;
+    modeBtn.innerHTML = mode === 'list'
+      ? `${icons.listMode}<span>列表循环</span>`
+      : `${icons.singleMode}<span>单曲循环</span>`;
+    playBtn.innerHTML = audio.paused
+      ? `${icons.play}<span>播放</span>`
+      : `${icons.pause}<span>暂停</span>`;
   };
 
   const renderList = () => {
@@ -718,63 +746,68 @@ document.addEventListener('DOMContentLoaded', () => {
     `).join('');
   };
 
+  const updateTime = () => {
+    currentEl.textContent = formatTime(audio.currentTime || 0);
+    durationEl.textContent = formatTime(audio.duration || 0);
+    if (!seeking) {
+      const progress = audio.duration ? (audio.currentTime / audio.duration) * 100 : 0;
+      seek.value = String(progress);
+    }
+  };
+
+  const closeList = () => listPopover.classList.remove('is-open');
+  const openList = () => listPopover.classList.add('is-open');
+  const closePanel = () => {
+    panel.classList.remove('is-open');
+    panel.setAttribute('aria-hidden', 'true');
+    closeList();
+  };
+  const openPanel = () => {
+    panel.classList.add('is-open');
+    panel.setAttribute('aria-hidden', 'false');
+  };
+
   const loadSong = (index, autoPlay = false) => {
     current = (index + songs.length) % songs.length;
     const song = songs[current];
     audio.src = song.src;
+    audio.load();
     cover.src = song.cover;
     title.textContent = song.title;
     artist.textContent = song.artist;
-    panel.classList.remove('is-playing');
-    setPlayButtonLabel(false);
+    currentEl.textContent = '0:00';
+    durationEl.textContent = '0:00';
+    seek.value = '0';
     renderList();
-
+    setButtonLabels();
     if (autoPlay) {
-      audio.play().then(() => {
-        setPlayButtonLabel(true);
-        panel.classList.add('is-playing');
-      }).catch(() => {});
+      audio.play().catch(() => {});
     }
   };
 
   const togglePlay = () => {
-    if (audio.paused) {
-      audio.play().then(() => {
-        setPlayButtonLabel(true);
-        panel.classList.add('is-playing');
-      }).catch(() => {});
-    } else {
-      audio.pause();
-      setPlayButtonLabel(false);
-      panel.classList.remove('is-playing');
-    }
-  };
-
-  const closeList = () => list.classList.remove('is-open');
-  const toggleList = (event) => {
-    event?.stopPropagation?.();
-    list.classList.toggle('is-open');
+    if (audio.paused) audio.play().catch(() => {});
+    else audio.pause();
   };
 
   toggleBtn.addEventListener('click', (event) => {
     event.preventDefault();
-    const keepY = window.scrollY || document.documentElement.scrollTop || 0;
-    const open = panel.classList.toggle('is-open');
-    panel.setAttribute('aria-hidden', open ? 'false' : 'true');
-    if (!open) closeList();
-    requestAnimationFrame(() => window.scrollTo(0, keepY));
+    if (panel.classList.contains('is-open')) closePanel();
+    else openPanel();
   });
+  closeBtn.addEventListener('click', closePanel);
 
   playBtn.addEventListener('click', togglePlay);
-  listToggle.addEventListener('click', toggleList);
   prevBtn.addEventListener('click', () => loadSong(current - 1, !audio.paused));
   nextBtn.addEventListener('click', () => loadSong(current + 1, !audio.paused));
-
   modeBtn.addEventListener('click', () => {
     mode = mode === 'list' ? 'single' : 'list';
-    setStaticButtonLabels();
+    setButtonLabels();
   });
-
+  listToggle.addEventListener('click', (event) => {
+    event.stopPropagation();
+    listPopover.classList.toggle('is-open');
+  });
   list.addEventListener('click', (event) => {
     const btn = event.target.closest('[data-index]');
     if (!btn) return;
@@ -782,12 +815,31 @@ document.addEventListener('DOMContentLoaded', () => {
     closeList();
   });
 
-  document.addEventListener('click', (event) => {
-    if (!panel.classList.contains('is-open')) return;
-    if (event.target.closest('#musicPanel') || event.target.closest('#musicToggleBtn')) return;
-    closeList();
+  seek.addEventListener('pointerdown', () => { seeking = true; });
+  seek.addEventListener('input', () => {
+    if (!audio.duration) return;
+    const preview = (Number(seek.value) / 100) * audio.duration;
+    currentEl.textContent = formatTime(preview);
   });
+  const commitSeek = () => {
+    if (audio.duration) {
+      audio.currentTime = (Number(seek.value) / 100) * audio.duration;
+    }
+    seeking = false;
+  };
+  seek.addEventListener('change', commitSeek);
+  seek.addEventListener('pointerup', commitSeek);
 
+  audio.addEventListener('loadedmetadata', updateTime);
+  audio.addEventListener('timeupdate', updateTime);
+  audio.addEventListener('play', () => {
+    panel.classList.add('is-playing');
+    setButtonLabels();
+  });
+  audio.addEventListener('pause', () => {
+    panel.classList.remove('is-playing');
+    setButtonLabels();
+  });
   audio.addEventListener('ended', () => {
     if (mode === 'single') {
       audio.currentTime = 0;
@@ -797,17 +849,18 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  audio.addEventListener('play', () => {
-    setPlayButtonLabel(true);
-    panel.classList.add('is-playing');
+  document.addEventListener('click', (event) => {
+    if (!panel.classList.contains('is-open')) return;
+    if (event.target.closest('#musicListToggle') || event.target.closest('#musicListPopover')) return;
+    if (!event.target.closest('#musicPanel') && !event.target.closest('#musicToggleBtn')) closeList();
+  });
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+      closeList();
+      closePanel();
+    }
   });
 
-  audio.addEventListener('pause', () => {
-    setPlayButtonLabel(false);
-    panel.classList.remove('is-playing');
-  });
-
-  setStaticButtonLabels();
-  setPlayButtonLabel(false);
+  renderList();
   loadSong(0, false);
 });
