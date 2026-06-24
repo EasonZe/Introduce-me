@@ -886,3 +886,53 @@ document.addEventListener('DOMContentLoaded', () => {
   renderList();
   loadSong(0, false);
 });
+
+
+/* 20260625 v11: brand quick jump + hero scroll blur */
+document.addEventListener('DOMContentLoaded', () => {
+  const brandLink = document.querySelector('#siteNav .brand');
+  const aboutSection = document.querySelector('#aboutMe');
+  if (brandLink && aboutSection) {
+    brandLink.addEventListener('click', (event) => {
+      event.preventDefault();
+      aboutSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  }
+
+  const heroImg = document.querySelector('.hero-img');
+  const heroPicture = document.querySelector('.hero-picture');
+  const heroText = document.querySelector('.hero-text');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!heroImg || !aboutSection || reduceMotion) return;
+
+  let ticking = false;
+  const updateHeroScrollFx = () => {
+    const stopAt = Math.max(1, aboutSection.offsetTop - window.innerHeight * 0.6);
+    const progress = Math.min(1, Math.max(0, window.scrollY / stopAt));
+    const blur = progress * 9;
+    const imageShift = progress * 56;
+    const pictureShift = progress * 26;
+    const textShift = progress * 28;
+
+    heroImg.style.transform = `translate3d(0, ${imageShift}px, 0) scale(${1 + progress * 0.03})`;
+    heroImg.style.filter = `blur(${blur}px)`;
+    if (heroPicture) {
+      heroPicture.style.transform = `translate3d(0, ${pictureShift}px, 0)`;
+    }
+    if (heroText) {
+      heroText.style.transform = `translate3d(0, ${textShift}px, 0)`;
+      heroText.style.opacity = String(1 - progress * 0.24);
+    }
+    ticking = false;
+  };
+
+  const requestUpdate = () => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(updateHeroScrollFx);
+  };
+
+  updateHeroScrollFx();
+  window.addEventListener('scroll', requestUpdate, { passive: true });
+  window.addEventListener('resize', requestUpdate, { passive: true });
+});
