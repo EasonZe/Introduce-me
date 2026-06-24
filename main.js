@@ -730,15 +730,25 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   const setButtonLabels = () => {
-    prevBtn.innerHTML = `${icons.prev}<span>上一首</span>`;
-    nextBtn.innerHTML = `${icons.next}<span>下一首</span>`;
-    listToggle.innerHTML = `${icons.list}<span>歌单</span>`;
-    modeBtn.innerHTML = mode === 'list'
-      ? `${icons.listMode}<span>列表循环</span>`
-      : `${icons.singleMode}<span>单曲循环</span>`;
-    playBtn.innerHTML = audio.paused
-      ? `${icons.play}<span>播放</span>`
-      : `${icons.pause}<span>暂停</span>`;
+    prevBtn.innerHTML = icons.prev;
+    prevBtn.setAttribute('aria-label', '上一首');
+    prevBtn.title = '上一首';
+
+    nextBtn.innerHTML = icons.next;
+    nextBtn.setAttribute('aria-label', '下一首');
+    nextBtn.title = '下一首';
+
+    listToggle.innerHTML = icons.list;
+    listToggle.setAttribute('aria-label', '歌单');
+    listToggle.title = '歌单';
+
+    modeBtn.innerHTML = mode === 'list' ? icons.listMode : icons.singleMode;
+    modeBtn.setAttribute('aria-label', mode === 'list' ? '列表循环' : '单曲循环');
+    modeBtn.title = mode === 'list' ? '列表循环' : '单曲循环';
+
+    playBtn.innerHTML = audio.paused ? icons.play : icons.pause;
+    playBtn.setAttribute('aria-label', audio.paused ? '播放' : '暂停');
+    playBtn.title = audio.paused ? '播放' : '暂停';
   };
 
   const renderList = () => {
