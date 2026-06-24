@@ -9,7 +9,7 @@
   <link rel="apple-touch-icon" href="https://user14491.cn.imgto.link/public/20260619/50674c2c-6018-44b8-94d8-22f28f5fdd0a.avif" />
   <meta name="apple-mobile-web-app-title" content="Eason的小站" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@waline/client@v3/dist/waline.css" />
-  <link rel="stylesheet" href="style.css?v=20260624-current-patch-v8" />
+  <link rel="stylesheet" href="style.css?v=20260625-nav-desktop-v9" />
   <link rel="alternate" type="application/rss+xml" title="Eason的小站 RSS" href="rss.xml" />
 </head>
 <body>
@@ -22,8 +22,9 @@
       <img src="https://user14491.cn.imgto.link/public/20260619/4a758bc1381565c01ac36326783ccd7a.avif" alt="Eason头像" />
       <span>Eason</span>
     </a>
-    <a class="icon-btn quick-about-btn" id="quickAboutBtn" href="#contact">联系方式</a>
-<div class="nav-actions">
+    <div class="nav-right">
+      <a class="icon-btn quick-about-btn" id="quickAboutBtn" href="#contact">联系</a>
+      <div class="nav-actions">
 
     <button class="icon-btn music-toggle-btn" id="musicToggleBtn" type="button" aria-label="音乐">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18V5l11-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="17" cy="16" r="3"></circle></svg>
@@ -38,6 +39,7 @@
         <svg id="themeIcon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"></path></svg>
         <span id="themeText">主题</span>
       </button>
+      </div>
     </div>
   </header>
 
@@ -175,7 +177,7 @@
     </div>
   </div>
   <button class="backtop is-hidden" id="backTopBtn" type="button" aria-label="返回顶部">↑</button>
-  <script src="main.js?v=20260624-current-patch-v8"></script>
+  <script src="main.js?v=20260625-nav-desktop-v9"></script>
 
   <script type="module">
     const WALINE_SERVER_URL = 'https://example.easonzhan.xyz';
