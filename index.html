@@ -45,19 +45,23 @@
     <div class="music-disc" id="musicDisc">
       <img id="musicCover" src="images/music/tianping.jpg" alt="专辑封面" />
     </div>
-    <div class="music-info">
-      <small>歌曲</small>
-      <strong id="musicTitle">天平</strong>
-      <span id="musicArtist">银河系长 / Kumark / 漱一</span>
+    <div class="music-main">
+      <div class="music-info">
+        <small>歌曲</small>
+        <strong id="musicTitle">天平</strong>
+        <span id="musicArtist">银河系长 / Kumark / 漱一</span>
+      </div>
+      <div class="music-controls">
+        <button type="button" id="musicPrev"><span class="btn-icon">◀</span><span class="btn-label">上一首</span></button>
+        <button type="button" id="musicPlay"><span class="btn-icon">▷</span><span class="btn-label">播放</span></button>
+        <button type="button" id="musicNext"><span class="btn-icon">▶</span><span class="btn-label">下一首</span></button>
+        <button type="button" id="musicMode"><span class="btn-icon">↻</span><span class="btn-label">歌单循环</span></button>
+        <div class="music-list-wrap">
+          <button type="button" id="musicListToggle"><span class="btn-icon">☰</span><span class="btn-label">歌单列表</span></button>
+          <div class="music-list" id="musicList"></div>
+        </div>
+      </div>
     </div>
-    <div class="music-controls">
-      <button type="button" id="musicPrev">上一首</button>
-      <button type="button" id="musicPlay">播放</button>
-      <button type="button" id="musicNext">下一首</button>
-      <button type="button" id="musicMode">歌单循环</button>
-      <button type="button" id="musicListToggle">歌单列表</button>
-    </div>
-    <div class="music-list" id="musicList"></div>
     <audio id="musicAudio" preload="metadata"></audio>
   </section>
 

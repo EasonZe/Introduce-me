@@ -698,6 +698,18 @@ document.addEventListener('DOMContentLoaded', () => {
   let current = 0;
   let mode = 'list';
 
+  const setPlayButton = (playing) => {
+    playBtn.innerHTML = playing
+      ? '<span class="btn-icon">Ⅱ</span><span class="btn-label">暂停</span>'
+      : '<span class="btn-icon">▷</span><span class="btn-label">播放</span>';
+  };
+
+  const setModeButton = () => {
+    modeBtn.innerHTML = mode === 'list'
+      ? '<span class="btn-icon">↻</span><span class="btn-label">歌单循环</span>'
+      : '<span class="btn-icon">①</span><span class="btn-label">单曲循环</span>';
+  };
+
   const renderList = () => {
     list.innerHTML = songs.map((song, index) => `
       <button type="button" class="${index === current ? 'is-active' : ''}" data-index="${index}">
@@ -714,13 +726,13 @@ document.addEventListener('DOMContentLoaded', () => {
     cover.src = song.cover;
     title.textContent = song.title;
     artist.textContent = song.artist;
-    playBtn.textContent = '播放';
+    setPlayButton(false);
     panel.classList.remove('is-playing');
     renderList();
 
     if (autoPlay) {
       audio.play().then(() => {
-        playBtn.textContent = '暂停';
+        setPlayButton(true);
         panel.classList.add('is-playing');
       }).catch(() => {});
     }
@@ -729,12 +741,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const togglePlay = () => {
     if (audio.paused) {
       audio.play().then(() => {
-        playBtn.textContent = '暂停';
+        setPlayButton(true);
         panel.classList.add('is-playing');
       }).catch(() => {});
     } else {
       audio.pause();
-      playBtn.textContent = '播放';
+      setPlayButton(false);
       panel.classList.remove('is-playing');
     }
   };
@@ -748,13 +760,13 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   playBtn.addEventListener('click', togglePlay);
-  listToggle.addEventListener('click', () => list.classList.toggle('is-open'));
+  listToggle.addEventListener('click', (event) => { event.stopPropagation(); list.classList.toggle('is-open'); });
   prevBtn.addEventListener('click', () => loadSong(current - 1, !audio.paused));
   nextBtn.addEventListener('click', () => loadSong(current + 1, !audio.paused));
 
   modeBtn.addEventListener('click', () => {
     mode = mode === 'list' ? 'single' : 'list';
-    modeBtn.textContent = mode === 'list' ? '歌单循环' : '单曲循环';
+    setModeButton();
   });
 
   list.addEventListener('click', (event) => {
@@ -778,7 +790,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   audio.addEventListener('pause', () => {
-    playBtn.textContent = '播放';
+    setPlayButton(false);
     panel.classList.remove('is-playing');
   });
 
