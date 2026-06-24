@@ -1703,3 +1703,119 @@ html[data-theme="dark"] .backtop {
   .nav-actions .icon-btn span { display: none; }
 }
 @media (max-width: 560px) { .site-nav { grid-template-columns: minmax(0,auto) 1fr auto; gap: 8px; } .site-nav .brand img { width: 46px; height: 46px; } .quick-about-btn { padding: 8px 12px !important; font-size: 13px; border-radius: 16px !important; } .nav-actions .icon-btn { width: 46px; min-width: 46px; height: 46px; border-radius: 16px !important; } }
+
+
+/* 20260623 music player + backtop fix + mobile physics size */
+.site-nav {
+  overflow: visible !important;
+}
+.top-music-player {
+  min-width: 0;
+  max-width: 340px;
+  height: 48px;
+  display: grid;
+  grid-template-columns: 38px 38px minmax(0, 1fr) 30px;
+  align-items: center;
+  gap: 9px;
+  padding: 5px 9px;
+  border: 1px solid var(--accent-border, var(--line));
+  border-radius: 18px;
+  background: color-mix(in srgb, var(--card-solid) 74%, var(--accent-faint, transparent));
+  box-shadow: 0 12px 30px color-mix(in srgb, var(--accent-glow, rgba(0,0,0,.18)) 38%, transparent);
+  backdrop-filter: blur(14px);
+}
+.music-play-btn,
+.music-next-btn {
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--accent-border, var(--line));
+  border-radius: 13px;
+  color: var(--text);
+  background: color-mix(in srgb, var(--card) 82%, var(--accent-soft, transparent));
+  display: grid;
+  place-items: center;
+  font-weight: 900;
+  cursor: pointer;
+}
+.music-play-btn:hover,
+.music-next-btn:hover {
+  border-color: color-mix(in srgb, var(--accent) 70%, var(--line));
+  box-shadow: 0 10px 24px var(--accent-glow, rgba(0,0,0,.16));
+}
+.music-play-icon {
+  transform: translateX(1px);
+  font-size: 13px;
+}
+.music-cover {
+  width: 38px;
+  height: 38px;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 1px solid var(--accent-border, var(--line));
+  background: rgba(255,255,255,.12);
+}
+.music-meta {
+  min-width: 0;
+  line-height: 1.15;
+}
+.music-meta strong,
+.music-meta small {
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.music-meta strong {
+  font-size: 14px;
+  color: var(--text);
+}
+.music-meta small {
+  margin-top: 3px;
+  font-size: 11px;
+  color: var(--muted);
+}
+.music-next-btn {
+  font-size: 24px;
+  line-height: 1;
+}
+.backtop {
+  z-index: 99999 !important;
+  position: fixed !important;
+}
+
+@media (max-width: 680px) {
+  .physics-card {
+    padding-top: 16px !important;
+    padding-bottom: 16px !important;
+  }
+  .physics-head.only-title {
+    margin-bottom: 10px !important;
+  }
+  .physics-stage {
+    min-height: 260px !important;
+    height: 260px !important;
+  }
+}
+
+@media (max-width: 760px) {
+  .site-nav {
+    grid-template-columns: auto minmax(42px, 1fr) auto auto !important;
+  }
+  .top-music-player {
+    width: 48px;
+    max-width: 48px;
+    height: 48px;
+    padding: 5px;
+    grid-template-columns: 1fr;
+    justify-self: center;
+  }
+  .top-music-player .music-cover,
+  .top-music-player .music-meta,
+  .top-music-player .music-next-btn {
+    display: none !important;
+  }
+  .music-play-btn {
+    width: 36px;
+    height: 36px;
+  }
+}

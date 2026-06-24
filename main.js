@@ -658,5 +658,76 @@
   initMeteor();
   initNavigation();
   initPhysicsBlocks();
+  initTopMusicPlayer();
   initFooterRuntime();
 })();
+
+
+
+  function initTopMusicPlayer() {
+    const audio = document.getElementById('topAudio');
+    const playBtn = document.getElementById('musicPlayBtn');
+    const playIcon = document.getElementById('musicPlayIcon');
+    const nextBtn = document.getElementById('musicNextBtn');
+    const cover = document.getElementById('musicCover');
+    const title = document.getElementById('musicTitle');
+    const artist = document.getElementById('musicArtist');
+
+    if (!audio || !playBtn || !playIcon || !nextBtn || !cover || !title || !artist) return;
+
+    const playlist = [
+      {
+        title: '天平',
+        artist: '银河系长 / Kumark / 漱一',
+        src: 'audio/tianping.mp3',
+        cover: 'images/music/tianping.jpg'
+      },
+      {
+        title: '一点',
+        artist: 'Muyoi / Pezzi',
+        src: 'audio/yidian.mp3',
+        cover: 'images/music/yidian.jpg'
+      }
+    ];
+
+    let index = 0;
+
+    const loadSong = (i, shouldPlay = false) => {
+      index = (i + playlist.length) % playlist.length;
+      const item = playlist[index];
+      audio.src = item.src;
+      cover.src = item.cover;
+      title.textContent = item.title;
+      artist.textContent = item.artist;
+      playIcon.textContent = '▶';
+
+      if (shouldPlay) {
+        audio.play().then(() => {
+          playIcon.textContent = 'Ⅱ';
+        }).catch(() => {
+          playIcon.textContent = '▶';
+        });
+      }
+    };
+
+    playBtn.addEventListener('click', () => {
+      if (audio.paused) {
+        audio.play().then(() => {
+          playIcon.textContent = 'Ⅱ';
+        }).catch(() => {
+          playIcon.textContent = '▶';
+        });
+      } else {
+        audio.pause();
+        playIcon.textContent = '▶';
+      }
+    });
+
+    nextBtn.addEventListener('click', () => loadSong(index + 1, !audio.paused));
+    audio.addEventListener('ended', () => loadSong(index + 1, true));
+    audio.addEventListener('pause', () => { playIcon.textContent = '▶'; });
+    audio.addEventListener('play', () => { playIcon.textContent = 'Ⅱ'; });
+
+    loadSong(0, false);
+  }
+
