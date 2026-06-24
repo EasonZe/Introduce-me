@@ -381,10 +381,13 @@
       const { Bodies } = Matter;
       const allGames = games.slice();
       const total = allGames.length;
-      const maxLongSide = Math.max(42, Math.min(62, Math.floor(width / 13.8)));
-      const minShortSide = 28;
-      const safePadding = width < 700 ? 16 : 22;
-      const spawnBand = Math.min(width < 700 ? 52 : 88, width * (width < 700 ? 0.08 : 0.14));
+      const compactMobile = width < 460;
+      const maxLongSide = compactMobile
+        ? Math.max(36, Math.min(48, Math.floor(width / 16.5)))
+        : Math.max(42, Math.min(62, Math.floor(width / 13.8)));
+      const minShortSide = compactMobile ? 24 : 28;
+      const safePadding = width < 700 ? (compactMobile ? 10 : 16) : 22;
+      const spawnBand = Math.min(width < 700 ? (compactMobile ? 40 : 52) : 88, width * (width < 700 ? (compactMobile ? 0.06 : 0.08) : 0.14));
 
       bodies = [];
       blockEls = [];
@@ -748,10 +751,12 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   const updateTime = () => {
-    currentEl.textContent = formatTime(audio.currentTime || 0);
-    durationEl.textContent = formatTime(audio.duration || 0);
+    const currentTime = Number.isFinite(audio.currentTime) ? audio.currentTime : 0;
+    const duration = Number.isFinite(audio.duration) ? audio.duration : 0;
+    currentEl.textContent = formatTime(currentTime);
+    durationEl.textContent = formatTime(duration);
     if (!seeking) {
-      const progress = audio.duration ? (audio.currentTime / audio.duration) * 100 : 0;
+      const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
       seek.value = String(progress);
     }
   };
@@ -830,8 +835,11 @@ document.addEventListener('DOMContentLoaded', () => {
   };
   seek.addEventListener('change', commitSeek);
   seek.addEventListener('pointerup', commitSeek);
+  seek.addEventListener('touchend', commitSeek, { passive: true });
 
   audio.addEventListener('loadedmetadata', updateTime);
+  audio.addEventListener('durationchange', updateTime);
+  audio.addEventListener('canplay', updateTime);
   audio.addEventListener('timeupdate', updateTime);
   audio.addEventListener('play', () => {
     panel.classList.add('is-playing');
