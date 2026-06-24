@@ -383,11 +383,11 @@
       const total = allGames.length;
       const compactMobile = width < 460;
       const maxLongSide = compactMobile
-        ? Math.max(30, Math.min(40, Math.floor(width / 19.5)))
+        ? Math.max(42, Math.min(54, Math.floor(width / 12)))
         : Math.max(40, Math.min(58, Math.floor(width / 14.6)));
-      const minShortSide = compactMobile ? 22 : 26;
-      const safePadding = width < 700 ? (compactMobile ? 10 : 16) : 22;
-      const spawnBand = Math.min(width < 700 ? (compactMobile ? 40 : 52) : 88, width * (width < 700 ? (compactMobile ? 0.06 : 0.08) : 0.14));
+      const minShortSide = compactMobile ? 30 : 26;
+      const safePadding = width < 700 ? (compactMobile ? 8 : 16) : 22;
+      const spawnBand = Math.min(width < 700 ? (compactMobile ? 30 : 52) : 88, width * (width < 700 ? (compactMobile ? 0.045 : 0.08) : 0.14));
 
       bodies = [];
       blockEls = [];
