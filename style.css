@@ -5039,3 +5039,25 @@ main#top,
     background: rgba(255,255,255,.08) !important;
   }
 }
+
+
+/* 20260625 v12: fix hero title back to center + smoother blur */
+.hero-text {
+  left: 50% !important;
+  right: auto !important;
+  top: 50% !important;
+  bottom: auto !important;
+  width: min(90%, 980px) !important;
+  transform: translate(-50%, -50%) !important;
+  text-align: center !important;
+  transition: opacity .18s linear !important;
+}
+.hero-picture,
+.hero-img {
+  backface-visibility: hidden !important;
+  -webkit-backface-visibility: hidden !important;
+  transform: translate3d(0,0,0) !important;
+}
+.hero-img {
+  will-change: transform, filter !important;
+}

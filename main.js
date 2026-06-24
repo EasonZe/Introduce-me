@@ -888,7 +888,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
-/* 20260625 v11: brand quick jump + hero scroll blur */
+/* 20260625 v12: brand quick jump + smooth hero blur */
 document.addEventListener('DOMContentLoaded', () => {
   const brandLink = document.querySelector('#siteNav .brand');
   const aboutSection = document.querySelector('#aboutMe');
@@ -905,34 +905,42 @@ document.addEventListener('DOMContentLoaded', () => {
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (!heroImg || !aboutSection || reduceMotion) return;
 
-  let ticking = false;
-  const updateHeroScrollFx = () => {
-    const stopAt = Math.max(1, aboutSection.offsetTop - window.innerHeight * 0.6);
-    const progress = Math.min(1, Math.max(0, window.scrollY / stopAt));
-    const blur = progress * 9;
-    const imageShift = progress * 56;
-    const pictureShift = progress * 26;
-    const textShift = progress * 28;
+  let target = 0;
+  let current = 0;
+  let raf = 0;
 
-    heroImg.style.transform = `translate3d(0, ${imageShift}px, 0) scale(${1 + progress * 0.03})`;
+  const getTarget = () => {
+    const stopAt = Math.max(1, aboutSection.offsetTop - window.innerHeight * 0.55);
+    target = Math.min(1, Math.max(0, window.scrollY / stopAt));
+  };
+
+  const apply = (p) => {
+    const blur = p * 7;
+    const imgShift = p * 42;
+    const picShift = p * 18;
+    heroImg.style.transform = `translate3d(0, ${imgShift}px, 0) scale(${1 + p * 0.025})`;
     heroImg.style.filter = `blur(${blur}px)`;
-    if (heroPicture) {
-      heroPicture.style.transform = `translate3d(0, ${pictureShift}px, 0)`;
-    }
+    if (heroPicture) heroPicture.style.transform = `translate3d(0, ${picShift}px, 0)`;
     if (heroText) {
-      heroText.style.transform = `translate3d(0, ${textShift}px, 0)`;
-      heroText.style.opacity = String(1 - progress * 0.24);
+      heroText.style.transform = 'translate(-50%, -50%)';
+      heroText.style.opacity = String(1 - p * 0.22);
     }
-    ticking = false;
+  };
+
+  const tick = () => {
+    current += (target - current) * 0.16;
+    if (Math.abs(target - current) < 0.002) current = target;
+    apply(current);
+    raf = current === target ? 0 : requestAnimationFrame(tick);
   };
 
   const requestUpdate = () => {
-    if (ticking) return;
-    ticking = true;
-    requestAnimationFrame(updateHeroScrollFx);
+    getTarget();
+    if (!raf) raf = requestAnimationFrame(tick);
   };
 
-  updateHeroScrollFx();
+  getTarget();
+  apply(current);
   window.addEventListener('scroll', requestUpdate, { passive: true });
   window.addEventListener('resize', requestUpdate, { passive: true });
 });
