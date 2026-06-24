@@ -5041,23 +5041,137 @@ main#top,
 }
 
 
-/* 20260625 v12: fix hero title back to center + smoother blur */
+/* 20260625 v13: hero fades out seamlessly at about section + fixed floating music playlist */
+.hero,
+.hero-card {
+  background: transparent !important;
+}
+.hero-card {
+  overflow: hidden !important;
+}
+.hero-picture,
+.hero-img,
+.hero-text {
+  will-change: transform, filter, opacity !important;
+}
+.hero-picture,
+.hero-img {
+  transform-origin: center top !important;
+  transition: opacity .26s ease-out, filter .26s ease-out, transform .26s ease-out !important;
+}
 .hero-text {
   left: 50% !important;
   right: auto !important;
   top: 50% !important;
   bottom: auto !important;
-  width: min(90%, 980px) !important;
-  transform: translate(-50%, -50%) !important;
+  width: min(92%, 980px) !important;
   text-align: center !important;
-  transition: opacity .18s linear !important;
+  will-change: transform, opacity !important;
 }
-.hero-picture,
-.hero-img {
-  backface-visibility: hidden !important;
-  -webkit-backface-visibility: hidden !important;
-  transform: translate3d(0,0,0) !important;
+.hero-text h1,
+.hero-text .type-line {
+  text-align: center !important;
 }
-.hero-img {
-  will-change: transform, filter !important;
+
+#musicPanel,
+#musicPanel .music-shell,
+#musicPanel .music-main,
+#musicPanel .music-controls,
+#musicPanel .music-list-wrap {
+  overflow: visible !important;
+}
+.music-list-popover {
+  position: fixed !important;
+  z-index: 99999 !important;
+  width: min(340px, calc(100vw - 28px)) !important;
+  max-height: min(320px, 44vh) !important;
+  overflow: hidden !important;
+  padding: 10px !important;
+  border-radius: 18px !important;
+  background: rgba(10, 22, 36, .96) !important;
+  border: 1px solid rgba(150, 195, 255, .32) !important;
+  box-shadow: 0 22px 50px rgba(0,0,0,.46) !important;
+  backdrop-filter: blur(18px) saturate(135%) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(135%) !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  transform: translate3d(0, 8px, 0) !important;
+  transition: opacity .18s ease, transform .18s ease, visibility .18s ease !important;
+}
+.music-list-popover.is-open {
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+  transform: translate3d(0, 0, 0) !important;
+}
+.music-list-popover .music-list {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+  max-height: calc(min(320px, 44vh) - 20px) !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  padding: 0 !important;
+}
+.music-list-popover .music-list button {
+  width: 100% !important;
+  min-height: 62px !important;
+  display: grid !important;
+  grid-template-columns: 52px minmax(0, 1fr) !important;
+  gap: 12px !important;
+  align-items: center !important;
+  text-align: left !important;
+  padding: 8px !important;
+  border-radius: 14px !important;
+  background: rgba(255,255,255,.05) !important;
+}
+.music-list-popover .music-list button.is-active {
+  background: rgba(125, 170, 255, .18) !important;
+  border-color: rgba(150, 195, 255, .46) !important;
+}
+.music-list-popover .music-list button img {
+  width: 52px !important;
+  height: 52px !important;
+  border-radius: 12px !important;
+  display: block !important;
+  object-fit: cover !important;
+}
+.music-list-popover .music-list button .music-list-text {
+  display: flex !important;
+  flex-direction: column !important;
+  min-width: 0 !important;
+  gap: 2px !important;
+}
+.music-list-popover .music-list button strong,
+.music-list-popover .music-list button span {
+  display: block !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+.music-list-popover .music-list button strong {
+  font-size: 14px !important;
+  color: var(--text) !important;
+}
+.music-list-popover .music-list button span {
+  font-size: 12px !important;
+  color: var(--muted) !important;
+}
+html[data-theme="dark"] .music-list-popover .music-list button strong {
+  color: #edf7ff !important;
+}
+html[data-theme="dark"] .music-list-popover .music-list button span {
+  color: #b8cad5 !important;
+}
+
+@media (max-width: 768px) {
+  .music-list-popover {
+    width: min(320px, calc(100vw - 20px)) !important;
+    max-height: min(300px, 42vh) !important;
+  }
+  .music-list-popover .music-list {
+    max-height: calc(min(300px, 42vh) - 20px) !important;
+  }
 }

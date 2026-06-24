@@ -888,7 +888,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
-/* 20260625 v12: brand quick jump + smooth hero blur */
+/* 20260625 v11: brand quick jump + hero scroll blur */
 document.addEventListener('DOMContentLoaded', () => {
   const brandLink = document.querySelector('#siteNav .brand');
   const aboutSection = document.querySelector('#aboutMe');
@@ -905,42 +905,166 @@ document.addEventListener('DOMContentLoaded', () => {
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (!heroImg || !aboutSection || reduceMotion) return;
 
-  let target = 0;
-  let current = 0;
-  let raf = 0;
+  let ticking = false;
+  const updateHeroScrollFx = () => {
+    const stopAt = Math.max(1, aboutSection.offsetTop - window.innerHeight * 0.6);
+    const progress = Math.min(1, Math.max(0, window.scrollY / stopAt));
+    const blur = progress * 9;
+    const imageShift = progress * 56;
+    const pictureShift = progress * 26;
+    const textShift = progress * 28;
 
-  const getTarget = () => {
-    const stopAt = Math.max(1, aboutSection.offsetTop - window.innerHeight * 0.55);
-    target = Math.min(1, Math.max(0, window.scrollY / stopAt));
-  };
-
-  const apply = (p) => {
-    const blur = p * 7;
-    const imgShift = p * 42;
-    const picShift = p * 18;
-    heroImg.style.transform = `translate3d(0, ${imgShift}px, 0) scale(${1 + p * 0.025})`;
+    heroImg.style.transform = `translate3d(0, ${imageShift}px, 0) scale(${1 + progress * 0.03})`;
     heroImg.style.filter = `blur(${blur}px)`;
-    if (heroPicture) heroPicture.style.transform = `translate3d(0, ${picShift}px, 0)`;
-    if (heroText) {
-      heroText.style.transform = 'translate(-50%, -50%)';
-      heroText.style.opacity = String(1 - p * 0.22);
+    if (heroPicture) {
+      heroPicture.style.transform = `translate3d(0, ${pictureShift}px, 0)`;
     }
-  };
-
-  const tick = () => {
-    current += (target - current) * 0.16;
-    if (Math.abs(target - current) < 0.002) current = target;
-    apply(current);
-    raf = current === target ? 0 : requestAnimationFrame(tick);
+    if (heroText) {
+      heroText.style.transform = `translate3d(0, ${textShift}px, 0)`;
+      heroText.style.opacity = String(1 - progress * 0.24);
+    }
+    ticking = false;
   };
 
   const requestUpdate = () => {
-    getTarget();
-    if (!raf) raf = requestAnimationFrame(tick);
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(updateHeroScrollFx);
   };
 
-  getTarget();
-  apply(current);
+  updateHeroScrollFx();
   window.addEventListener('scroll', requestUpdate, { passive: true });
   window.addEventListener('resize', requestUpdate, { passive: true });
+});
+
+
+/* 20260625 v13: smooth hero disappear + playlist popover outside panel */
+document.addEventListener('DOMContentLoaded', () => {
+  const hero = document.querySelector('.hero');
+  const heroCard = document.querySelector('.hero-card');
+  const heroPicture = document.querySelector('.hero-picture');
+  const heroImg = document.querySelector('.hero-img');
+  const heroText = document.querySelector('.hero-text');
+  const aboutSection = document.querySelector('#aboutMe');
+  const brandLink = document.querySelector('#siteNav .brand');
+
+  if (brandLink && aboutSection) {
+    brandLink.addEventListener('click', (event) => {
+      event.preventDefault();
+      aboutSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  }
+
+  if (hero && heroImg && heroPicture && aboutSection) {
+    let target = 0;
+    let current = 0;
+    let raf = 0;
+
+    const clamp = (v, min = 0, max = 1) => Math.min(max, Math.max(min, v));
+    const calcTarget = () => {
+      const aboutTop = aboutSection.getBoundingClientRect().top + window.scrollY;
+      const stopAt = Math.max(1, aboutTop - 90);
+      target = clamp(window.scrollY / stopAt);
+    };
+    const apply = (p) => {
+      const vanish = clamp(p);
+      const remain = 1 - vanish;
+      const blur = vanish * 22;
+      const imgShift = vanish * 90;
+      const scale = 1 + vanish * 0.05;
+      heroPicture.style.opacity = String(remain);
+      heroImg.style.opacity = String(remain);
+      heroImg.style.filter = `blur(${blur}px)`;
+      heroImg.style.transform = `translate3d(0, ${imgShift}px, 0) scale(${scale})`;
+      if (heroText) {
+        heroText.style.opacity = String(Math.max(0, 1 - vanish * 1.35));
+        heroText.style.transform = `translate(-50%, calc(-50% + ${vanish * 34}px))`;
+      }
+      if (heroCard) {
+        heroCard.style.background = 'transparent';
+      }
+    };
+    const animate = () => {
+      current += (target - current) * 0.16;
+      if (Math.abs(target - current) < 0.001) current = target;
+      apply(current);
+      if (current !== target) raf = requestAnimationFrame(animate);
+      else raf = 0;
+    };
+    const update = () => {
+      calcTarget();
+      if (!raf) raf = requestAnimationFrame(animate);
+    };
+    update();
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update, { passive: true });
+  }
+
+  const panel = document.getElementById('musicPanel');
+  const listToggle = document.getElementById('musicListToggle');
+  const listPopover = document.getElementById('musicListPopover');
+  const list = document.getElementById('musicList');
+
+  if (panel && listToggle && listPopover && list) {
+    if (listPopover.parentElement !== document.body) {
+      document.body.appendChild(listPopover);
+    }
+
+    const positionList = () => {
+      if (!listPopover.classList.contains('is-open')) return;
+      const panelRect = panel.getBoundingClientRect();
+      const toggleRect = listToggle.getBoundingClientRect();
+      const popW = Math.min(340, window.innerWidth - 28);
+      const popH = Math.min(320, Math.floor(window.innerHeight * 0.44));
+      let left = toggleRect.left + toggleRect.width / 2 - popW / 2;
+      left = Math.max(14, Math.min(left, window.innerWidth - popW - 14));
+      let top = panelRect.bottom + 10;
+      if (top + popH > window.innerHeight - 12) {
+        top = panelRect.top - popH - 10;
+      }
+      if (top < 12) top = Math.max(12, toggleRect.bottom + 10);
+      listPopover.style.left = `${left}px`;
+      listPopover.style.top = `${top}px`;
+      listPopover.style.right = 'auto';
+      listPopover.style.width = `${popW}px`;
+      listPopover.style.maxHeight = `${popH}px`;
+      list.style.maxHeight = `${Math.max(120, popH - 20)}px`;
+    };
+
+    const renderCovers = () => {
+      list.querySelectorAll('button').forEach((button) => {
+        if (button.querySelector('img')) return;
+        const title = button.querySelector('strong')?.textContent || '';
+        const cover = title.includes('一点') ? 'images/music/yidian.jpg' : 'images/music/tianping.jpg';
+        const img = document.createElement('img');
+        img.src = cover;
+        img.alt = '专辑封面';
+        const wrap = document.createElement('span');
+        wrap.className = 'music-list-text';
+        Array.from(button.childNodes).forEach((node) => wrap.appendChild(node));
+        button.appendChild(img);
+        button.appendChild(wrap);
+      });
+    };
+
+    listToggle.addEventListener('click', () => {
+      requestAnimationFrame(() => {
+        renderCovers();
+        positionList();
+      });
+    });
+    list.addEventListener('click', () => {
+      listPopover.classList.remove('is-open');
+    });
+    window.addEventListener('resize', positionList, { passive: true });
+    window.addEventListener('scroll', positionList, { passive: true });
+
+    const observer = new MutationObserver(() => {
+      if (listPopover.classList.contains('is-open')) {
+        renderCovers();
+        positionList();
+      }
+    });
+    observer.observe(list, { childList: true, subtree: true });
+  }
 });
