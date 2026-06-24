@@ -715,7 +715,7 @@ document.addEventListener('DOMContentLoaded', () => {
     next: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m13 6 8 6-8 6V6Zm-2 0H9v12h2V6Z"></path></svg>',
     list: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 6h14v2H5V6Zm0 5h14v2H5v-2Zm0 5h14v2H5v-2Z"></path></svg>',
     listMode: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 17H7l2.5 2.5-1.4 1.4L3.2 16l4.9-4.9 1.4 1.4L7 15h10V17Zm0-8H7V7h10l-2.5-2.5 1.4-1.4 4.9 4.9-4.9 4.9-1.4-1.4L17 9Z"></path></svg>',
-    singleMode: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 17H7l2.5 2.5-1.4 1.4L3.2 16l4.9-4.9 1.4 1.4L7 15h10V17Zm-1-7.7V5h2v7h-5v-2h3Zm1-2.3-2 1.2V6h2v1Z"></path></svg>'
+    singleMode: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 17H7l2.5 2.5-1.4 1.4L3.2 16l4.9-4.9 1.4 1.4L7 15h10V17Zm0-8H7V7h10l-2.5-2.5 1.4-1.4 4.9 4.9-4.9 4.9-1.4-1.4L17 9Z"></path><text x="12" y="14.6" text-anchor="middle" font-size="8.5" font-weight="900" fill="currentColor">1</text></svg>'
   };
 
   let current = 0;

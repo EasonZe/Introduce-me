@@ -3128,3 +3128,335 @@ html[data-theme="dark"] .contact-link {
     min-height: 420px !important;
   }
 }
+
+
+/* 20260624 final user request: smaller player, disc left of title, no second row, stars visible through cards */
+:root {
+  --transparent-card-dark: rgba(10, 22, 33, .62);
+  --transparent-card-soft: rgba(13, 30, 44, .48);
+}
+
+/* 让深色星星透过所有主要卡片 */
+html[data-theme="dark"] .site-nav,
+html[data-theme="dark"] .hero-card,
+html[data-theme="dark"] .about-avatar-card,
+html[data-theme="dark"] .about-text-card,
+html[data-theme="dark"] .physics-card,
+html[data-theme="dark"] .physics-stage,
+html[data-theme="dark"] .favorite-games-card,
+html[data-theme="dark"] .favorite-game-item,
+html[data-theme="dark"] .message-comment-card,
+html[data-theme="dark"] .contact-link,
+html[data-theme="dark"] .site-footer,
+html[data-theme="dark"] #waline,
+html[data-theme="dark"] .wl-panel,
+html[data-theme="dark"] .wl-card,
+html[data-theme="dark"] .modal-card,
+html[data-theme="dark"] .palette-modal-card {
+  background: var(--transparent-card-dark) !important;
+  backdrop-filter: blur(14px) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
+}
+
+html[data-theme="dark"] .physics-stage,
+html[data-theme="dark"] .favorite-game-item,
+html[data-theme="dark"] .contact-link {
+  background: var(--transparent-card-soft) !important;
+}
+
+#starsCanvas {
+  opacity: 1 !important;
+  z-index: 0 !important;
+}
+.mist-bg {
+  opacity: .10 !important;
+  pointer-events: none !important;
+}
+.meteor-layer {
+  pointer-events: none !important;
+}
+
+/* 音乐播放器缩小并重新排版 */
+#musicPanel {
+  top: 100px !important;
+  width: min(72vw, 620px) !important;
+  max-width: 620px !important;
+  min-width: 0 !important;
+  padding: 16px 18px !important;
+  border-radius: 24px !important;
+  background: rgba(13, 28, 40, .68) !important;
+  backdrop-filter: blur(18px) !important;
+  -webkit-backdrop-filter: blur(18px) !important;
+}
+
+#musicPanel .music-close {
+  width: 42px !important;
+  height: 42px !important;
+  top: 10px !important;
+  right: 10px !important;
+  border-radius: 15px !important;
+  font-size: 28px !important;
+}
+
+/* 唱片放到歌名左边 */
+#musicPanel .music-shell {
+  display: grid !important;
+  grid-template-columns: 72px minmax(0, 1fr) !important;
+  gap: 12px !important;
+  align-items: center !important;
+  width: 100% !important;
+}
+
+#musicPanel .music-cover-wrap {
+  grid-column: 1 !important;
+  grid-row: 1 / span 3 !important;
+  width: 72px !important;
+  align-self: center !important;
+  justify-self: center !important;
+}
+
+#musicPanel .music-disc {
+  width: 62px !important;
+  height: 62px !important;
+  padding: 6px !important;
+  margin: 0 !important;
+}
+
+#musicPanel .music-main {
+  grid-column: 2 !important;
+  display: grid !important;
+  grid-template-rows: auto auto auto !important;
+  gap: 8px !important;
+  min-width: 0 !important;
+  padding: 0 34px 0 0 !important;
+  align-items: center !important;
+}
+
+#musicPanel .music-info {
+  display: block !important;
+  text-align: center !important;
+  width: 100% !important;
+  min-width: 0 !important;
+}
+
+#musicPanel .music-info small,
+#musicPanel .music-info strong,
+#musicPanel .music-info span,
+#musicPanel .music-time {
+  writing-mode: horizontal-tb !important;
+  text-orientation: mixed !important;
+  white-space: nowrap !important;
+}
+
+#musicPanel .music-info small {
+  display: block !important;
+  font-size: 12px !important;
+  line-height: 1.1 !important;
+  margin: 0 !important;
+}
+
+#musicPanel .music-info strong {
+  display: block !important;
+  font-size: clamp(24px, 3.2vw, 34px) !important;
+  line-height: 1.05 !important;
+  margin: 4px 0 0 !important;
+}
+
+#musicPanel .music-info > span#musicArtist {
+  display: block !important;
+  font-size: 14px !important;
+  line-height: 1.2 !important;
+  margin: 5px 0 0 !important;
+}
+
+#musicPanel .music-time {
+  display: inline-flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 6px !important;
+  font-size: 14px !important;
+  line-height: 1.2 !important;
+  margin: 6px 0 0 !important;
+}
+
+#musicPanel .music-time span {
+  display: inline !important;
+}
+
+#musicPanel .music-seek {
+  width: min(100%, 420px) !important;
+  margin: 0 auto !important;
+}
+
+/* 按钮一行，不让歌单掉到第二行 */
+#musicPanel .music-controls {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 6px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+}
+
+#musicPanel .music-controls button,
+#musicPanel .music-list-wrap > button {
+  min-width: 0 !important;
+  width: auto !important;
+  height: 38px !important;
+  min-height: 38px !important;
+  padding: 7px 10px !important;
+  border-radius: 14px !important;
+  font-size: 13px !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+  flex: 0 1 auto !important;
+}
+
+#musicPanel #musicPlay {
+  min-width: 74px !important;
+}
+
+#musicPanel .music-controls button svg {
+  width: 15px !important;
+  height: 15px !important;
+}
+
+#musicPanel .music-list-wrap {
+  position: relative !important;
+  flex: 0 0 auto !important;
+  width: auto !important;
+}
+
+/* 歌单绝对定位，不撑大卡片 */
+#musicPanel .music-list-popover {
+  position: absolute !important;
+  top: calc(100% + 8px) !important;
+  left: 50% !important;
+  transform: translateX(-50%) translateY(6px) !important;
+  width: 260px !important;
+  max-height: 150px !important;
+  overflow-y: auto !important;
+  display: block !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  padding: 8px !important;
+  border-radius: 16px !important;
+  background: rgba(12, 26, 38, .94) !important;
+  box-shadow: 0 16px 36px rgba(0,0,0,.26) !important;
+  z-index: 30 !important;
+  transition: opacity .18s ease, transform .18s ease, visibility .18s ease !important;
+}
+
+#musicPanel .music-list-popover.is-open {
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+  transform: translateX(-50%) translateY(0) !important;
+}
+
+#musicPanel .music-list {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 6px !important;
+}
+
+#musicPanel .music-list button {
+  width: 100% !important;
+  min-height: 0 !important;
+  height: auto !important;
+  padding: 8px 10px !important;
+  justify-content: flex-start !important;
+  text-align: left !important;
+}
+
+/* 手机端保持紧凑 */
+@media (max-width: 760px) {
+  #musicPanel {
+    top: 84px !important;
+    width: calc(100vw - 22px) !important;
+    max-width: none !important;
+    padding: 14px 12px !important;
+    border-radius: 20px !important;
+  }
+
+  #musicPanel .music-shell {
+    grid-template-columns: 56px minmax(0, 1fr) !important;
+    gap: 9px !important;
+  }
+
+  #musicPanel .music-cover-wrap {
+    width: 56px !important;
+  }
+
+  #musicPanel .music-disc {
+    width: 50px !important;
+    height: 50px !important;
+    padding: 5px !important;
+  }
+
+  #musicPanel .music-main {
+    padding-right: 28px !important;
+    gap: 7px !important;
+  }
+
+  #musicPanel .music-info small {
+    font-size: 11px !important;
+  }
+
+  #musicPanel .music-info strong {
+    font-size: clamp(22px, 7vw, 30px) !important;
+  }
+
+  #musicPanel .music-info > span#musicArtist,
+  #musicPanel .music-time {
+    font-size: 12px !important;
+  }
+
+  #musicPanel .music-controls {
+    gap: 5px !important;
+  }
+
+  #musicPanel .music-controls button,
+  #musicPanel .music-list-wrap > button {
+    height: 34px !important;
+    min-height: 34px !important;
+    padding: 6px 7px !important;
+    font-size: 11px !important;
+    border-radius: 12px !important;
+  }
+
+  #musicPanel .music-controls button svg {
+    width: 13px !important;
+    height: 13px !important;
+  }
+
+  #musicPanel #musicPlay {
+    min-width: 62px !important;
+  }
+
+  #musicPanel .music-list-popover {
+    width: min(240px, calc(100vw - 36px)) !important;
+    max-height: 140px !important;
+  }
+}
+
+/* 小屏再压缩，防止歌单按钮换行 */
+@media (max-width: 430px) {
+  #musicPanel .music-controls button span {
+    display: none !important;
+  }
+
+  #musicPanel .music-controls button,
+  #musicPanel .music-list-wrap > button {
+    width: 38px !important;
+    min-width: 38px !important;
+    padding: 0 !important;
+  }
+
+  #musicPanel #musicPlay {
+    width: 48px !important;
+    min-width: 48px !important;
+  }
+}
