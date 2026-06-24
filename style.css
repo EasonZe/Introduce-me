@@ -2391,3 +2391,65 @@ main,
     max-height: 120px !important;
   }
 }
+
+
+/* 20260624 palette hotfix: 修复调色板打不开 / 弹窗层级被 v4 覆盖 */
+.site-nav {
+  position: sticky !important;
+  top: 14px !important;
+  z-index: 3000 !important;
+}
+
+main,
+.site-footer {
+  position: relative !important;
+  z-index: 3 !important;
+}
+
+#starsCanvas,
+.mist-bg,
+.meteor-layer {
+  pointer-events: none !important;
+}
+
+.modal {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 100000 !important;
+  display: grid !important;
+  place-items: center !important;
+  padding: 18px !important;
+}
+
+.modal[aria-hidden="true"] {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  visibility: hidden !important;
+}
+
+.modal[aria-hidden="false"] {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  visibility: visible !important;
+}
+
+.modal-card,
+.palette-modal-card {
+  position: relative !important;
+  z-index: 100001 !important;
+  max-height: min(86vh, 760px) !important;
+  overflow-y: auto !important;
+}
+
+#paletteBtn {
+  position: relative !important;
+  z-index: 3500 !important;
+  pointer-events: auto !important;
+}
+
+@media (max-width: 760px) {
+  .site-nav {
+    top: 8px !important;
+    z-index: 3000 !important;
+  }
+}
