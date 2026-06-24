@@ -663,7 +663,7 @@
 
 
 
-/* 20260623 safe music player: independent module */
+/* 20260624 final music player v3 */
 document.addEventListener('DOMContentLoaded', () => {
   const panel = document.getElementById('musicPanel');
   const toggleBtn = document.getElementById('musicToggleBtn');
@@ -698,16 +698,15 @@ document.addEventListener('DOMContentLoaded', () => {
   let current = 0;
   let mode = 'list';
 
-  const setPlayButton = (playing) => {
-    playBtn.innerHTML = playing
-      ? '<span class="btn-icon">Ⅱ</span><span class="btn-label">暂停</span>'
-      : '<span class="btn-icon">▷</span><span class="btn-label">播放</span>';
+  const setStaticButtonLabels = () => {
+    prevBtn.textContent = '◀ 上一首';
+    nextBtn.textContent = '▶ 下一首';
+    listToggle.textContent = '≡ 歌单列表';
+    modeBtn.textContent = mode === 'list' ? '↻ 歌单循环' : '↺ 单曲循环';
   };
 
-  const setModeButton = () => {
-    modeBtn.innerHTML = mode === 'list'
-      ? '<span class="btn-icon">↻</span><span class="btn-label">歌单循环</span>'
-      : '<span class="btn-icon">①</span><span class="btn-label">单曲循环</span>';
+  const setPlayButtonLabel = (playing) => {
+    playBtn.textContent = playing ? '❚❚ 暂停' : '▶ 播放';
   };
 
   const renderList = () => {
@@ -726,13 +725,13 @@ document.addEventListener('DOMContentLoaded', () => {
     cover.src = song.cover;
     title.textContent = song.title;
     artist.textContent = song.artist;
-    setPlayButton(false);
     panel.classList.remove('is-playing');
+    setPlayButtonLabel(false);
     renderList();
 
     if (autoPlay) {
       audio.play().then(() => {
-        setPlayButton(true);
+        setPlayButtonLabel(true);
         panel.classList.add('is-playing');
       }).catch(() => {});
     }
@@ -741,14 +740,20 @@ document.addEventListener('DOMContentLoaded', () => {
   const togglePlay = () => {
     if (audio.paused) {
       audio.play().then(() => {
-        setPlayButton(true);
+        setPlayButtonLabel(true);
         panel.classList.add('is-playing');
       }).catch(() => {});
     } else {
       audio.pause();
-      setPlayButton(false);
+      setPlayButtonLabel(false);
       panel.classList.remove('is-playing');
     }
+  };
+
+  const closeList = () => list.classList.remove('is-open');
+  const toggleList = (event) => {
+    event?.stopPropagation?.();
+    list.classList.toggle('is-open');
   };
 
   toggleBtn.addEventListener('click', (event) => {
@@ -756,43 +761,53 @@ document.addEventListener('DOMContentLoaded', () => {
     const keepY = window.scrollY || document.documentElement.scrollTop || 0;
     const open = panel.classList.toggle('is-open');
     panel.setAttribute('aria-hidden', open ? 'false' : 'true');
+    if (!open) closeList();
     requestAnimationFrame(() => window.scrollTo(0, keepY));
   });
 
   playBtn.addEventListener('click', togglePlay);
-  listToggle.addEventListener('click', (event) => { event.stopPropagation(); list.classList.toggle('is-open'); });
+  listToggle.addEventListener('click', toggleList);
   prevBtn.addEventListener('click', () => loadSong(current - 1, !audio.paused));
   nextBtn.addEventListener('click', () => loadSong(current + 1, !audio.paused));
 
   modeBtn.addEventListener('click', () => {
     mode = mode === 'list' ? 'single' : 'list';
-    setModeButton();
+    setStaticButtonLabels();
   });
 
   list.addEventListener('click', (event) => {
     const btn = event.target.closest('[data-index]');
     if (!btn) return;
     loadSong(Number(btn.dataset.index), true);
+    closeList();
+  });
+
+  document.addEventListener('click', (event) => {
+    if (!panel.classList.contains('is-open')) return;
+    if (event.target.closest('#musicPanel') || event.target.closest('#musicToggleBtn')) return;
+    closeList();
   });
 
   audio.addEventListener('ended', () => {
     if (mode === 'single') {
       audio.currentTime = 0;
-      audio.play();
+      audio.play().catch(() => {});
     } else {
       loadSong(current + 1, true);
     }
   });
 
   audio.addEventListener('play', () => {
-    playBtn.textContent = '暂停';
+    setPlayButtonLabel(true);
     panel.classList.add('is-playing');
   });
 
   audio.addEventListener('pause', () => {
-    setPlayButton(false);
+    setPlayButtonLabel(false);
     panel.classList.remove('is-playing');
   });
 
+  setStaticButtonLabels();
+  setPlayButtonLabel(false);
   loadSong(0, false);
 });
