@@ -5538,3 +5538,118 @@ html[data-theme="dark"] .hero-card {
 #musicMode[data-loop-mode="single"] {
   box-shadow: 0 0 0 1px rgba(150, 195, 255, 0.4) inset !important;
 }
+
+/* 20260625 v17: hide nav at top + brand new playlist overlay */
+.site-nav {
+  transition: transform .32s ease, opacity .32s ease !important;
+}
+.site-nav.nav-collapsed-top {
+  transform: translate(-50%, calc(-100% - 22px)) !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+#musicListPopover {
+  display: none !important;
+}
+#musicPlaylistOverlay {
+  position: fixed !important;
+  left: 12px !important;
+  top: 12px !important;
+  width: min(380px, calc(100vw - 24px)) !important;
+  max-height: 320px !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  transform: translate3d(0, 8px, 0) !important;
+  padding: 10px !important;
+  border-radius: 18px !important;
+  background: rgba(7, 18, 31, 0.98) !important;
+  border: 1px solid rgba(150, 195, 255, 0.46) !important;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55) !important;
+  backdrop-filter: blur(18px) saturate(135%) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(135%) !important;
+  overflow: hidden !important;
+  z-index: 2147483600 !important;
+}
+#musicPlaylistOverlay.is-open {
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+  transform: translate3d(0, 0, 0) !important;
+}
+#musicPlaylistItems {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+  width: 100% !important;
+  max-height: 300px !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+#musicPlaylistItems button {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  width: 100% !important;
+  min-height: 62px !important;
+  display: grid !important;
+  grid-template-columns: 52px minmax(0, 1fr) !important;
+  gap: 12px !important;
+  align-items: center !important;
+  box-sizing: border-box !important;
+  padding: 8px !important;
+  margin: 0 !important;
+  border-radius: 14px !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  background: rgba(255, 255, 255, 0.07) !important;
+  color: #edf7ff !important;
+  cursor: pointer !important;
+  text-align: left !important;
+  font: inherit !important;
+}
+#musicPlaylistItems button.is-active {
+  background: rgba(125, 170, 255, 0.22) !important;
+  border-color: rgba(150, 195, 255, 0.56) !important;
+}
+#musicPlaylistItems button img {
+  width: 52px !important;
+  height: 52px !important;
+  border-radius: 12px !important;
+  object-fit: cover !important;
+  display: block !important;
+}
+#musicPlaylistItems button .music-list-text {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  gap: 3px !important;
+  min-width: 0 !important;
+}
+#musicPlaylistItems button .music-list-text strong,
+#musicPlaylistItems button .music-list-text span {
+  display: block !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+#musicPlaylistItems button .music-list-text strong {
+  font-size: 14px !important;
+  font-weight: 800 !important;
+  color: #edf7ff !important;
+}
+#musicPlaylistItems button .music-list-text span {
+  font-size: 12px !important;
+  color: #b8cad5 !important;
+}
+@media (max-width: 768px) {
+  #musicPlaylistOverlay {
+    width: min(320px, calc(100vw - 18px)) !important;
+    max-height: 260px !important;
+  }
+  #musicPlaylistItems {
+    max-height: 240px !important;
+  }
+}
