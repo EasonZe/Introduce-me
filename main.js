@@ -743,6 +743,7 @@ document.addEventListener('DOMContentLoaded', () => {
     listToggle.title = '歌单';
 
     modeBtn.innerHTML = mode === 'list' ? icons.listMode : icons.singleMode;
+    modeBtn.dataset.loopMode = mode;
     modeBtn.setAttribute('aria-label', mode === 'list' ? '列表循环' : '单曲循环');
     modeBtn.title = mode === 'list' ? '列表循环' : '单曲循环';
 
@@ -774,8 +775,44 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
+  if (listPopover.parentElement !== document.body) {
+    document.body.appendChild(listPopover);
+  }
+  listPopover.classList.add('floating-playlist');
+
+  const positionPlaylist = () => {
+    if (!listPopover.classList.contains('is-open')) return;
+    const toggleRect = listToggle.getBoundingClientRect();
+    const panelRect = panel.getBoundingClientRect();
+    const width = Math.min(window.innerWidth <= 768 ? 320 : 360, Math.max(260, panelRect.width - 24), window.innerWidth - 24);
+    const rowCount = Math.max(1, songs.length);
+    const wantedHeight = 20 + rowCount * 72;
+    const maxHeight = Math.min(window.innerWidth <= 768 ? window.innerHeight * 0.42 : window.innerHeight * 0.46, 320);
+    const height = Math.max(110, Math.min(wantedHeight, maxHeight));
+
+    let left = panelRect.left + panelRect.width / 2 - width / 2;
+    left = Math.max(12, Math.min(left, window.innerWidth - width - 12));
+
+    let top = toggleRect.bottom + 12;
+    if (top + height > window.innerHeight - 12) {
+      top = toggleRect.top - height - 12;
+    }
+    top = Math.max(12, top);
+
+    listPopover.style.left = `${left}px`;
+    listPopover.style.top = `${top}px`;
+    listPopover.style.width = `${width}px`;
+    listPopover.style.maxHeight = `${height}px`;
+    list.style.maxHeight = `${Math.max(88, height - 20)}px`;
+  };
+
   const closeList = () => listPopover.classList.remove('is-open');
-  const openList = () => listPopover.classList.add('is-open');
+  const openList = () => {
+    renderList();
+    listPopover.classList.add('is-open');
+    positionPlaylist();
+    requestAnimationFrame(positionPlaylist);
+  };
   const closePanel = () => {
     panel.classList.remove('is-open');
     panel.setAttribute('aria-hidden', 'true');
@@ -784,6 +821,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const openPanel = () => {
     panel.classList.add('is-open');
     panel.setAttribute('aria-hidden', 'false');
+    requestAnimationFrame(positionPlaylist);
   };
 
   const loadSong = (index, autoPlay = false) => {
@@ -799,6 +837,7 @@ document.addEventListener('DOMContentLoaded', () => {
     seek.value = '0';
     renderList();
     setButtonLabels();
+    if (listPopover.classList.contains('is-open')) positionPlaylist();
     if (autoPlay) {
       audio.play().catch(() => {});
     }
@@ -821,11 +860,14 @@ document.addEventListener('DOMContentLoaded', () => {
   nextBtn.addEventListener('click', () => loadSong(current + 1, !audio.paused));
   modeBtn.addEventListener('click', () => {
     mode = mode === 'list' ? 'single' : 'list';
+    modeBtn.dataset.loopMode = mode;
     setButtonLabels();
   });
   listToggle.addEventListener('click', (event) => {
+    event.preventDefault();
     event.stopPropagation();
-    listPopover.classList.toggle('is-open');
+    if (listPopover.classList.contains('is-open')) closeList();
+    else openList();
   });
   list.addEventListener('click', (event) => {
     const btn = event.target.closest('[data-index]');
@@ -882,13 +924,15 @@ document.addEventListener('DOMContentLoaded', () => {
       closePanel();
     }
   });
+  window.addEventListener('resize', positionPlaylist, { passive: true });
+  window.addEventListener('scroll', positionPlaylist, { passive: true });
 
   renderList();
   loadSong(0, false);
 });
 
 
-/* 20260625 v14: no jump hero fade + stable floating playlist */
+/* 20260625 v14: no jump hero fade */
 document.addEventListener('DOMContentLoaded', () => {
   const brandLink = document.querySelector('#siteNav .brand');
   const aboutSection = document.querySelector('#aboutMe');
@@ -943,196 +987,6 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('scroll', requestHeroState, { passive: true });
     window.addEventListener('resize', requestHeroState, { passive: true });
   }
-
-  const panel = document.getElementById('musicPanel');
-  const listToggle = document.getElementById('musicListToggle');
-  const listPopover = document.getElementById('musicListPopover');
-  const list = document.getElementById('musicList');
-
-  if (panel && listToggle && listPopover && list) {
-    if (listPopover.parentElement !== document.body) {
-      document.body.appendChild(listPopover);
-    }
-    listPopover.classList.add('floating-playlist');
-
-    const makeCover = (button) => {
-      if (button.querySelector('img')) return;
-      const titleText = button.querySelector('strong')?.textContent || '';
-      const cover = titleText.includes('一点') ? 'images/music/yidian.jpg' : 'images/music/tianping.jpg';
-      const img = document.createElement('img');
-      img.src = cover;
-      img.alt = '专辑封面';
-      img.loading = 'lazy';
-      const textWrap = document.createElement('span');
-      textWrap.className = 'music-list-text';
-      Array.from(button.childNodes).forEach((node) => textWrap.appendChild(node));
-      button.appendChild(img);
-      button.appendChild(textWrap);
-    };
-
-    const normalizeList = () => {
-      list.querySelectorAll('button').forEach(makeCover);
-    };
-
-    const positionPlaylist = () => {
-      if (!listPopover.classList.contains('is-open')) return;
-      normalizeList();
-
-      const toggleRect = listToggle.getBoundingClientRect();
-      const width = Math.min(320, window.innerWidth - 24);
-      const height = Math.min(230, Math.max(150, window.innerHeight * 0.36));
-      let left = toggleRect.left + toggleRect.width / 2 - width / 2;
-      left = Math.max(12, Math.min(left, window.innerWidth - width - 12));
-      let top = toggleRect.bottom + 12;
-      if (top + height > window.innerHeight - 12) {
-        top = toggleRect.top - height - 12;
-      }
-      top = Math.max(12, top);
-
-      listPopover.style.left = `${left}px`;
-      listPopover.style.top = `${top}px`;
-      listPopover.style.right = 'auto';
-      listPopover.style.width = `${width}px`;
-      listPopover.style.height = 'auto';
-      listPopover.style.minHeight = '150px';
-      listPopover.style.maxHeight = `${height}px`;
-      list.style.maxHeight = `${height - 20}px`;
-    };
-
-    listToggle.addEventListener('click', () => {
-      requestAnimationFrame(positionPlaylist);
-      setTimeout(positionPlaylist, 80);
-    });
-
-    document.addEventListener('click', (event) => {
-      if (!listPopover.classList.contains('is-open')) return;
-      if (event.target.closest('#musicListToggle') || event.target.closest('#musicListPopover')) return;
-      listPopover.classList.remove('is-open');
-    }, true);
-
-    list.addEventListener('click', () => {
-      listPopover.classList.remove('is-open');
-    });
-
-    window.addEventListener('resize', positionPlaylist, { passive: true });
-    window.addEventListener('scroll', positionPlaylist, { passive: true });
-
-    const observer = new MutationObserver(() => {
-      normalizeList();
-      positionPlaylist();
-    });
-    observer.observe(list, { childList: true, subtree: true });
-    normalizeList();
-  }
 });
 
 
-/* 20260625 v15: robust playlist render + position, stop blank list */
-document.addEventListener('DOMContentLoaded', () => {
-  const listToggle = document.getElementById('musicListToggle');
-  const listPopover = document.getElementById('musicListPopover');
-  const list = document.getElementById('musicList');
-  const panel = document.getElementById('musicPanel');
-  const audio = document.getElementById('musicAudio');
-  const cover = document.getElementById('musicCover');
-  const title = document.getElementById('musicTitle');
-  const artist = document.getElementById('musicArtist');
-  if (!listToggle || !listPopover || !list || !panel) return;
-
-  const songs = [
-    { title: '天平', artist: '银河系长 / Kumark / 漱一', src: 'audio/tianping.mp3', cover: 'images/music/tianping.jpg' },
-    { title: '一点', artist: 'Muyoi / Pezzi', src: 'audio/yidian.mp3', cover: 'images/music/yidian.jpg' }
-  ];
-
-  if (listPopover.parentElement !== document.body) {
-    document.body.appendChild(listPopover);
-  }
-  listPopover.classList.add('floating-playlist');
-
-  const getCurrentIndex = () => {
-    const src = audio?.getAttribute('src') || '';
-    const titleText = title?.textContent || '';
-    const found = songs.findIndex(song => src.includes(song.src) || titleText === song.title);
-    return found >= 0 ? found : 0;
-  };
-
-  const render = () => {
-    const current = getCurrentIndex();
-    list.innerHTML = songs.map((song, index) => `
-      <button type="button" class="${index === current ? 'is-active' : ''}" data-v15-index="${index}">
-        <img src="${song.cover}" alt="${song.title} 专辑封面" loading="lazy">
-        <span class="music-list-text">
-          <strong>${index + 1}. ${song.title}</strong>
-          <span>${song.artist}</span>
-        </span>
-      </button>
-    `).join('');
-  };
-
-  const position = () => {
-    const rect = listToggle.getBoundingClientRect();
-    const panelRect = panel.getBoundingClientRect();
-    const width = Math.min(window.innerWidth - 24, window.innerWidth <= 768 ? 320 : 340);
-    const height = Math.min(window.innerHeight * (window.innerWidth <= 768 ? .42 : .48), window.innerWidth <= 768 ? 320 : 360);
-    let left = panelRect.left + panelRect.width / 2 - width / 2;
-    left = Math.max(12, Math.min(left, window.innerWidth - width - 12));
-    let top = rect.bottom + 12;
-    if (top + height > window.innerHeight - 12) top = rect.top - height - 12;
-    top = Math.max(12, top);
-    Object.assign(listPopover.style, {
-      left: `${left}px`,
-      top: `${top}px`,
-      right: 'auto',
-      width: `${width}px`,
-      maxHeight: `${height}px`
-    });
-  };
-
-  const open = () => {
-    render();
-    listPopover.classList.add('is-open', 'force-playlist-open');
-    position();
-    requestAnimationFrame(position);
-  };
-  const close = () => {
-    listPopover.classList.remove('is-open', 'force-playlist-open');
-  };
-
-  listToggle.addEventListener('click', (event) => {
-    event.preventDefault();
-    event.stopImmediatePropagation();
-    if (listPopover.classList.contains('force-playlist-open')) close();
-    else open();
-  }, true);
-
-  list.addEventListener('click', (event) => {
-    const btn = event.target.closest('[data-v15-index]');
-    if (!btn) return;
-    const index = Number(btn.dataset.v15Index);
-    const song = songs[index];
-    if (audio && song) {
-      audio.src = song.src;
-      audio.load();
-      audio.play().catch(() => {});
-    }
-    if (cover && song) cover.src = song.cover;
-    if (title && song) title.textContent = song.title;
-    if (artist && song) artist.textContent = song.artist;
-    close();
-  }, true);
-
-  document.addEventListener('click', (event) => {
-    if (!listPopover.classList.contains('force-playlist-open')) return;
-    if (event.target.closest('#musicListToggle') || event.target.closest('#musicListPopover')) return;
-    close();
-  }, true);
-
-  window.addEventListener('resize', () => {
-    if (listPopover.classList.contains('force-playlist-open')) position();
-  }, { passive: true });
-  window.addEventListener('scroll', () => {
-    if (listPopover.classList.contains('force-playlist-open')) position();
-  }, { passive: true });
-
-  render();
-});
