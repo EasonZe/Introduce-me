@@ -5175,3 +5175,122 @@ html[data-theme="dark"] .music-list-popover .music-list button span {
     max-height: calc(min(300px, 42vh) - 20px) !important;
   }
 }
+
+
+/* 20260625 v14: stop hero text jump + full hero disappear + playlist visible */
+.hero,
+.hero-card {
+  background: transparent !important;
+}
+.hero-card {
+  overflow: hidden !important;
+}
+.hero-picture,
+.hero-img {
+  transform-origin: center top !important;
+  transition: none !important;
+  backface-visibility: hidden !important;
+  -webkit-backface-visibility: hidden !important;
+}
+.hero-text {
+  position: absolute !important;
+  left: 50% !important;
+  right: auto !important;
+  top: 50% !important;
+  bottom: auto !important;
+  width: min(92%, 980px) !important;
+  text-align: center !important;
+  transform: translate(-50%, -50%) !important;
+  will-change: opacity !important;
+  transition: none !important;
+  pointer-events: none !important;
+}
+.hero-text h1,
+.hero-text .type-line {
+  text-align: center !important;
+}
+.hero.is-hero-gone .hero-picture,
+.hero.is-hero-gone .hero-img,
+.hero.is-hero-gone .hero-text {
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+
+.music-list-popover.floating-playlist {
+  position: fixed !important;
+  z-index: 2147483000 !important;
+  display: block !important;
+  min-height: 150px !important;
+  overflow: hidden !important;
+  padding: 10px !important;
+  border-radius: 18px !important;
+  background: rgba(10, 22, 36, .98) !important;
+  border: 1px solid rgba(150, 195, 255, .42) !important;
+  box-shadow: 0 24px 60px rgba(0,0,0,.55) !important;
+  backdrop-filter: blur(18px) saturate(135%) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(135%) !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  transform: translate3d(0, 8px, 0) !important;
+}
+.music-list-popover.floating-playlist.is-open {
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+  transform: translate3d(0, 0, 0) !important;
+}
+.music-list-popover.floating-playlist .music-list {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+  min-height: 130px !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  padding: 0 !important;
+}
+.music-list-popover.floating-playlist .music-list button {
+  width: 100% !important;
+  min-height: 60px !important;
+  display: grid !important;
+  grid-template-columns: 50px minmax(0, 1fr) !important;
+  gap: 10px !important;
+  align-items: center !important;
+  text-align: left !important;
+  padding: 8px !important;
+  border-radius: 14px !important;
+  background: rgba(255,255,255,.06) !important;
+}
+.music-list-popover.floating-playlist .music-list button.is-active {
+  background: rgba(125, 170, 255, .20) !important;
+  border-color: rgba(150, 195, 255, .52) !important;
+}
+.music-list-popover.floating-playlist .music-list button img {
+  width: 50px !important;
+  height: 50px !important;
+  border-radius: 12px !important;
+  object-fit: cover !important;
+  display: block !important;
+}
+.music-list-popover.floating-playlist .music-list button .music-list-text {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 2px !important;
+  min-width: 0 !important;
+}
+.music-list-popover.floating-playlist .music-list button strong,
+.music-list-popover.floating-playlist .music-list button span {
+  display: block !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+.music-list-popover.floating-playlist .music-list button strong {
+  color: #edf7ff !important;
+  font-size: 14px !important;
+}
+.music-list-popover.floating-playlist .music-list button span {
+  color: #b8cad5 !important;
+  font-size: 12px !important;
+}
