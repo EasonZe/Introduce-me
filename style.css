@@ -5294,3 +5294,151 @@ html[data-theme="dark"] .music-list-popover .music-list button span {
   color: #b8cad5 !important;
   font-size: 12px !important;
 }
+
+
+/* 20260625 v15: remove hero overlay boundary + force playlist content visible */
+html[data-theme="dark"] body,
+html[data-theme="dark"] main,
+html[data-theme="dark"] .hero,
+html[data-theme="dark"] .hero-card {
+  background-color: #07111b !important;
+}
+.hero,
+.hero-card {
+  border-bottom: 0 !important;
+  box-shadow: none !important;
+}
+.hero-card::after {
+  opacity: var(--heroFade, 1) !important;
+  transition: none !important;
+}
+.hero.is-hero-gone,
+.hero.is-hero-gone .hero-card {
+  background: transparent !important;
+}
+.hero.is-hero-gone .hero-card::after {
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+.hero + .section,
+.hero + .two-col,
+.two-col#aboutMe {
+  margin-top: 0 !important;
+  border-top: 0 !important;
+}
+
+#musicListPopover.music-list-popover,
+#musicListPopover.floating-playlist,
+#musicListPopover.force-playlist-open {
+  position: fixed !important;
+  z-index: 2147483600 !important;
+  display: block !important;
+  width: min(340px, calc(100vw - 24px)) !important;
+  max-height: min(360px, 48vh) !important;
+  min-height: auto !important;
+  height: auto !important;
+  overflow: hidden !important;
+  padding: 10px !important;
+  border-radius: 18px !important;
+  background: rgba(8, 18, 31, .98) !important;
+  border: 1px solid rgba(150, 195, 255, .46) !important;
+  box-shadow: 0 24px 60px rgba(0,0,0,.55) !important;
+  backdrop-filter: blur(18px) saturate(135%) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(135%) !important;
+}
+#musicListPopover.force-playlist-open,
+#musicListPopover.is-open {
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+  transform: translate3d(0,0,0) !important;
+}
+#musicListPopover:not(.force-playlist-open):not(.is-open) {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+#musicListPopover #musicList,
+#musicListPopover .music-list {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+  width: 100% !important;
+  max-height: calc(min(360px, 48vh) - 20px) !important;
+  min-height: 0 !important;
+  height: auto !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+#musicListPopover #musicList button,
+#musicListPopover .music-list button {
+  all: unset;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  min-height: 62px !important;
+  display: grid !important;
+  grid-template-columns: 52px minmax(0, 1fr) !important;
+  gap: 12px !important;
+  align-items: center !important;
+  padding: 8px !important;
+  border-radius: 14px !important;
+  cursor: pointer !important;
+  color: #edf7ff !important;
+  background: rgba(255,255,255,.07) !important;
+  border: 1px solid rgba(255,255,255,.08) !important;
+}
+#musicListPopover #musicList button.is-active,
+#musicListPopover .music-list button.is-active {
+  background: rgba(125, 170, 255, .22) !important;
+  border-color: rgba(150, 195, 255, .56) !important;
+}
+#musicListPopover #musicList button img,
+#musicListPopover .music-list button img {
+  width: 52px !important;
+  height: 52px !important;
+  border-radius: 12px !important;
+  object-fit: cover !important;
+  display: block !important;
+}
+#musicListPopover #musicList button .music-list-text,
+#musicListPopover .music-list button .music-list-text {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 3px !important;
+  min-width: 0 !important;
+}
+#musicListPopover #musicList button strong,
+#musicListPopover #musicList button span,
+#musicListPopover .music-list button strong,
+#musicListPopover .music-list button span {
+  display: block !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+#musicListPopover #musicList button strong,
+#musicListPopover .music-list button strong {
+  font-size: 14px !important;
+  font-weight: 800 !important;
+  color: #edf7ff !important;
+}
+#musicListPopover #musicList button span,
+#musicListPopover .music-list button span {
+  font-size: 12px !important;
+  color: #b8cad5 !important;
+}
+@media (max-width: 768px) {
+  #musicListPopover.music-list-popover,
+  #musicListPopover.floating-playlist,
+  #musicListPopover.force-playlist-open {
+    width: min(320px, calc(100vw - 18px)) !important;
+    max-height: min(320px, 42vh) !important;
+  }
+  #musicListPopover #musicList,
+  #musicListPopover .music-list {
+    max-height: calc(min(320px, 42vh) - 20px) !important;
+  }
+}

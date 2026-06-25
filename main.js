@@ -917,6 +917,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (raw > 0.94) raw = 1;
       const p = smooth(raw);
       const remain = clamp(1 - p);
+      hero.style.setProperty('--heroFade', String(remain));
 
       heroPicture.style.opacity = String(remain);
       heroImg.style.opacity = String(remain);
@@ -1023,4 +1024,115 @@ document.addEventListener('DOMContentLoaded', () => {
     observer.observe(list, { childList: true, subtree: true });
     normalizeList();
   }
+});
+
+
+/* 20260625 v15: robust playlist render + position, stop blank list */
+document.addEventListener('DOMContentLoaded', () => {
+  const listToggle = document.getElementById('musicListToggle');
+  const listPopover = document.getElementById('musicListPopover');
+  const list = document.getElementById('musicList');
+  const panel = document.getElementById('musicPanel');
+  const audio = document.getElementById('musicAudio');
+  const cover = document.getElementById('musicCover');
+  const title = document.getElementById('musicTitle');
+  const artist = document.getElementById('musicArtist');
+  if (!listToggle || !listPopover || !list || !panel) return;
+
+  const songs = [
+    { title: '天平', artist: '银河系长 / Kumark / 漱一', src: 'audio/tianping.mp3', cover: 'images/music/tianping.jpg' },
+    { title: '一点', artist: 'Muyoi / Pezzi', src: 'audio/yidian.mp3', cover: 'images/music/yidian.jpg' }
+  ];
+
+  if (listPopover.parentElement !== document.body) {
+    document.body.appendChild(listPopover);
+  }
+  listPopover.classList.add('floating-playlist');
+
+  const getCurrentIndex = () => {
+    const src = audio?.getAttribute('src') || '';
+    const titleText = title?.textContent || '';
+    const found = songs.findIndex(song => src.includes(song.src) || titleText === song.title);
+    return found >= 0 ? found : 0;
+  };
+
+  const render = () => {
+    const current = getCurrentIndex();
+    list.innerHTML = songs.map((song, index) => `
+      <button type="button" class="${index === current ? 'is-active' : ''}" data-v15-index="${index}">
+        <img src="${song.cover}" alt="${song.title} 专辑封面" loading="lazy">
+        <span class="music-list-text">
+          <strong>${index + 1}. ${song.title}</strong>
+          <span>${song.artist}</span>
+        </span>
+      </button>
+    `).join('');
+  };
+
+  const position = () => {
+    const rect = listToggle.getBoundingClientRect();
+    const panelRect = panel.getBoundingClientRect();
+    const width = Math.min(window.innerWidth - 24, window.innerWidth <= 768 ? 320 : 340);
+    const height = Math.min(window.innerHeight * (window.innerWidth <= 768 ? .42 : .48), window.innerWidth <= 768 ? 320 : 360);
+    let left = panelRect.left + panelRect.width / 2 - width / 2;
+    left = Math.max(12, Math.min(left, window.innerWidth - width - 12));
+    let top = rect.bottom + 12;
+    if (top + height > window.innerHeight - 12) top = rect.top - height - 12;
+    top = Math.max(12, top);
+    Object.assign(listPopover.style, {
+      left: `${left}px`,
+      top: `${top}px`,
+      right: 'auto',
+      width: `${width}px`,
+      maxHeight: `${height}px`
+    });
+  };
+
+  const open = () => {
+    render();
+    listPopover.classList.add('is-open', 'force-playlist-open');
+    position();
+    requestAnimationFrame(position);
+  };
+  const close = () => {
+    listPopover.classList.remove('is-open', 'force-playlist-open');
+  };
+
+  listToggle.addEventListener('click', (event) => {
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    if (listPopover.classList.contains('force-playlist-open')) close();
+    else open();
+  }, true);
+
+  list.addEventListener('click', (event) => {
+    const btn = event.target.closest('[data-v15-index]');
+    if (!btn) return;
+    const index = Number(btn.dataset.v15Index);
+    const song = songs[index];
+    if (audio && song) {
+      audio.src = song.src;
+      audio.load();
+      audio.play().catch(() => {});
+    }
+    if (cover && song) cover.src = song.cover;
+    if (title && song) title.textContent = song.title;
+    if (artist && song) artist.textContent = song.artist;
+    close();
+  }, true);
+
+  document.addEventListener('click', (event) => {
+    if (!listPopover.classList.contains('force-playlist-open')) return;
+    if (event.target.closest('#musicListToggle') || event.target.closest('#musicListPopover')) return;
+    close();
+  }, true);
+
+  window.addEventListener('resize', () => {
+    if (listPopover.classList.contains('force-playlist-open')) position();
+  }, { passive: true });
+  window.addEventListener('scroll', () => {
+    if (listPopover.classList.contains('force-playlist-open')) position();
+  }, { passive: true });
+
+  render();
 });
