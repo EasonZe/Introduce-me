@@ -25,7 +25,6 @@
     showHeroText: localStorage.getItem('custom-show-hero-text') !== '0',
     showStars: localStorage.getItem('custom-show-stars') !== '0',
     showMeteor: localStorage.getItem('custom-show-meteor') !== '0',
-    showMist: localStorage.getItem('custom-show-mist') !== '0',
     showDividerFx: localStorage.getItem('custom-show-divider-fx') !== '0'
   };
 
@@ -81,13 +80,12 @@
     root.classList.toggle('custom-hide-hero-text', !customState.showHeroText);
     root.classList.toggle('custom-hide-stars', !customState.showStars);
     root.classList.toggle('custom-hide-meteor', !customState.showMeteor);
-    root.classList.toggle('custom-hide-mist', !customState.showMist);
+    root.classList.remove('custom-hide-mist');
     root.classList.toggle('custom-hide-divider-fx', !customState.showDividerFx);
     const pairs = [
       ['toggleHeroText', 'showHeroText'],
       ['toggleStars', 'showStars'],
       ['toggleMeteor', 'showMeteor'],
-      ['toggleMist', 'showMist'],
       ['toggleDividerFx', 'showDividerFx']
     ];
     pairs.forEach(([id, key]) => {
@@ -98,9 +96,12 @@
   }
 
   function initThemePalette() {
-    if (localStorage.getItem('theme')) root.dataset.theme = localStorage.getItem('theme');
+    // 默认进入网站强制深色，避免浏览器里旧的 light 缓存把页面变浅色。
+    root.dataset.theme = 'dark';
+    try { localStorage.setItem('theme', 'dark'); } catch (error) {}
     updateThemeButton();
     applyAccentHue(customState.hue);
+    try { localStorage.removeItem('custom-show-mist'); } catch (error) {}
     applyBackgroundMode(customState.bgMode);
     applyWallpaperSwitches();
     $('#themeBtn')?.addEventListener('click', () => {
@@ -117,7 +118,7 @@
       localStorage.removeItem('custom-hue');
       localStorage.removeItem('custom-bg-mode');
       ['custom-show-hero-text', 'custom-show-stars', 'custom-show-meteor', 'custom-show-mist', 'custom-show-divider-fx'].forEach((key) => localStorage.removeItem(key));
-      Object.assign(customState, { hue: 210, bgMode: 'default', showHeroText: true, showStars: true, showMeteor: true, showMist: true, showDividerFx: true });
+      Object.assign(customState, { hue: 210, bgMode: 'default', showHeroText: true, showStars: true, showMeteor: true, showDividerFx: true });
       applyAccentHue(210);
       applyBackgroundMode('default');
       applyWallpaperSwitches();
@@ -126,7 +127,6 @@
       ['toggleHeroText', 'showHeroText'],
       ['toggleStars', 'showStars'],
       ['toggleMeteor', 'showMeteor'],
-      ['toggleMist', 'showMist'],
       ['toggleDividerFx', 'showDividerFx']
     ].forEach(([id, key]) => $(`#${id}`)?.addEventListener('change', (event) => {
       customState[key] = event.target.checked;
@@ -955,17 +955,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const applyHeroState = () => {
       const aboutTop = aboutSection.getBoundingClientRect().top + window.scrollY;
-      const endAt = Math.max(1, aboutTop - window.innerHeight * 0.72);
+      const endAt = Math.max(1, aboutTop - window.innerHeight * 0.18);
       let raw = clamp(window.scrollY / endAt);
-      if (raw > 0.94) raw = 1;
+      if (raw > 0.985) raw = 1;
       const p = smooth(raw);
       const remain = clamp(1 - p);
       hero.style.setProperty('--heroFade', String(remain));
 
       heroPicture.style.opacity = String(remain);
       heroImg.style.opacity = String(remain);
-      heroImg.style.filter = `blur(${p * 26}px)`;
-      heroImg.style.transform = `translate3d(0, ${p * 76}px, 0) scale(${1 + p * 0.04})`;
+      heroImg.style.filter = `blur(${p * 24}px)`;
+      heroImg.style.transform = `translate3d(0, ${p * 72}px, 0) scale(${1 + p * 0.035})`;
 
       if (heroText) {
         heroText.style.opacity = String(remain);

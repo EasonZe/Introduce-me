@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,7 +9,8 @@
   <link rel="apple-touch-icon" href="https://user14491.cn.imgto.link/public/20260619/50674c2c-6018-44b8-94d8-22f28f5fdd0a.avif" />
   <meta name="apple-mobile-web-app-title" content="Eason的小站" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@waline/client@v3/dist/waline.css" />
-  <link rel="stylesheet" href="style.css?v=20260625-music-playlist-v17" />
+  <script>document.documentElement.dataset.theme="dark";try{localStorage.setItem("theme","dark")}catch(e){}</script>
+  <link rel="stylesheet" href="style.css?v=20260628-v19" />
   <link rel="alternate" type="application/rss+xml" title="Eason的小站 RSS" href="rss.xml" />
 </head>
 <body>
@@ -147,7 +148,7 @@
         <h2>联系方式</h2>
       </div>
       <div class="contact-list">
-<a class="contact-link" href="https://github.com/EasonZhan-max" target="_blank" rel="noopener noreferrer"><span class="contact-main"><img class="contact-logo" src="images/github-logo.png" alt="GitHub" /><span><small>GitHub</small><strong>EasonZhan-max</strong></span></span><span>跳转</span></a>
+<a class="contact-link" href="https://github.com/EasonZe" target="_blank" rel="noopener noreferrer"><span class="contact-main"><img class="contact-logo" src="images/github-logo.png" alt="GitHub" /><span><small>GitHub</small><strong>EasonZe</strong></span></span><span>跳转</span></a>
 <a class="contact-link" href="https://vrchat.com/home/user/usr_d4c721b7-3c81-45c0-b473-55953e3a21c3" target="_blank" rel="noopener noreferrer"><span class="contact-main"><img class="contact-logo" src="images/vrchat-logo.png" alt="VRChat" /><span><small>VRChat</small><strong>EasonZhan</strong></span></span><span>跳转</span></a>
         <a class="contact-link" href="https://t.me/EasonZhan08" target="_blank" rel="noopener noreferrer"><span class="contact-main"><img class="contact-logo" src="images/telegram.png" alt="Telegram" /><span><small>Telegram</small><strong>@EasonZhan08</strong></span></span><span>跳转</span></a>
         <a class="contact-link" href="https://discord.com/users/eason00518" target="_blank" rel="noopener noreferrer"><span class="contact-main"><img class="contact-logo" src="images/discord.png" alt="Discord" /><span><small>Discord</small><strong>eason00518</strong></span></span><span>跳转</span></a>
@@ -173,11 +174,11 @@
       <div class="palette-head"><h2>个性化调色板</h2><button class="palette-reset" id="paletteResetBtn" type="button">重置</button></div>
       <div class="palette-section"><div class="palette-section-title"><span>主题色相</span><b id="hueValue">210</b></div><input class="hue-slider" id="hueSlider" type="range" min="0" max="360" value="210" /></div>
       <div class="palette-section"><div class="palette-section-title"><span>背景模式</span></div><div class="preset-grid"><button class="preset-btn active" type="button" data-bg-mode="default">雾蓝默认</button><button class="preset-btn" type="button" data-bg-mode="night">深夜星空</button></div></div>
-      <div class="palette-section"><div class="palette-section-title"><span>壁纸设置</span></div><div class="toggle-grid"><label class="toggle-item"><span><strong>首页壁纸标题</strong><small>控制首页标题和文案显示</small></span><input id="toggleHeroText" type="checkbox" checked /></label><label class="toggle-item"><span><strong>背景星星</strong><small>控制背景星点闪烁显示效果</small></span><input id="toggleStars" type="checkbox" checked /></label><label class="toggle-item"><span><strong>流星动画</strong><small>控制背景随机流星划过效果</small></span><input id="toggleMeteor" type="checkbox" checked /></label><label class="toggle-item"><span><strong>雾光渐变</strong><small>控制雾蓝柔光背景层显示</small></span><input id="toggleMist" type="checkbox" checked /></label></div></div>
+      <div class="palette-section"><div class="palette-section-title"><span>壁纸设置</span></div><div class="toggle-grid"><label class="toggle-item"><span><strong>首页壁纸标题</strong><small>控制首页标题和文案显示</small></span><input id="toggleHeroText" type="checkbox" checked /></label><label class="toggle-item"><span><strong>背景星星</strong><small>控制背景星点闪烁显示效果</small></span><input id="toggleStars" type="checkbox" checked /></label><label class="toggle-item"><span><strong>流星动画</strong><small>控制背景随机流星划过效果</small></span><input id="toggleMeteor" type="checkbox" checked /></label></div></div>
     </div>
   </div>
   <button class="backtop is-hidden" id="backTopBtn" type="button" aria-label="返回顶部">↑</button>
-  <script src="main.js?v=20260625-music-playlist-v17"></script>
+  <script src="main.js?v=20260628-v19"></script>
 
   <script type="module">
     const WALINE_SERVER_URL = 'https://example.easonzhan.xyz';

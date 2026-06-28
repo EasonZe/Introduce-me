@@ -5653,3 +5653,9 @@ html[data-theme="dark"] .hero-card {
     max-height: 240px !important;
   }
 }
+
+
+/* 20260628 v19 overrides */
+#paletteModal .toggle-grid { grid-template-columns: 1fr; }
+#paletteModal .toggle-item { align-items: center; }
+.hero, .hero-card, .hero-picture, .hero-img, .hero-text { will-change: opacity, transform, filter; }
