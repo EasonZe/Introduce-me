@@ -5999,3 +5999,160 @@ html:not([data-theme="dark"]) .other-sites-card {
   }
 }
 
+
+
+/* 20260629 v24 FINAL: 其他网站去掉毛玻璃卡片，文字直接压在图片上 */
+.other-sites-head > p { display: none !important; }
+.other-sites-grid {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 16px !important;
+}
+.other-site-item {
+  position: relative !important;
+  min-height: 260px !important;
+  border-radius: 24px !important;
+  overflow: hidden !important;
+  isolation: isolate !important;
+  background: rgba(255,255,255,.04) !important;
+}
+.other-site-item > img {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  transform: scale(1.02) !important;
+  filter: none !important;
+  -webkit-filter: none !important;
+  opacity: 1 !important;
+}
+.other-site-item.is-coming > img {
+  filter: none !important;
+  -webkit-filter: none !important;
+  opacity: 1 !important;
+}
+.other-site-item::after {
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 0 !important;
+  background: linear-gradient(180deg, rgba(0,0,0,0.02) 18%, rgba(0,0,0,0.20) 62%, rgba(0,0,0,0.62) 100%) !important;
+  pointer-events: none !important;
+}
+.other-site-info,
+.other-site-overlay {
+  position: absolute !important;
+  left: 16px !important;
+  right: 16px !important;
+  bottom: 16px !important;
+  z-index: 2 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  gap: 8px !important;
+  height: auto !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  box-shadow: none !important;
+  outline: 0 !important;
+}
+.other-site-info::before,
+.other-site-info::after,
+.other-site-overlay::before,
+.other-site-overlay::after {
+  content: none !important;
+  display: none !important;
+}
+.other-site-tag {
+  display: inline-flex !important;
+  align-items: center !important;
+  min-height: 26px !important;
+  padding: 4px 10px !important;
+  border-radius: 999px !important;
+  border: 1px solid rgba(255,255,255,.24) !important;
+  background: rgba(7,18,31,.58) !important;
+  color: #fff !important;
+  font-size: 11px !important;
+  font-weight: 800 !important;
+  box-shadow: 0 8px 18px rgba(0,0,0,.22) !important;
+}
+.other-site-info h3,
+.other-site-overlay h3 {
+  margin: 0 !important;
+  color: #fff !important;
+  font-size: clamp(17px, 1.35vw, 22px) !important;
+  line-height: 1.25 !important;
+  text-shadow: 0 4px 16px rgba(0,0,0,.56) !important;
+}
+.other-site-info p,
+.other-site-overlay p {
+  margin: 0 !important;
+  color: rgba(255,255,255,.96) !important;
+  font-size: 12.5px !important;
+  line-height: 1.5 !important;
+  max-width: 26ch !important;
+  text-shadow: 0 4px 14px rgba(0,0,0,.58) !important;
+}
+.other-site-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: auto !important;
+  min-height: 38px !important;
+  padding: 0 14px !important;
+  border-radius: 13px !important;
+  border: 1px solid rgba(255,255,255,.24) !important;
+  background: rgba(9,22,38,.68) !important;
+  color: #fff !important;
+  text-decoration: none !important;
+  font-size: 13px !important;
+  font-weight: 800 !important;
+  box-shadow: 0 10px 22px rgba(0,0,0,.22) !important;
+}
+@media (max-width: 900px) {
+  .other-sites-grid { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; }
+}
+@media (max-width: 680px) {
+  .other-sites-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 12px !important;
+  }
+  .other-site-item {
+    min-height: 210px !important;
+    border-radius: 18px !important;
+  }
+  .other-site-info,
+  .other-site-overlay {
+    left: 12px !important;
+    right: 12px !important;
+    bottom: 12px !important;
+    gap: 6px !important;
+  }
+  .other-site-info h3,
+  .other-site-overlay h3 { font-size: 16px !important; }
+  .other-site-info p,
+  .other-site-overlay p {
+    font-size: 11.5px !important;
+    line-height: 1.42 !important;
+    max-width: 18ch !important;
+  }
+  .other-site-btn {
+    width: auto !important;
+    min-height: 34px !important;
+    font-size: 12px !important;
+    padding: 0 12px !important;
+  }
+  .other-site-tag {
+    min-height: 23px !important;
+    font-size: 10px !important;
+  }
+}
