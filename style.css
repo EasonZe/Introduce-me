@@ -5855,7 +5855,13 @@ html:not([data-theme="dark"]) .other-sites-card {
 }
 
 
-/* 20260629 v22: 其他网站卡片最终布局：图片不模糊，信息卡毛玻璃；电脑/iPad 4列，手机2x2 */
+/* 20260629 v23: 其他网站卡片布局改为图片直显文字；电脑/iPad 4列，手机2x2 */
+.other-sites-head {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  margin-bottom: 16px !important;
+}
 .other-sites-grid {
   display: grid !important;
   grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
@@ -5888,54 +5894,67 @@ html:not([data-theme="dark"]) .other-sites-card {
   content: "" !important;
   position: absolute !important;
   inset: 0 !important;
-  background: linear-gradient(180deg, rgba(3, 8, 14, 0.02), rgba(3, 8, 14, 0.18)) !important;
+  background: linear-gradient(180deg, rgba(3, 8, 14, 0.02) 20%, rgba(3, 8, 14, 0.20) 58%, rgba(3, 8, 14, 0.58) 100%) !important;
   z-index: 0 !important;
   pointer-events: none !important;
 }
 .other-site-overlay {
   position: absolute !important;
-  left: 14px !important;
-  right: 14px !important;
-  bottom: 14px !important;
-  height: auto !important;
-  min-height: 0 !important;
+  left: 16px !important;
+  right: 16px !important;
+  bottom: 16px !important;
   z-index: 2 !important;
   display: flex !important;
   flex-direction: column !important;
-  justify-content: flex-start !important;
   align-items: flex-start !important;
   gap: 8px !important;
-  padding: 14px !important;
-  border-radius: 20px !important;
-  border: 1px solid rgba(255,255,255,.22) !important;
-  background: linear-gradient(135deg, rgba(8,18,32,.52), rgba(8,18,32,.26)) !important;
-  backdrop-filter: blur(18px) saturate(130%) !important;
-  -webkit-backdrop-filter: blur(18px) saturate(130%) !important;
-  box-shadow: 0 14px 34px rgba(0,0,0,.22) !important;
+  padding: 0 !important;
+  border: none !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  box-shadow: none !important;
 }
 .other-site-tag {
   min-height: 26px !important;
   padding: 4px 10px !important;
   border-radius: 999px !important;
   font-size: 11px !important;
+  border: 1px solid rgba(255,255,255,.22) !important;
+  background: rgba(8,20,36,.45) !important;
+  color: #fff !important;
+  box-shadow: 0 8px 18px rgba(0,0,0,.16) !important;
 }
 .other-site-overlay h3 {
   margin: 0 !important;
   font-size: clamp(17px, 1.35vw, 22px) !important;
   line-height: 1.25 !important;
   color: #fff !important;
+  text-shadow: 0 4px 16px rgba(0,0,0,.42) !important;
 }
 .other-site-overlay p {
   margin: 0 !important;
   font-size: 12.5px !important;
   line-height: 1.5 !important;
-  color: rgba(255,255,255,.94) !important;
+  color: rgba(255,255,255,.96) !important;
+  text-shadow: 0 4px 14px rgba(0,0,0,.42) !important;
+  max-width: 26ch !important;
 }
 .other-site-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
   min-height: 38px !important;
   padding: 0 14px !important;
   border-radius: 13px !important;
+  border: 1px solid rgba(255,255,255,.22) !important;
+  background: rgba(10,24,42,.66) !important;
+  color: #fff !important;
+  text-decoration: none !important;
   font-size: 13px !important;
+  font-weight: 800 !important;
+  box-shadow: 0 10px 22px rgba(0,0,0,.18) !important;
 }
 @media (max-width: 900px) {
   .other-sites-grid {
@@ -5943,6 +5962,9 @@ html:not([data-theme="dark"]) .other-sites-card {
   }
 }
 @media (max-width: 680px) {
+  .other-sites-head {
+    margin-bottom: 12px !important;
+  }
   .other-sites-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
     gap: 12px !important;
@@ -5952,14 +5974,10 @@ html:not([data-theme="dark"]) .other-sites-card {
     border-radius: 18px !important;
   }
   .other-site-overlay {
-    left: 10px !important;
-    right: 10px !important;
-    bottom: 10px !important;
-    padding: 10px !important;
+    left: 12px !important;
+    right: 12px !important;
+    bottom: 12px !important;
     gap: 6px !important;
-    border-radius: 16px !important;
-    backdrop-filter: blur(14px) saturate(130%) !important;
-    -webkit-backdrop-filter: blur(14px) saturate(130%) !important;
   }
   .other-site-overlay h3 {
     font-size: 16px !important;
@@ -5967,14 +5985,17 @@ html:not([data-theme="dark"]) .other-sites-card {
   .other-site-overlay p {
     font-size: 11.5px !important;
     line-height: 1.42 !important;
+    max-width: 18ch !important;
   }
   .other-site-btn {
-    width: 100% !important;
+    width: auto !important;
     min-height: 34px !important;
     font-size: 12px !important;
+    padding: 0 12px !important;
   }
   .other-site-tag {
     min-height: 23px !important;
     font-size: 10px !important;
   }
 }
+
