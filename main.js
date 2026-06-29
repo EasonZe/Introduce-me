@@ -515,11 +515,7 @@
       render.canvas.style.pointerEvents = 'none';
       render.canvas.style.touchAction = 'pan-y';
 
-      stage.addEventListener('wheel', (event) => {
-        if (Math.abs(event.deltaY) > 0) {
-          window.scrollBy({ top: event.deltaY, left: 0, behavior: 'auto' });
-        }
-      }, { passive: true });
+      // v25: rely on native page scrolling over the physics stage to avoid double-scroll jitter on desktop.
 
       let activeDragBody = null;
       let activePointerId = null;

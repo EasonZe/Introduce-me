@@ -6156,3 +6156,23 @@ html:not([data-theme="dark"]) .other-sites-card {
     font-size: 10px !important;
   }
 }
+
+
+/* 20260629 v25 FINAL: 其他网站标签删掉、按钮更宽、左上角头像非圆形 */
+.other-site-tag {
+  display: none !important;
+}
+.other-site-btn {
+  min-height: 40px !important;
+  padding: 0 18px !important;
+  border-radius: 14px !important;
+}
+.site-nav .brand img {
+  border-radius: 12px !important;
+}
+@media (max-width: 680px) {
+  .other-site-btn {
+    min-height: 36px !important;
+    padding: 0 16px !important;
+  }
+}
