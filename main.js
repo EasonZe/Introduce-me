@@ -382,12 +382,15 @@
       const allGames = games.slice();
       const total = allGames.length;
       const compactMobile = width < 460;
+      const mobile = width < 700;
       const maxLongSide = compactMobile
-        ? Math.max(42, Math.min(54, Math.floor(width / 12)))
-        : Math.max(40, Math.min(58, Math.floor(width / 14.6)));
-      const minShortSide = compactMobile ? 30 : 26;
-      const safePadding = width < 700 ? (compactMobile ? 8 : 16) : 22;
-      const spawnBand = Math.min(width < 700 ? (compactMobile ? 30 : 52) : 88, width * (width < 700 ? (compactMobile ? 0.045 : 0.08) : 0.14));
+        ? Math.max(62, Math.min(78, Math.floor(width / 8.2)))
+        : mobile
+          ? Math.max(56, Math.min(70, Math.floor(width / 9.6)))
+          : Math.max(40, Math.min(58, Math.floor(width / 14.6)));
+      const minShortSide = compactMobile ? 44 : (mobile ? 38 : 26);
+      const safePadding = mobile ? (compactMobile ? 10 : 14) : 22;
+      const spawnBand = Math.min(mobile ? (compactMobile ? 26 : 40) : 88, width * (mobile ? (compactMobile ? 0.038 : 0.06) : 0.14));
 
       bodies = [];
       blockEls = [];
@@ -511,6 +514,12 @@
 
       render.canvas.style.pointerEvents = 'none';
       render.canvas.style.touchAction = 'pan-y';
+
+      stage.addEventListener('wheel', (event) => {
+        if (Math.abs(event.deltaY) > 0) {
+          window.scrollBy({ top: event.deltaY, left: 0, behavior: 'auto' });
+        }
+      }, { passive: true });
 
       let activeDragBody = null;
       let activePointerId = null;
@@ -955,7 +964,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const applyHeroState = () => {
       const aboutTop = aboutSection.getBoundingClientRect().top + window.scrollY;
-      const endAt = Math.max(1, aboutTop - window.innerHeight * 0.18);
+      const endAt = Math.max(1, aboutTop - window.innerHeight * 0.10);
       let raw = clamp(window.scrollY / endAt);
       if (raw > 0.985) raw = 1;
       const p = smooth(raw);
@@ -964,8 +973,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
       heroPicture.style.opacity = String(remain);
       heroImg.style.opacity = String(remain);
-      heroImg.style.filter = `blur(${p * 24}px)`;
-      heroImg.style.transform = `translate3d(0, ${p * 72}px, 0) scale(${1 + p * 0.035})`;
+      heroImg.style.filter = `blur(${p * 22}px)`;
+      heroImg.style.transform = `translate3d(0, ${p * 64}px, 0) scale(${1 + p * 0.03})`;
 
       if (heroText) {
         heroText.style.opacity = String(remain);

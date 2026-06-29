@@ -5654,8 +5654,191 @@ html[data-theme="dark"] .hero-card {
   }
 }
 
+/* 20260629 v20: other websites cards + mobile physics + smoother hero */
+.other-sites-card {
+  margin-bottom: 18px;
+  border: 1px solid var(--line);
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at 20% 15%, rgba(159,185,201,.16), transparent 34%),
+    linear-gradient(135deg, rgba(18,28,36,.78), rgba(12,22,31,.62));
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(16px);
+  overflow: hidden;
+  padding: 22px;
+}
+html:not([data-theme="dark"]) .other-sites-card {
+  background:
+    radial-gradient(circle at 20% 15%, rgba(159,185,201,.20), transparent 34%),
+    linear-gradient(135deg, rgba(255,255,255,.78), rgba(238,247,251,.62));
+}
+.other-sites-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.other-sites-head h2 {
+  margin: 0;
+  font-size: clamp(24px, 3vw, 34px);
+}
+.other-sites-head p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.7;
+}
+.other-sites-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+.other-site-item {
+  position: relative;
+  min-height: 240px;
+  border-radius: 24px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background: rgba(255,255,255,.06);
+  box-shadow: 0 14px 32px rgba(0,0,0,.18);
+}
+.other-site-item > img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.03);
+}
+.other-site-item::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(5,10,18,.14), rgba(5,10,18,.58));
+}
+.other-site-overlay {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 18px;
+  background: linear-gradient(180deg, rgba(7,16,28,.06), rgba(7,16,28,.22));
+  backdrop-filter: blur(10px);
+}
+.other-site-tag {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.22);
+  background: rgba(8,20,36,.48);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 800;
+}
+.other-site-overlay h3 {
+  margin: 0;
+  color: #fff;
+  font-size: clamp(20px, 2vw, 26px);
+}
+.other-site-overlay p {
+  margin: 0;
+  color: rgba(255,255,255,.92);
+  line-height: 1.7;
+  max-width: 40ch;
+}
+.other-site-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 46px;
+  padding: 0 18px;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,.22);
+  background: rgba(10,24,42,.54);
+  color: #fff;
+  text-decoration: none;
+  font-weight: 800;
+  box-shadow: 0 10px 24px rgba(0,0,0,.18);
+}
+.other-site-item.is-coming .other-site-overlay {
+  justify-content: flex-end;
+}
+.other-site-item.is-coming .other-site-btn[disabled] {
+  opacity: .92;
+  cursor: default;
+}
+.other-site-item.is-coming > img {
+  filter: saturate(.86);
+}
 
-/* 20260628 v19 overrides */
-#paletteModal .toggle-grid { grid-template-columns: 1fr; }
-#paletteModal .toggle-item { align-items: center; }
-.hero, .hero-card, .hero-picture, .hero-img, .hero-text { will-change: opacity, transform, filter; }
+.physics-stage {
+  overscroll-behavior: auto !important;
+}
+
+.hero,
+.hero-card,
+.hero-picture,
+.hero-img,
+.hero-text {
+  will-change: opacity, transform, filter;
+}
+
+@media (max-width: 900px) {
+  .other-sites-grid {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 680px) {
+  .other-sites-card,
+  .physics-card,
+  .favorite-games-card {
+    padding: 16px;
+    border-radius: 24px;
+  }
+  .other-sites-head {
+    display: block;
+  }
+  .other-sites-head p {
+    margin-top: 8px;
+    font-size: 14px;
+  }
+  .other-sites-grid {
+    gap: 12px;
+  }
+  .other-site-item {
+    min-height: 210px;
+    border-radius: 18px;
+  }
+  .other-site-overlay {
+    padding: 14px;
+    gap: 8px;
+  }
+  .other-site-overlay h3 {
+    font-size: 20px;
+  }
+  .other-site-overlay p {
+    font-size: 13px;
+    line-height: 1.55;
+  }
+  .other-site-btn {
+    width: 100%;
+  }
+  .physics-stage {
+    height: 500px !important;
+    border-radius: 20px;
+  }
+}
+@media (max-width: 480px) {
+  .physics-stage {
+    height: 540px !important;
+  }
+  .game-physics-block {
+    border-radius: 12px;
+  }
+}
