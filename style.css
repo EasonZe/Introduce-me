@@ -6293,3 +6293,30 @@ html:not([data-theme="dark"]) .other-sites-card {
     min-height: 430px !important;
   }
 }
+
+
+/* 20260630 v28: mobile 6 columns + one physics toggle button */
+.physics-mobile-tip {
+  display: none;
+  font-size: 12px;
+  font-weight: 700;
+  color: rgba(220,235,255,.72);
+  white-space: nowrap;
+}
+@media (max-width: 680px) {
+  .physics-toolbar {
+    align-items: center;
+    flex-wrap: nowrap;
+  }
+  .physics-mobile-tip {
+    display: inline-block;
+    font-size: 11px;
+  }
+  .physics-static-grid {
+    grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+    gap: 6px !important;
+  }
+  .physics-static-item img {
+    aspect-ratio: 2 / 3;
+  }
+}

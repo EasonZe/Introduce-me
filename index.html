@@ -10,7 +10,7 @@
   <meta name="apple-mobile-web-app-title" content="Eason的小站" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@waline/client@v3/dist/waline.css" />
   <script>document.documentElement.dataset.theme="dark";try{localStorage.setItem("theme","dark")}catch(e){}</script>
-  <link rel="stylesheet" href="style.css?v=20260630-v27" />
+  <link rel="stylesheet" href="style.css?v=20260630-v28" />
   <link rel="alternate" type="application/rss+xml" title="Eason的小站 RSS" href="rss.xml" />
 </head>
 <body>
@@ -156,8 +156,8 @@
             <div class="physics-head only-title physics-head-actions">
               <h2>我喜欢的游戏</h2>
               <div class="physics-toolbar">
-                <button class="icon-btn physics-action-btn" id="physicsLoadBtn" type="button">加载物理效果</button>
-                <button class="icon-btn physics-action-btn" id="physicsCloseBtn" type="button" disabled>关闭物理效果</button>
+                <button class="icon-btn physics-action-btn" id="physicsToggleBtn" type="button">加载物理效果</button>
+                <span class="physics-mobile-tip">（手机不好，谨慎加载）</span>
               </div>
             </div>
             <div class="physics-stage is-static" id="physicsStage">
@@ -227,7 +227,7 @@
     </div>
   </div>
   <button class="backtop is-hidden" id="backTopBtn" type="button" aria-label="返回顶部">↑</button>
-  <script src="main.js?v=20260630-v27"></script>
+  <script src="main.js?v=20260630-v28"></script>
 
   <script type="module">
     const WALINE_SERVER_URL = 'https://example.easonzhan.xyz';

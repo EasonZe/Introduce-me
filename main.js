@@ -297,9 +297,8 @@
     const stage = $('#physicsStage');
     const loading = $('#physicsLoading');
     const staticGrid = $('#physicsStaticGrid');
-    const loadBtn = $('#physicsLoadBtn');
-    const closeBtn = $('#physicsCloseBtn');
-    if (!card || !stage || !staticGrid || !loadBtn || !closeBtn) return;
+    const toggleBtn = $('#physicsToggleBtn');
+    if (!card || !stage || !staticGrid || !toggleBtn) return;
 
     let started = false;
     let loadingMatter = false;
@@ -318,8 +317,14 @@
     function setButtonState(mode = 'static') {
       const active = mode === 'active';
       const waiting = mode === 'loading';
-      loadBtn.disabled = active || waiting;
-      closeBtn.disabled = !active;
+      toggleBtn.disabled = waiting;
+      if (waiting) {
+        toggleBtn.textContent = '物理效果加载中...';
+      } else if (active) {
+        toggleBtn.textContent = '关闭物理效果';
+      } else {
+        toggleBtn.textContent = '加载物理效果';
+      }
     }
 
     function showLoading(text = '物理引擎加载中...') {
@@ -717,19 +722,18 @@
       }
     }
 
-    loadBtn.addEventListener('click', () => {
-      if (started || loadingMatter) return;
+    toggleBtn.addEventListener('click', () => {
+      if (loadingMatter) return;
+      if (started) {
+        cleanupPhysics();
+        return;
+      }
       loadingMatter = true;
       stage.classList.remove('is-static');
       stage.classList.add('is-physics-active');
       showLoading('物理引擎加载中...');
       setButtonState('loading');
       loadMatter().then(startPhysics).catch(showFallback);
-    });
-
-    closeBtn.addEventListener('click', () => {
-      if (!started) return;
-      cleanupPhysics();
     });
 
     renderStaticGrid();
