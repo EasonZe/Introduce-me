@@ -295,9 +295,14 @@
   function initPhysicsBlocks() {
     const card = $('#physicsCard');
     const stage = $('#physicsStage');
-    if (!card || !stage) return;
+    const loading = $('#physicsLoading');
+    const staticGrid = $('#physicsStaticGrid');
+    const loadBtn = $('#physicsLoadBtn');
+    const closeBtn = $('#physicsCloseBtn');
+    if (!card || !stage || !staticGrid || !loadBtn || !closeBtn) return;
 
     let started = false;
+    let loadingMatter = false;
     let engine = null;
     let render = null;
     let runner = null;
@@ -310,16 +315,22 @@
     let spawnTimer = 0;
     let attachDomDrag = null;
 
-    function loadMatter() {
-      if (window.Matter) return Promise.resolve(window.Matter);
-      return new Promise((resolve, reject) => {
-        const script = document.createElement('script');
-        script.src = 'https://cdn.jsdelivr.net/npm/matter-js@0.20.0/build/matter.min.js';
-        script.async = true;
-        script.onload = () => window.Matter ? resolve(window.Matter) : reject(new Error('Matter.js 未加载成功'));
-        script.onerror = reject;
-        document.head.appendChild(script);
-      });
+    function setButtonState(mode = 'static') {
+      const active = mode === 'active';
+      const waiting = mode === 'loading';
+      loadBtn.disabled = active || waiting;
+      closeBtn.disabled = !active;
+    }
+
+    function showLoading(text = '物理引擎加载中...') {
+      if (!loading) return;
+      loading.textContent = text;
+      loading.classList.remove('is-hidden');
+    }
+
+    function hideLoading() {
+      if (!loading) return;
+      loading.classList.add('is-hidden');
     }
 
     const games = [
@@ -350,6 +361,26 @@
       { name: 'TO THE MOON', src: 'https://user15484.cn.imgto.link/public/20260629/img-5675.avif', ratio: 0.6667 },
       { name: 'Lost Castle', src: 'https://user15484.cn.imgto.link/public/20260629/img-5676.avif', ratio: 0.6667 }
     ];
+
+    function renderStaticGrid() {
+      staticGrid.innerHTML = games.map((game) => `
+        <article class="physics-static-item" title="${game.name}">
+          <img src="${game.src}" alt="${game.name}" loading="lazy" />
+        </article>
+      `).join('');
+    }
+
+    function loadMatter() {
+      if (window.Matter) return Promise.resolve(window.Matter);
+      return new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/matter-js@0.20.0/build/matter.min.js';
+        script.async = true;
+        script.onload = () => window.Matter ? resolve(window.Matter) : reject(new Error('Matter.js 未加载成功'));
+        script.onerror = reject;
+        document.head.appendChild(script);
+      });
+    }
 
     function createDomBlock(game, width, height) {
       const el = document.createElement('div');
@@ -383,15 +414,14 @@
     function buildBlocks(Matter, width) {
       const { Bodies } = Matter;
       const allGames = games.slice();
-      const total = allGames.length;
       const compactMobile = width < 460;
       const mobile = width < 700;
       const maxLongSide = compactMobile
         ? Math.max(62, Math.min(78, Math.floor(width / 8.2)))
         : mobile
           ? Math.max(56, Math.min(70, Math.floor(width / 9.6)))
-          : Math.max(40, Math.min(58, Math.floor(width / 14.6)));
-      const minShortSide = compactMobile ? 44 : (mobile ? 38 : 26);
+          : Math.max(46, Math.min(62, Math.floor(width / 13.8)));
+      const minShortSide = compactMobile ? 44 : (mobile ? 38 : 30);
       const safePadding = mobile ? (compactMobile ? 10 : 14) : 22;
       const spawnBand = Math.min(mobile ? (compactMobile ? 26 : 40) : 88, width * (mobile ? (compactMobile ? 0.038 : 0.06) : 0.14));
 
@@ -457,10 +487,50 @@
       spawnTimer = window.setTimeout(dropNext, 120);
     }
 
+    function cleanupPhysics() {
+      if (spawnTimer) {
+        window.clearTimeout(spawnTimer);
+        spawnTimer = 0;
+      }
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+        animationFrameId = 0;
+      }
+      if (runner && window.Matter?.Runner) {
+        try { window.Matter.Runner.stop(runner); } catch (_) {}
+      }
+      if (render && window.Matter?.Render) {
+        try { window.Matter.Render.stop(render); } catch (_) {}
+        if (render.canvas?.parentNode) render.canvas.parentNode.removeChild(render.canvas);
+        render.textures = {};
+      }
+      if (engine && window.Matter?.Engine) {
+        try { window.Matter.Engine.clear(engine); } catch (_) {}
+      }
+      stage.querySelectorAll('.game-physics-block').forEach((el) => el.remove());
+      stage.classList.remove('is-ready', 'is-physics-active');
+      stage.classList.add('is-static');
+      bodies = [];
+      blockEls = [];
+      spawnQueue = [];
+      attachDomDrag = null;
+      engine = null;
+      render = null;
+      runner = null;
+      started = false;
+      loadingMatter = false;
+      hideLoading();
+      setButtonState('static');
+      renderStaticGrid();
+    }
+
     function startPhysics(Matter) {
       if (started) return;
       started = true;
-      stage.classList.add('is-ready');
+      loadingMatter = false;
+      stage.classList.remove('is-static');
+      stage.classList.add('is-physics-active');
+      stage.classList.remove('is-ready');
 
       const { Engine, Render, Runner, Bodies, Body, Composite, Mouse, MouseConstraint, Events } = Matter;
       const rect = stage.getBoundingClientRect();
@@ -517,8 +587,6 @@
 
       render.canvas.style.pointerEvents = 'none';
       render.canvas.style.touchAction = 'pan-y';
-
-      // v25: rely on native page scrolling over the physics stage to avoid double-scroll jitter on desktop.
 
       let activeDragBody = null;
       let activePointerId = null;
@@ -630,24 +698,42 @@
       Runner.run(runner, engine);
       syncDomBlocks();
       startSpawnSequence(Matter, engine.world);
-
-      window.addEventListener('resize', () => {
-        // 简单处理：刷新后重新计算最稳，避免旋转屏幕造成边界错位
-      }, { passive: true });
+      stage.classList.add('is-ready');
+      hideLoading();
+      setButtonState('active');
     }
 
     function showFallback() {
-      const loading = $('#physicsLoading');
-      if (loading) loading.textContent = '物理引擎加载失败，请刷新页面重试。';
+      loadingMatter = false;
+      hideLoading();
+      cleanupPhysics();
+      const text = '物理引擎加载失败，请刷新页面重试。';
+      if (loading) {
+        loading.textContent = text;
+        loading.classList.remove('is-hidden');
+        window.setTimeout(() => {
+          if (!started) loading.classList.add('is-hidden');
+        }, 1800);
+      }
     }
 
-    const observer = new IntersectionObserver((entries) => {
-      if (!entries.some((entry) => entry.isIntersecting)) return;
-      observer.disconnect();
+    loadBtn.addEventListener('click', () => {
+      if (started || loadingMatter) return;
+      loadingMatter = true;
+      stage.classList.remove('is-static');
+      stage.classList.add('is-physics-active');
+      showLoading('物理引擎加载中...');
+      setButtonState('loading');
       loadMatter().then(startPhysics).catch(showFallback);
-    }, { threshold: 0.24 });
+    });
 
-    observer.observe(card);
+    closeBtn.addEventListener('click', () => {
+      if (!started) return;
+      cleanupPhysics();
+    });
+
+    renderStaticGrid();
+    cleanupPhysics();
   }
 
   function initFooterRuntime() {
